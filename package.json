@@ -1,0 +1,14 @@
+{
+  "name": "tictactoe",
+  "version": "1.0.0",
+  "description": "Online tictactoe",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gary1q2",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
