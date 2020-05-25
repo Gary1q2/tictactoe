@@ -1,9 +1,13 @@
 // Dependencies
 var express = require('express');
+var http = require('http');
 var socketIO = require('socket.io');
 
 // Global variables
 var app = express();
+var server = http.Server(app);
+var io = socketIO(server);
+
 const PORT = 6969;
 const GAMESTATE = {
     empty: 1,
@@ -14,22 +18,31 @@ const GAMESTATE = {
 }
 
 
-
 // Routing
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
 // Starts the server
-app.listen(PORT, function() {
+server.listen(PORT, function() {
     console.log('Starting server on port ' + PORT);
 });
 
 
 
+
+setInterval(function() {
+    io.sockets.emit('message', 'hi!');
+}, 1000);
+
+
+
+
 io.on('connection', function(socket) {
 
+
 });
+
 
 class Game {
     constructor() {

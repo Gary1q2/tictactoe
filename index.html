@@ -1,11 +1,23 @@
 <html>
     <head>
         <title>Tic tac toe</title>
-
     </head>
 
     <body>
         Hello i am a tictactoe server
         <canvas id="canvas"></canvas>
     </body>
+
+    <script src="/socket.io/socket.io.js"></script>
 </html>
+
+<script>
+
+var socket = io();
+
+socket.on('message', function(data) {
+   console.log('data');
+});
+
+
+</script>
