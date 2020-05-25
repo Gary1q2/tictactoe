@@ -11,10 +11,9 @@ const io = socketIO(server);
 const PORT = 6969;
 const GAMESTATE = {
     empty: 1,
-    waitP2: 2,
-    p1Turn: 3,
-    p2Turn: 4,
-    endGame: 5
+    p1Turn: 2,
+    p2Turn: 3,
+    endGame: 4
 }
 
 
@@ -25,21 +24,21 @@ app.get('/', function(req, res) {
 
 // Starts the server
 server.listen(PORT, function() {
-    console.log('Starting server on port ' + PORT);
+    console.log(`Starting server on port ${PORT}`);
 });
 
-
-
-
-setInterval(function() {
-    io.sockets.emit('message', 'hi!');
-}, 1000);
-
-
-
-
+// Handling communications
 io.on('connection', function(socket) {
-    console.log("A player joined");
+    game.playerJoin(socket.id)
+
+    socket.on('place', function(grid) {
+        placeMark(grid.x, grid.y);
+    });
+
+    socket.on('disconnect', function() {
+        game.playerLeave(socket.id);
+
+    });
 });
 
 
@@ -53,17 +52,52 @@ class Game {
                      [-1, -1, -1]];
     }
 
-    playerJoin() {
+    // Places a circle or cross and moves to next turn
+    placeMark(x, y) {
 
     }
 
+    // Decides what to do with each new person connecting to the server
+    playerJoin(socketID) {
 
-    toWaiting() {
+        if (!this.p1 && !this.p2) {
+            console.log("P1 joined!");
+            this.p1 = socketID;
 
+        } else if (this.p1 && !this.p2) {
+            console.log("P2 joined!");
+            this.p2 = socketID;
+
+            // Randomly choose which player goes first
+            this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
+
+        } else if (this.p1 && this.p2) {
+            console.log("Spectator joined. oi stop chiming in");
+
+        } else {
+            console.log("P2 is true but P1 is false ERRORRRRRR@#$%^&**#&@*&#@$^(*&@#$(*#@$)*$#(&#*(@^$(\n#@$*(&#@$(*&#(*@$!!!!!!!");
+        }
     }
 
-    toP1Turn() {
+    // Decides what to do when somebody leaves
+    playerLeave(socketID) {
+
+        // Critical player left
+        if (socketID == this.p1 || socketID == this.p2) {
+
+
+        // Spectator left
+        } else {
+            console.log(`Spectator ${socketID} left... who cares about them`);
+        }
+    }
+
+
+    checkGrid() {
 
     }
 
 }
+
+
+const game = new Game();
