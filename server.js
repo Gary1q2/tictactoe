@@ -1,12 +1,12 @@
 // Dependencies
-var express = require('express');
-var http = require('http');
-var socketIO = require('socket.io');
+const express = require('express');
+const http = require('http');
+const socketIO = require('socket.io');
 
 // Global variables
-var app = express();
-var server = http.Server(app);
-var io = socketIO(server);
+const app = express();
+const server = http.Server(app);
+const io = socketIO(server);
 
 const PORT = 6969;
 const GAMESTATE = {
