@@ -16,6 +16,12 @@ const GAMESTATE = {
     endGame: 4
 }
 
+const state = {
+    winner: 1,
+    tie: 2,
+    game: 3
+}
+
 
 // Routing
 app.get('/', function(req, res) {
@@ -52,12 +58,29 @@ class Game {
                      [-1, -1, -1]];
     }
 
-    // Places a circle or cross and moves to next turn
+    /* Places a circle or cross and moves to next turn
+    */
     placeMark(x, y) {
 
+        if (x >= 0 && x <= this.grid[0].length) && (y >= 0 && y <= this.grid.length) {
+            if (this.state == GAMESTATE.p1Turn) {
+        
+            } else if (this.state == GAMESTATE.p2Turn) {
+
+            } else {
+                console.log("Illegal move..... someone tried to placeMark when not in gamestate");
+            }
+        } else {
+            console.log("Some player gave a munted af coordinates....... :(");
+        }
     }
 
-    // Decides what to do with each new person connecting to the server
+
+    /* Decides what to do with each new person connecting to the server
+    
+
+
+    */
     playerJoin(socketID) {
 
         if (!this.p1 && !this.p2) {
@@ -79,7 +102,12 @@ class Game {
         }
     }
 
-    // Decides what to do when somebody leaves
+    /* Decides what to do when somebody leaves
+        Spectator - do nothing
+        P2 -
+        P1 - 
+
+    */
     playerLeave(socketID) {
 
         // Critical player left
@@ -92,7 +120,11 @@ class Game {
         }
     }
 
-
+    /* Checks if the grid has won or tied
+       Returns:  'game'   - game still in progress
+                 'tie'    - game tied
+                 'winner' - somebody won
+    */
     checkGrid() {
 
     }
