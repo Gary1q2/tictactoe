@@ -39,8 +39,7 @@ setInterval(function() {
 
 
 io.on('connection', function(socket) {
-
-
+    console.log("A player joined");
 });
 
 
