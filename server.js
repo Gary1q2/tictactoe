@@ -13,13 +13,9 @@ const GAMESTATE = {
     empty: 1,
     p1Turn: 2,
     p2Turn: 3,
-    endGame: 4
-}
-
-const state = {
-    winner: 1,
-    tie: 2,
-    game: 3
+    p1Won: 4,
+    p2Won: 5,
+    tie: 6
 }
 
 
@@ -58,28 +54,107 @@ class Game {
                      [-1, -1, -1]];
     }
 
+
+    printGrid() {
+        console.log("Grid output =============================================");
+        for (var i = 0; i < this.grid.length; i++) {
+            var string = "";
+            for (var j = 0; j < this.grid[0].length; j++) {
+                string += this.grid[i][j] + ",";
+            }
+            console.log(string);
+        }
+        console.log("End =====================================================");
+    }
+
+    /* Resets the grid to being empty
+    */
+    clearGrid() {
+        for (var i = 0; i < this.grid.length; i++) {
+            for (var j = 0; j < this.grid[0].length; j++) {
+                this.grid[i][j] = -1;
+            }
+        }
+    }
+
+    /* Player accepted the rematch
+    */
+    acceptRematch(socketID) {
+
+    }
+
+    /* Shift the remaining player into P1 position if they are P2
+    */
+    shiftToP1() {
+
+    }
+
+
     /* Places a circle or cross and moves to next turn
+       x - horizontal grid (must be between 0-2)
+       y - vertical grid (must be between 0-2)
+       [x,y] must be -1
+       Can only be called during P1/P2 turn state
     */
     placeMark(x, y) {
 
-        if (x >= 0 && x <= this.grid[0].length) && (y >= 0 && y <= this.grid.length) {
-            if (this.state == GAMESTATE.p1Turn) {
-        
-            } else if (this.state == GAMESTATE.p2Turn) {
+        if (x < 0 || x > this.grid[0].length || y < 0 || y > this.grid.length) {
+            throw 'Munted coordinates';
+        }
+
+        if (this.state != GAMESTATE.p1Turn && this.state != GAMESTATE.p2Turn) {
+            throw "Can't place mark when not in gamestate";
+        }
+
+        if (this.grid[y][x] == -1) {
+            throw 'Mark already exists there'
+        }
+
+
+        // Player 1 made a move
+        if (this.state == GAMESTATE.p1Turn) {
+            this.grid[y][x] = "O";
+            var gridState = this.checkGrid();
+
+            if (gridState == 1) {
+                this.state = GAMESTATE.p1Won;
+
+            } else if (gridState == 2) {
+                this.state = GAMESTATE.p2Won;
+
+            } else if (gridState == 0) {
+                this.state = GAMESTATE.tie;
 
             } else {
-                console.log("Illegal move..... someone tried to placeMark when not in gamestate");
+                this.state = GAMESTATE.p2Turn;
             }
-        } else {
-            console.log("Some player gave a munted af coordinates....... :(");
+
+
+        // Player 2 made a move
+        } else if (this.state == GAMESTATE.p2Turn) {
+            this.grid[y][x] = "X";
+            var gridState = this.checkGrid();
+
+            if (gridState == 1) {
+                this.state = GAMESTATE.p1Won;
+
+            } else if (gridState == 2) {
+                this.state = GAMESTATE.p2Won;
+
+            } else if (gridState == 0) {
+                this.state = GAMESTATE.tie;
+
+            } else {
+                this.state = GAMESTATE.p1Turn;
+            }    
         }
     }
 
 
     /* Decides what to do with each new person connecting to the server
-    
-
-
+        P1 - Add them to player 1
+        P2 - Add them to player 2
+        Spectator - do nothing
     */
     playerJoin(socketID) {
 
@@ -104,6 +179,15 @@ class Game {
 
     /* Decides what to do when somebody leaves
         Spectator - do nothing
+
+        Waiting for P2 state:
+        P1 - Convert to empty state
+
+        Game state:
+        P2 - P1 wins
+        P1 - P2 wins
+
+        End state:
         P2 -
         P1 - 
 
@@ -120,10 +204,13 @@ class Game {
         }
     }
 
+
+
     /* Checks if the grid has won or tied
-       Returns:  'game'   - game still in progress
-                 'tie'    - game tied
-                 'winner' - somebody won
+       Returns: -1 - game still in progress
+                 0 - tied
+                 1 - P1 won
+                 2 - P2 won
     */
     checkGrid() {
 
@@ -133,3 +220,5 @@ class Game {
 
 
 const game = new Game();
+
+game.printGrid();
