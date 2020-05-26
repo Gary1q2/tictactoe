@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Tic tac toe</title>
+        <link href="style.css" rel="stylesheet">
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+
+    <body>
+
+        
+        <img src="https://i1.wp.com/www.thegamegal.com/wp-content/uploads/2018/08/ultimate-tic-tac-toe12-01.png?resize=340%2C340&ssl=1" alt="grid" width="200" height="200">
+        <div id="p1Box"></div>
+        <div id="p2Box"></div>
+        <div id="grid"></div>
+    </body>
+</html>
+
+
+
+
+
+<script>
+
+const socket = io();
+
+socket.on('message', function(data) {
+   console.log('data');
+});
+
+
+</script>

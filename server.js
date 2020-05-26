@@ -19,6 +19,10 @@ const GAMESTATE = {
 }
 
 
+// Set folder to public
+app.use(express.static('public'));
+
+
 // Routing
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
