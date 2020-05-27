@@ -1,6 +1,53 @@
 body {
-    width: 1200px;
-    height: 800px;
-    
+    border: 2px solid red;
+}
+
+
+#gameBox {
+    position: absolute;
+
+    width: 1000px;
+    height: 800px; 
     border: 3px solid black;
+}
+
+#p1Box {
+    position: absolute;
+    left: 50px;
+    top: 200px;
+
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+}  
+
+#p2Box {
+    position: absolute;
+    right: 50px;
+    top: 200px;
+
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+}
+
+#gridBox {
+    position: absolute;
+    left: 350px;
+    top: 150px;
+
+    width: 300px;
+    height: 300px;
+    border: 2px solid black;
+}
+
+
+#msgBox {
+    position: absolute;
+    bottom: 100px;
+    left: 350px;
+
+    width: 300px;
+    height: 100px;
+    border: 2px solid black;
 }
