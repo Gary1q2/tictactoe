@@ -165,6 +165,7 @@ class Game {
         if (!this.p1 && !this.p2) {
             console.log("P1 joined!");
             this.p1 = socketID;
+            io.to(socketID).emit('waitP2');
 
         } else if (this.p1 && !this.p2) {
             console.log("P2 joined!");

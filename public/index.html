@@ -1,19 +1,27 @@
 <html>
     <head>
         <title>Tic tac toe</title>
-        <link href="style.css" rel="stylesheet">
-        <script src="/socket.io/socket.io.js"></script>
+        <link href='style.css' rel='stylesheet'>
+        <script src='/socket.io/socket.io.js'></script>
     </head>
 
     <body>
 
-        <div id="gameBox">
-            <div id="p1Box"></div>
-            <div id="p2Box"></div>
-            <div id="gridBox">
-                <img src="https://i1.wp.com/www.thegamegal.com/wp-content/uploads/2018/08/ultimate-tic-tac-toe12-01.png?resize=340%2C340&ssl=1" alt="grid" width="300" height="300">
+        <div id='gameBox'>
+            <div id='p1Box'>
+                <div id='p1Piece'></div>
+                <div id='p1Name'>??</div>
             </div>
-            <div id="msgBox"></div>
+            <div id='p2Box'>
+                <div id='p2Piece'></div>
+                <div id='p2Name'>??</div>
+            </div>
+            <div id='gridBox'>
+                <img src='/img/grid.png' alt='grid' width='300' height='300'>
+            </div>
+            <div id='msgBox'>
+                Waiting for players...
+            </div>
         </div>
 
     </body>
@@ -28,8 +36,18 @@
 const socket = io();
 
 socket.on('message', function(data) {
-   console.log('data');
+    console.log('data');
 });
 
+socket.on('waitP2', function() {
+    console.log('change my game state to waiting for P2');
+    waitP2State();
+});
+
+
+function waitP2State() {
+    document.getElementById('p1Name').innerHTML = "YOU";
+    document.getElementById('msgBox').innerHTML = "Waiting for player 2";
+}
 
 </script>
