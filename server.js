@@ -19,6 +19,8 @@ const GAMESTATE = {
 }
 
 
+
+
 // Set folder to public
 app.use(express.static('public'));
 
@@ -33,12 +35,25 @@ server.listen(PORT, function() {
     console.log(`Starting server on port ${PORT}`);
 });
 
+
+
+
+
 // Handling communications
 io.on('connection', function(socket) {
     game.playerJoin(socket.id)
 
     socket.on('place', function(grid) {
-        placeMark(grid.x, grid.y);
+        console.log("someone tried to place something")
+        console.log(grid);
+
+        try {
+            game.placeMark(socket.id, grid.x, grid.y);
+        } catch (err) {
+            console.log(err);
+        }
+        
+        game.printGrid();
     });
 
     socket.on('disconnect', function() {
@@ -46,6 +61,9 @@ io.on('connection', function(socket) {
 
     });
 });
+
+
+
 
 
 class Game {
@@ -95,12 +113,20 @@ class Game {
 
 
     /* Places a circle or cross and moves to next turn
+       socketID - socketID of sender
        x - horizontal grid (must be between 0-2)
        y - vertical grid (must be between 0-2)
        [x,y] must be -1
        Can only be called during P1/P2 turn state
     */
-    placeMark(x, y) {
+    placeMark(socketID, x, y) {
+
+        if ((this.state == GAMESTATE.p1Turn && socketID != this.p1) || (this.state == GAMESTATE.p2Turn && socketID != this.p2)) {
+            console.log("gamestate = " + this.state);
+            console.log("socketID = " + socketID);
+            console.log("p1="+this.p1 +"     p2="+this.p2);
+            throw 'Wrong player turn';
+        }
 
         if (x < 0 || x > this.grid[0].length || y < 0 || y > this.grid.length) {
             throw 'Munted coordinates';
@@ -110,9 +136,11 @@ class Game {
             throw "Can't place mark when not in gamestate";
         }
 
-        if (this.grid[y][x] == -1) {
+        if (this.grid[y][x] != -1) {
             throw 'Mark already exists there'
         }
+
+
 
 
         // Player 1 made a move
@@ -131,6 +159,7 @@ class Game {
 
             } else {
                 this.state = GAMESTATE.p2Turn;
+                io.emit('p2Turn', game.grid);
             }
 
 
@@ -150,6 +179,7 @@ class Game {
 
             } else {
                 this.state = GAMESTATE.p1Turn;
+                io.emit('p1Turn', game.grid);
             }    
         }
     }
@@ -175,13 +205,13 @@ class Game {
 
             // Randomly choose which player goes first
             this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
- 
+
             // Start game after 2 seconds
-            setInterval(function() {
+            setTimeout(function() {
                 if (this.state == GAMESTATE.p1Turn) {
-                    io.emit('p1Turn');
+                    io.emit('p1Turn', game.grid);
                 } else {
-                    io.emit('p2Turn');
+                    io.emit('p2Turn', game.grid);
                 }
             }, 2000);
 

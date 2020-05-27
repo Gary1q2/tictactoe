@@ -2,13 +2,41 @@ body {
     border: 2px solid red;
 }
 
+.pieceDisplay {
+    display: inline-block;
+
+    width: 94px;
+    height: 96px;
+    border: 1px solid blue;
+}
+
+#gridPieces {
+    position: absolute;
+    top: 150px;
+    left: 350px;
+
+    width: 300px;
+    height: 300px;
+    border: 3px solid black;
+}
+
+.clicker {
+    display: inline-block;
+
+    font-size: 60px;
+    width: 94px;
+    height: 96px;
+    border: 1px solid green;
+}
 
 #moveBox {
     position: absolute;
-    bottom: 200px;
-    left: 450px;
+    top: 150px;
+    left: 350px;
 
-    border: 1px solid black;
+    width: 300px;
+    height: 300px;
+    border: 3px solid black;
 }
 
 #gameBox {

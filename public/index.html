@@ -20,23 +20,29 @@
                 <img src='/img/grid.png' alt='grid' width='300' height='300'>
             </div>
 
-            <table id='moveBox'>
-                <tr>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                </tr>
-                <tr>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                </tr>
-                <tr>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                    <td><button type="button">O</button></td>
-                </tr>
-            </table>
+            <div id='gridPieces'>
+                <div class='pieceDisplay' id='grid_00'></div>
+                <div class='pieceDisplay' id='grid_01'></div>
+                <div class='pieceDisplay' id='grid_02'></div>
+                <div class='pieceDisplay' id='grid_10'></div>
+                <div class='pieceDisplay' id='grid_11'></div>
+                <div class='pieceDisplay' id='grid_12'></div>
+                <div class='pieceDisplay' id='grid_20'></div>
+                <div class='pieceDisplay' id='grid_21'></div>
+                <div class='pieceDisplay' id='grid_22'></div>    
+            </div>
+
+            <div id='moveBox'>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:0});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:0});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:0});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:1});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:1});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:1});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:2});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:2});"></div>
+                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:2});"></div>
+            </div>
 
             <div id='msgBox'>
                 Waiting for players...
@@ -52,12 +58,58 @@
 
 <script>
 
+
+
+
+var gamestate;
+
+
+class GameState {
+    constructor(player) {
+        this.player = player;
+        this.grid = [[-1, -1, -1],
+                     [-1, -1, -1],
+                     [-1, -1, -1]];
+    }
+
+    // Get new grid from server and update display
+    updateGrid(newGrid) {
+        this.grid = newGrid;
+        for (var i = 0; i < this.grid.length; i++) {
+            for (var j = 0; j < this.grid[0].length; j++) {
+                if (this.grid[i][j] == "X") {
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>";
+                } else if (this.grid[i][j] == "O") {
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
+                }
+            }
+        }
+    }
+}
+
+
 const socket = io();
 
 
-socket.on('p1Turn', function() {
+socket.on('p1Turn', function(data) {
+    gamestate.updateGrid(data);
 
-})
+    if (gamestate.player == 1) {
+        document.getElementById('msgBox').innerHTML = "It is your turn...";   
+    } else {
+        document.getElementById('msgBox').innerHTML = "Enemy's turn...";  
+    }
+});
+
+socket.on('p2Turn', function(data) {
+    gamestate.updateGrid(data);
+
+    if (gamestate.player == 2) {
+        document.getElementById('msgBox').innerHTML = "It is your turn...";   
+    } else {
+        document.getElementById('msgBox').innerHTML = "Enemy's turn...";  
+    }
+});
 
 
 // =================================================================
@@ -68,10 +120,20 @@ socket.on('p1Turn', function() {
 socket.on('p1-joinWaitForP2', function() {
     console.log('change my game state to waiting for P2');
 
+    gamestate = new GameState(1);
+
     // Setup player 1 data
     document.getElementById('p1Name').innerHTML = "YOU";
     document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>"
     document.getElementById('msgBox').innerHTML = "Waiting for player 2";
+
+
+
+    // Setup buttons
+    //var grids = document.getElementsByClassName('clicker');
+    //for (var i = 0; i < grids.length; i++) {
+    //    grids[i].innerHTML = 'O';
+    //}
 });
 
 // Player 2 finally joined - setup page
@@ -92,12 +154,21 @@ socket.on('p1-p2Join', function() {
 socket.on('p2-joinWaitForGame', function() {
     console.log('You joined as player 2!!');
 
-    // Setup player 1 and player 2 data
+    gamestate = new GameState(2);
+
+    // Setup yourself (player 2)
     document.getElementById('p1Name').innerHTML = "YOU";
     document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>"
 
+    // Setup other (player 1)
     document.getElementById('p2Name').innerHTML = "THEM";
     document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>"
+
+    // Setup buttons
+    //var grids = document.getElementsByClassName('clicker');
+    //for (var i = 0; i < grids.length; i++) {
+    //    grids[i].innerHTML = 'X';
+    //}
 
     document.getElementById('msgBox').innerHTML = "Game beginning soon...";
 })
