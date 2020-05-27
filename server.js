@@ -165,14 +165,26 @@ class Game {
         if (!this.p1 && !this.p2) {
             console.log("P1 joined!");
             this.p1 = socketID;
-            io.to(socketID).emit('waitP2');
+            io.to(this.p1).emit('p1-joinWaitForP2');
 
         } else if (this.p1 && !this.p2) {
             console.log("P2 joined!");
             this.p2 = socketID;
+            io.to(this.p1).emit('p1-p2Join');
+            io.to(this.p2).emit('p2-joinWaitForGame');
 
             // Randomly choose which player goes first
             this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
+ 
+            // Start game after 2 seconds
+            setInterval(function() {
+                if (this.state == GAMESTATE.p1Turn) {
+                    io.emit('p1Turn');
+                } else {
+                    io.emit('p2Turn');
+                }
+            }, 2000);
+
 
         } else if (this.p1 && this.p2) {
             console.log("Spectator joined. oi stop chiming in");

@@ -3,6 +3,14 @@ body {
 }
 
 
+#moveBox {
+    position: absolute;
+    bottom: 200px;
+    left: 450px;
+
+    border: 1px solid black;
+}
+
 #gameBox {
     position: absolute;
 
@@ -70,11 +78,11 @@ body {
 
 #msgBox {
     position: absolute;
-    bottom: 100px;
-    left: 350px;
+    bottom: 50px;
+    left: 250px;
 
     font-size: 40px;
     width: 500px;
-    height: 100px;
+    height: 50px;
     border: 2px solid black;
 }
