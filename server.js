@@ -12,6 +12,9 @@ const io = socketIO(server);
 
 const PORT = 6969;
 
+// Start the game
+const game = new Game(io);
+
 
 // Set folder to public
 app.use(express.static('public'));
@@ -53,6 +56,3 @@ io.on('connection', function(socket) {
 });
 
 
-// Start the game
-const game = new Game(io);
-game.printGrid();

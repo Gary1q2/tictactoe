@@ -17,6 +17,7 @@ module.exports = class Game {
                      [-1, -1, -1]];
 
         this.io = io;
+        this.printGrid();
     }
 
 
