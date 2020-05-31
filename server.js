@@ -10,14 +10,13 @@ const io = socketIO(server);
 
 const PORT = 6969;
 const GAMESTATE = {
-    empty: 1,
-    p1Turn: 2,
-    p2Turn: 3,
-    p1Won: 4,
-    p2Won: 5,
-    tie: 6
+    empty: "emptyState",
+    p1Turn: "p1Turn",
+    p2Turn: "p2Turn",
+    p1Won: "p1Won",
+    p2Won: "p2Won",
+    tie: "tie"
 }
-
 
 
 
@@ -52,8 +51,9 @@ io.on('connection', function(socket) {
         } catch (err) {
             console.log(err);
         }
-        
+
         game.printGrid();
+
     });
 
     socket.on('disconnect', function() {
@@ -141,46 +141,39 @@ class Game {
         }
 
 
-
-
-        // Player 1 made a move
+        // Player makes a move
         if (this.state == GAMESTATE.p1Turn) {
             this.grid[y][x] = "O";
-            var gridState = this.checkGrid();
+        } else {
+            this.grid[y][x] = "X";
+        }
 
-            if (gridState == 1) {
-                this.state = GAMESTATE.p1Won;
+        // Check current state of grid
+        // Player 1 won
+        var gridState = this.checkGrid();
+        if (gridState == 1) {
+            this.state = GAMESTATE.p1Won;
+            io.emit('p1Won', game.grid);
 
-            } else if (gridState == 2) {
-                this.state = GAMESTATE.p2Won;
+        // Player 2 won
+        } else if (gridState == 2) {
+            this.state = GAMESTATE.p2Won;
+            io.emit('p2Won', game.grid);
 
-            } else if (gridState == 0) {
-                this.state = GAMESTATE.tie;
+        // Players tied
+        } else if (gridState == 0) {
+            this.state = GAMESTATE.tie;
+            io.emit('tie', game.grid);
 
-            } else {
+        // Game still in progress
+        } else {
+            if (this.state == GAMESTATE.p1Turn) {
                 this.state = GAMESTATE.p2Turn;
                 io.emit('p2Turn', game.grid);
-            }
-
-
-        // Player 2 made a move
-        } else if (this.state == GAMESTATE.p2Turn) {
-            this.grid[y][x] = "X";
-            var gridState = this.checkGrid();
-
-            if (gridState == 1) {
-                this.state = GAMESTATE.p1Won;
-
-            } else if (gridState == 2) {
-                this.state = GAMESTATE.p2Won;
-
-            } else if (gridState == 0) {
-                this.state = GAMESTATE.tie;
-
             } else {
                 this.state = GAMESTATE.p1Turn;
-                io.emit('p1Turn', game.grid);
-            }    
+                io.emit('p1Turn', game.grid);            
+            }
         }
     }
 
@@ -208,10 +201,12 @@ class Game {
 
             // Start game after 2 seconds
             setTimeout(function() {
-                if (this.state == GAMESTATE.p1Turn) {
+                if (game.state == GAMESTATE.p1Turn) {
                     io.emit('p1Turn', game.grid);
+                    console.log("p1turn");
                 } else {
                     io.emit('p2Turn', game.grid);
+                    console.log("p2turn");
                 }
             }, 2000);
 
@@ -261,6 +256,44 @@ class Game {
     */
     checkGrid() {
 
+        // Check for horizontal lines
+        for (var i = 0; i < this.grid.length; i++) {
+            if (this.grid[i][0] == "O" && this.grid[i][1] == "O" && this.grid[i][2] == "O") {
+                return 1;
+            } else if (this.grid[i][0] == "X" && this.grid[i][1] == "X" && this.grid[i][2] == "X") {
+                return 2;
+            }
+        }
+
+        // Check for vertical lines
+        for (var i = 0; i < this.grid[0].length; i++) {
+            if (this.grid[0][i] == "O" && this.grid[1][i] == "O" && this.grid[2][i] == "O") {
+                return 1;
+            } else if (this.grid[0][i] == "X" && this.grid[1][i] == "X" && this.grid[2][i] == "X") {
+                return 2;
+            }
+        }
+
+        // Check diagonal lines
+        if ((this.grid[0][0] == "O" && this.grid[1][1] == "O" && this.grid[2][2] == "O") || 
+            (this.grid[0][2] == "O" && this.grid[1][1] == "O" && this.grid[2][0] == "O")) {
+            return 1;
+        } else if ((this.grid[0][0] == "X" && this.grid[1][1] == "X" && this.grid[2][2] == "X") || 
+            (this.grid[0][2] == "X" && this.grid[1][1] == "X" && this.grid[2][0] == "X")) {
+            return 2;
+        }        
+
+        // Check for tie
+        for (var i = 0; i < this.grid.length; i++) {
+            for (var j = 0; j < this.grid[0].length; j++) {
+                if (this.grid[i][j] == -1) {
+                    return -1; // Detected -1 so game still in progress
+                }
+            }
+        }
+
+        // All grids were filled, so we tied
+        return 0;
     }
 
 }

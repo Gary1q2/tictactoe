@@ -90,7 +90,39 @@ class GameState {
 
 const socket = io();
 
+// Show that players tied
+socket.on('tie', function(data) {
+    gamestate.updateGrid(data);
 
+    document.getElementById('msgBox').innerHTML = "Tie.....";  
+
+})
+
+// Show that player 1 won
+socket.on('p1Won', function(data) {
+    gamestate.updateGrid(data);
+
+    if (gamestate.player == 1) {
+        document.getElementById('msgBox').innerHTML = "YOU WON!!!!";   
+    } else {
+        document.getElementById('msgBox').innerHTML = "You lost :(((";  
+    }
+
+})
+
+// Show that player 2 won
+socket.on('p2Won', function(data) {
+    gamestate.updateGrid(data);
+
+    if (gamestate.player == 2) {
+        document.getElementById('msgBox').innerHTML = "YOU WON!!!!";   
+    } else {
+        document.getElementById('msgBox').innerHTML = "You lost :(((";  
+    }
+
+})
+
+// Player 1's turn
 socket.on('p1Turn', function(data) {
     gamestate.updateGrid(data);
 
@@ -101,6 +133,7 @@ socket.on('p1Turn', function(data) {
     }
 });
 
+// Player 2's turn
 socket.on('p2Turn', function(data) {
     gamestate.updateGrid(data);
 
