@@ -16,7 +16,6 @@ const PORT = 6969;
 // Set folder to public
 app.use(express.static('public'));
 
-
 // Routing
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -26,8 +25,6 @@ app.get('/', function(req, res) {
 server.listen(PORT, function() {
     console.log(`Starting server on port ${PORT}`);
 });
-
-
 
 
 
@@ -56,10 +53,6 @@ io.on('connection', function(socket) {
 });
 
 
-
-
-
-
+// Start the game
 const game = new Game(io);
-
 game.printGrid();
