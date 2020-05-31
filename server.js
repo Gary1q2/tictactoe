@@ -11,15 +11,6 @@ const server = http.Server(app);
 const io = socketIO(server);
 
 const PORT = 6969;
-const GAMESTATE = {
-    empty: "emptyState",
-    p1Turn: "p1Turn",
-    p2Turn: "p2Turn",
-    p1Won: "p1Won",
-    p2Won: "p2Won",
-    tie: "tie"
-}
-
 
 
 // Set folder to public

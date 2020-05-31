@@ -1,4 +1,3 @@
-const PORT = 6969;
 const GAMESTATE = {
     empty: "emptyState",
     p1Turn: "p1Turn",
@@ -7,8 +6,6 @@ const GAMESTATE = {
     p2Won: "p2Won",
     tie: "tie"
 }
-
-
 
 module.exports = class Game {
     constructor(io) {
