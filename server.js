@@ -238,7 +238,7 @@ class Game {
 
         // Critical player left
         if (socketID == this.p1 || socketID == this.p2) {
-
+            
 
         // Spectator left
         } else {
