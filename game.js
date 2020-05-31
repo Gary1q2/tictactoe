@@ -7,6 +7,8 @@ const GAMESTATE = {
     tie: "tie"
 }
 
+
+// Server side gamestate
 module.exports = class Game {
     constructor(io) {
         this.state = GAMESTATE.empty;
@@ -20,7 +22,8 @@ module.exports = class Game {
         this.printGrid();
     }
 
-
+    /* Prints out the tictactoe grid 
+    */
     printGrid() {
         console.log("Grid output =============================================");
         for (var i = 0; i < this.grid.length; i++) {

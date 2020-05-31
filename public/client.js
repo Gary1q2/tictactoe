@@ -1,5 +1,7 @@
 var game;
 
+/* Client side gamestate
+*/
 class Game {
     constructor(player) {
         this.player = player;
@@ -8,7 +10,8 @@ class Game {
                      [-1, -1, -1]];
     }
 
-    // Get new grid from server and update display
+    /* Use new grid from server and update display
+    */
     updateGrid(newGrid) {
         this.grid = newGrid;
         for (var i = 0; i < this.grid.length; i++) {
@@ -24,9 +27,16 @@ class Game {
 }
 
 
+
+
+// =================================================
+// Socket stuff
+// =================================================
+
 const socket = io();
 
-// Show that players tied
+/* Show that players tied
+*/
 socket.on('tie', function(data) {
     game.updateGrid(data);
 
@@ -34,7 +44,8 @@ socket.on('tie', function(data) {
 
 })
 
-// Show that player 1 won
+/* Show that player 1 won
+*/
 socket.on('p1Won', function(data) {
     game.updateGrid(data);
 
@@ -46,7 +57,8 @@ socket.on('p1Won', function(data) {
 
 })
 
-// Show that player 2 won
+/* Show that player 2 won
+*/
 socket.on('p2Won', function(data) {
     game.updateGrid(data);
 
@@ -58,7 +70,8 @@ socket.on('p2Won', function(data) {
 
 })
 
-// Player 1's turn
+/* Player 1's turn
+*/
 socket.on('p1Turn', function(data) {
     game.updateGrid(data);
 
@@ -69,7 +82,8 @@ socket.on('p1Turn', function(data) {
     }
 });
 
-// Player 2's turn
+/* Player 2's turn
+*/
 socket.on('p2Turn', function(data) {
     game.updateGrid(data);
 
@@ -81,11 +95,14 @@ socket.on('p2Turn', function(data) {
 });
 
 
+
+
 // =================================================================
 // Player 1
 // =================================================================
 
-// Player 1 joined - setup page and wait for P2
+/* Player 1 joined - setup page and wait for P2
+*/
 socket.on('p1-joinWaitForP2', function() {
     console.log('change my game state to waiting for P2');
 
@@ -115,11 +132,15 @@ socket.on('p1-p2Join', function() {
     document.getElementById('msgBox').innerHTML = "Game beginning soon..."
 });
 
+
+
+
 // =================================================================
 // Player 2
 // =================================================================
 
-// Player 2 joined - setup page and wait for game to begin
+/* Player 2 joined - setup page and wait for game to begin
+*/
 socket.on('p2-joinWaitForGame', function() {
     console.log('You joined as player 2!!');
 

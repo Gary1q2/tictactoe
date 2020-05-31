@@ -11,8 +11,6 @@ const server = http.Server(app);
 const io = socketIO(server);
 
 const PORT = 6969;
-
-// Start the game
 const game = new Game(io);
 
 
@@ -33,8 +31,11 @@ server.listen(PORT, function() {
 
 // Handling communications
 io.on('connection', function(socket) {
+
+    // A player joined
     game.playerJoin(socket.id)
 
+    // A player tried to place a mark
     socket.on('place', function(grid) {
         console.log("someone tried to place something")
         console.log(grid);
@@ -44,15 +45,12 @@ io.on('connection', function(socket) {
         } catch (err) {
             console.log(err);
         }
-
         game.printGrid();
-
     });
 
+    // A player disconnected
     socket.on('disconnect', function() {
         game.playerLeave(socket.id);
 
     });
 });
-
-
