@@ -1,13 +1,3 @@
-// Dependencies
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
-
-// Global variables
-const app = express();
-const server = http.Server(app);
-const io = socketIO(server);
-
 const PORT = 6969;
 const GAMESTATE = {
     empty: "emptyState",
@@ -21,13 +11,15 @@ const GAMESTATE = {
 
 
 module.exports = class Game {
-    constructor() {
+    constructor(io) {
         this.state = GAMESTATE.empty;
         this.p1 = false;
         this.p2 = false;
         this.grid = [[-1, -1, -1],
                      [-1, -1, -1],
                      [-1, -1, -1]];
+
+        this.io = io;
     }
 
 
@@ -107,26 +99,26 @@ module.exports = class Game {
         var gridState = this.checkGrid();
         if (gridState == 1) {
             this.state = GAMESTATE.p1Won;
-            io.emit('p1Won', game.grid);
+            this.io.emit('p1Won', this.grid);
 
         // Player 2 won
         } else if (gridState == 2) {
             this.state = GAMESTATE.p2Won;
-            io.emit('p2Won', game.grid);
+            this.io.emit('p2Won', this.grid);
 
         // Players tied
         } else if (gridState == 0) {
             this.state = GAMESTATE.tie;
-            io.emit('tie', game.grid);
+            this.io.emit('tie', this.grid);
 
         // Game still in progress
         } else {
             if (this.state == GAMESTATE.p1Turn) {
                 this.state = GAMESTATE.p2Turn;
-                io.emit('p2Turn', game.grid);
+                this.io.emit('p2Turn', this.grid);
             } else {
                 this.state = GAMESTATE.p1Turn;
-                io.emit('p1Turn', game.grid);            
+                this.io.emit('p1Turn', this.grid);            
             }
         }
     }
@@ -142,23 +134,23 @@ module.exports = class Game {
         if (!this.p1 && !this.p2) {
             console.log("P1 joined!");
             this.p1 = socketID;
-            io.to(this.p1).emit('p1-joinWaitForP2');
+            this.io.to(this.p1).emit('p1-joinWaitForP2');
 
         } else if (this.p1 && !this.p2) {
             console.log("P2 joined!");
             this.p2 = socketID;
-            io.to(this.p1).emit('p1-p2Join');
-            io.to(this.p2).emit('p2-joinWaitForGame');
+            this.io.to(this.p1).emit('p1-p2Join');
+            this.io.to(this.p2).emit('p2-joinWaitForGame');
 
             // Randomly choose which player goes first
             this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
 
             // Start the game
             if (this.state == GAMESTATE.p1Turn) {
-                io.emit('p1Turn', this.grid);
+                this.io.emit('p1Turn', this.grid);
                 console.log("p1turn");
             } else {
-                io.emit('p2Turn', this.grid);
+                this.io.emit('p2Turn', this.grid);
                 console.log("p2turn");
             }
 

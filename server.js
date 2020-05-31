@@ -69,6 +69,6 @@ io.on('connection', function(socket) {
 
 
 
-const game = new Game();
+const game = new Game(io);
 
 game.printGrid();
