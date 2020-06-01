@@ -145,7 +145,7 @@ module.exports = class Game {
             this.io.to(this.p1).emit('p1-p2Join');
             this.io.to(this.p2).emit('p2-joinWaitForGame');
 
-            this.startGame();
+            this.startGame(1);
 
         } else if (this.p1 && this.p2) {
             console.log("Spectator joined. oi stop chiming in");
@@ -172,6 +172,13 @@ module.exports = class Game {
             } else {
                 this.state = GAMESTATE.p2Turn;
             }
+        }
+
+        // Update the clients
+        if (this.state == GAMESTATE.p1Turn) {
+            this.io.emit('p1Turn', this.grid);
+        } else {
+            this.io.emit('p2Turn', this.grid);
         }
     }
 
