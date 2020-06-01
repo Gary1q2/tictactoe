@@ -45,11 +45,7 @@ module.exports = class Game {
     */
     restartGameSamePlayers() {
         console.log('Restarted the game with same players!!!');
-        this.clearGrid();
-
-        this.p1Rematch = false;
-        this.p2Rematch = false;
-
+        this.setEmptyState();
         this.startGame();
     }
 
@@ -71,6 +67,17 @@ module.exports = class Game {
         this.p1 = this.p2;
 
         this.p2 = false;
+        this.p2Rematch = false;
+    }
+
+
+    /* Set the game to an empty state
+       Clears the grid and sets rematching to false
+    */
+    setEmptyState() {
+        console.log("Setting gamestate to empty -> clearing stuff...");
+        this.clearGrid();
+        this.p1Rematch = false;
         this.p2Rematch = false;
     }
 
@@ -237,7 +244,7 @@ module.exports = class Game {
 
         // Everyone left
         if (!this.p1 && !this.p2) {
-            this.state = GAMESTATE.empty;
+            this.setEmptyState();
             console.log("nobody remains.... game is reset");
 
         } else if (!this.p1 && this.p2) {
@@ -251,7 +258,7 @@ module.exports = class Game {
             // P1 left after game && P2 want to play again
             } else {
                 if (this.p2Rematch) {
-                    this.state = GAMESTATE.empty;
+                    this.setEmptyState();
                     this.shiftToP1();
                     this.io.to(this.p1).emit('p1-joinWaitForP2');
                     console.log("p2 is ready to play again");
@@ -269,7 +276,7 @@ module.exports = class Game {
             // P2 left after game && P1 want to play again
             } else {
                 if (this.p1Rematch) {
-                    this.state = GAMESTATE.empty;
+                    this.setEmptyState();
                     this.io.to(this.p1).emit('p1-joinWaitForP2');
                     console.log("p1 is ready to play again");
                 }
