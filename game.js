@@ -164,13 +164,11 @@ module.exports = class Game {
         // Player 1 won
         var gridState = this.checkGrid();
         if (gridState == 1) {
-            this.state = GAMESTATE.p1Won;
-            this.io.emit('p1Won', this.grid);
+            this.setP1WonState();
 
         // Player 2 won
         } else if (gridState == 2) {
-            this.state = GAMESTATE.p2Won;
-            this.io.emit('p2Won', this.grid);
+            this.setP2WonState();
 
         // Players tied
         } else if (gridState == 0) {
@@ -180,11 +178,9 @@ module.exports = class Game {
         // Game still in progress
         } else {
             if (this.state == GAMESTATE.p1Turn) {
-                this.state = GAMESTATE.p2Turn;
-                this.io.emit('p2Turn', this.grid);
+                this.setP2TurnState();
             } else {
-                this.state = GAMESTATE.p1Turn;
-                this.io.emit('p1Turn', this.grid);            
+                this.setP1TurnState();           
             }
         }
     }
@@ -206,22 +202,13 @@ module.exports = class Game {
 
         // Randomly choose which player goes first
         if (startPlayer == undefined) {
-            this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
+            this.state = (Math.random() <= 0.5) ? this.setP1TurnState() : this.setP2TurnState();
    
-        // Set player 1 to start
+        // Set a player to start
         } else if (startPlayer == 1) {
-            this.state = GAMESTATE.p1Turn;
-
-        // Set player 2 to start
+            this.setP1TurnState();
         } else {
-            this.state = GAMESTATE.p2Turn;
-        }
-
-        // Update the clients
-        if (this.state == GAMESTATE.p1Turn) {
-            this.io.emit('p1Turn', this.grid);
-        } else {
-            this.io.emit('p2Turn', this.grid);
+            this.setP2TurnState();
         }
     }
 
@@ -237,6 +224,37 @@ module.exports = class Game {
         }
     }
 
+    /* Set state to P2 winning and emit to everyone
+    */
+    setP2WonState() {
+        this.state = GAMESTATE.p2Won;
+        this.io.emit('p2Won', this.grid);
+    }
+
+    /* Set state to P1 winning and emit to everyone
+    */
+    setP1WonState() {
+        this.state = GAMESTATE.p1Won;
+        this.io.emit('p1Won', this.grid);
+    }
+
+    /* Set state to P1 turn and emit to everyone
+    */
+    setP1TurnState() {
+        this.state = GAMESTATE.p1Turn;
+        this.io.emit('p1Turn', this.grid);  
+    }
+
+    /* Set state to P2 turn and emit to everyone
+    */
+    setP2TurnState() {
+        this.state = GAMESTATE.p2Turn;
+        this.io.emit('p2Turn', this.grid);  
+    }
+
+
+
+
     /* Checks if game is ready to be reset and
        resets if it is
     */
@@ -251,8 +269,7 @@ module.exports = class Game {
 
             // P1 left during a game
             if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.state = GAMESTATE.p2Won;
-                this.io.to(this.p2).emit('p2Won', this.grid);
+                this.setP2WonState();
                 console.log("p1 left.... dog");
 
             // P1 left after game && P2 want to play again
@@ -269,8 +286,7 @@ module.exports = class Game {
 
             // P2 left during a game
             if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.state = GAMESTATE.p1Won;
-                this.io.to(this.p1).emit('p1Won', this.grid);
+                this.setP1WonState();
                 console.log("p2 left.... dog");
 
             // P2 left after game && P1 want to play again
