@@ -95,33 +95,8 @@ module.exports = class Game {
             this.grid[y][x] = "X";
         }
 
-        // Check current state of grid
-        // Player 1 won
-        var gridState = this.checkGrid();
-        if (gridState == 1) {
-            this.state = GAMESTATE.p1Won;
-            this.io.emit('p1Won', this.grid);
-
-        // Player 2 won
-        } else if (gridState == 2) {
-            this.state = GAMESTATE.p2Won;
-            this.io.emit('p2Won', this.grid);
-
-        // Players tied
-        } else if (gridState == 0) {
-            this.state = GAMESTATE.tie;
-            this.io.emit('tie', this.grid);
-
-        // Game still in progress
-        } else {
-            if (this.state == GAMESTATE.p1Turn) {
-                this.state = GAMESTATE.p2Turn;
-                this.io.emit('p2Turn', this.grid);
-            } else {
-                this.state = GAMESTATE.p1Turn;
-                this.io.emit('p1Turn', this.grid);            
-            }
-        }
+        // Send updated state to players
+        this.updateStateAfterTurn();
     }
 
 
@@ -153,6 +128,43 @@ module.exports = class Game {
         }
     }
 
+    /* Emits the result of the gamestate to the players
+       Outcomes:
+       -Player 1 wins
+       -Player 2 wins
+       -Tie
+       -Game still in progress
+    */
+    updateStateAfterTurn() {
+
+        // Check current state of grid
+        // Player 1 won
+        var gridState = this.checkGrid();
+        if (gridState == 1) {
+            this.state = GAMESTATE.p1Won;
+            this.io.emit('p1Won', this.grid);
+
+        // Player 2 won
+        } else if (gridState == 2) {
+            this.state = GAMESTATE.p2Won;
+            this.io.emit('p2Won', this.grid);
+
+        // Players tied
+        } else if (gridState == 0) {
+            this.state = GAMESTATE.tie;
+            this.io.emit('tie', this.grid);
+
+        // Game still in progress
+        } else {
+            if (this.state == GAMESTATE.p1Turn) {
+                this.state = GAMESTATE.p2Turn;
+                this.io.emit('p2Turn', this.grid);
+            } else {
+                this.state = GAMESTATE.p1Turn;
+                this.io.emit('p1Turn', this.grid);            
+            }
+        }
+    }
 
     /* Starts the game and sets player parameter as starting turn
        If player is undefined, a random player is selected to start first
