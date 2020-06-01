@@ -129,6 +129,8 @@ module.exports = class Game {
         P1 - Add them to player 1
         P2 - Add them to player 2
         Spectator - do nothing
+
+        Returns
     */
     playerJoin(socketID) {
 
@@ -143,18 +145,7 @@ module.exports = class Game {
             this.io.to(this.p1).emit('p1-p2Join');
             this.io.to(this.p2).emit('p2-joinWaitForGame');
 
-            // Randomly choose which player goes first
-            this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
-
-            // Start the game
-            if (this.state == GAMESTATE.p1Turn) {
-                this.io.emit('p1Turn', this.grid);
-                console.log("p1turn");
-            } else {
-                this.io.emit('p2Turn', this.grid);
-                console.log("p2turn");
-            }
-
+            this.startGame();
 
         } else if (this.p1 && this.p2) {
             console.log("Spectator joined. oi stop chiming in");
@@ -163,6 +154,27 @@ module.exports = class Game {
             console.log("P2 is true but P1 is false ERRORRRRRR@#$%^&**#&@*&#@$^(*&@#$(*#@$)*$#(&#*(@^$(\n#@$*(&#@$(*&#(*@$!!!!!!!");
         }
     }
+
+
+    /* Starts the game and sets player parameter as starting turn
+       If player is undefined, a random player is selected to start first
+    */
+    startGame(startPlayer) {
+
+        // Randomly choose which player goes first
+        if (startPlayer == undefined) {
+            this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
+   
+        // Set specified player to start first
+        } else {
+            if (startPlayer == 1) {
+                this.state = GAMESTATE.p1Turn;
+            } else {
+                this.state = GAMESTATE.p2Turn;
+            }
+        }
+    }
+
 
     /* Decides what to do when somebody leaves
         Spectator - do nothing
