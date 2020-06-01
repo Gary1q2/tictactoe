@@ -145,8 +145,6 @@ module.exports = class Game {
             this.io.to(this.p1).emit('p1-p2Join');
             this.io.to(this.p2).emit('p2-joinWaitForGame');
 
-            this.startGame(1);
-
         } else if (this.p1 && this.p2) {
             console.log("Spectator joined. oi stop chiming in");
 
@@ -161,17 +159,26 @@ module.exports = class Game {
     */
     startGame(startPlayer) {
 
+        if (this.state == GAMESTATE.emptyState || this.state == GAMESTATE.p1Won ||
+            this.state == GAMESTATE.p2Won || this.state == GAMESTATE.tie) {
+            throw 'Can only start game when game has not started or is over'
+        }
+
+        if (startPlayer != undefined && startPlayer != 1 && startPlayer != 2) {
+            throw 'Invalid startPlayer';
+        }
+
         // Randomly choose which player goes first
         if (startPlayer == undefined) {
             this.state = (Math.random() <= 0.5) ? GAMESTATE.p1Turn : GAMESTATE.p2Turn;
    
-        // Set specified player to start first
+        // Set player 1 to start
+        } else if (startPlayer == 1) {
+            this.state = GAMESTATE.p1Turn;
+
+        // Set player 2 to start
         } else {
-            if (startPlayer == 1) {
-                this.state = GAMESTATE.p1Turn;
-            } else {
-                this.state = GAMESTATE.p2Turn;
-            }
+            this.state = GAMESTATE.p2Turn;
         }
 
         // Update the clients

@@ -10,7 +10,7 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
-
+// Testing checkGrid()
 describe('Testing checkGrid()', function() {
     context('P1 horizontal line', function() {
         it('Player 1 wins', function() {
@@ -20,6 +20,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,2,0);
@@ -38,6 +39,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,1,1);
             game.placeMark(p2Socket,0,0);
@@ -57,6 +59,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,1);
@@ -75,6 +78,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,1);
@@ -94,6 +98,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,1);
@@ -112,6 +117,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,2);
@@ -131,6 +137,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,2);     
@@ -146,6 +153,7 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame(1);
 
             game.placeMark(p1Socket,0,0);
             game.placeMark(p2Socket,0,1);
@@ -160,3 +168,23 @@ describe('Testing checkGrid()', function() {
         })
     })
 })
+
+
+
+
+// Testing startGame()
+/*describe('Testing startGame()', function() {
+    context('Undefined player', function() {
+        it('P1 or P2 could start first', function() {
+            const game = new Game(io);
+            var p1Socket = "player1";
+            var p2Socket = "player2";
+
+            game.playerJoin(p1Socket);
+            game.playerJoin(p2Socket);
+
+                      
+            assert(game.checkGrid() == 1);
+        })
+    })
+})*/

@@ -35,6 +35,11 @@ io.on('connection', function(socket) {
     // A player joined
     game.playerJoin(socket.id)
 
+    // Start the game is P2 joins  (illegal move...)
+    if (socket.id == game.p2) {
+        game.startGame();
+    }
+
     // A player tried to place a mark
     socket.on('place', function(grid) {
         console.log("someone tried to place something")
