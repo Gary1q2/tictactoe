@@ -260,40 +260,18 @@ module.exports = class Game {
         P2 - P1 wins
 
         End state (p1Won, p2Won, tie):
-        P1 leave end game - wait for P2 to rematch or leave
-        P2 leave end game - wait for P1 to rematch or leave
-
-        P1
-        P2
-
-
-
         P1 accept, P2 accept = restart game
-        P1 accept, P2 wait   = wait for P2 answer
-        P1 accept, P2 leave  = put P1 in waiting state
 
-        P1 wait,   P2 accept = wait for P1 answer
-        P1 wait,   P2 wait   = wait for both answers
-        P1 wait,   P2 leave  = wait for P1 answer
-
-        P1 leave,  P2 accept = put P2 in P1 position in waiting state
-        P1 leave,  P2 wait   = wait for P2 answer
         P1 leave,  P2 leave  = game go to empty state
 
+        P1 accept, P2 leave  = put P1 in waiting state
+        P1 leave,  P2 accept = put P2 in P1 position in waiting state
 
-
-
-        P2 accept, P2 accept = restart game
-        P2 accept, P1 wait   = wait for P1 answer
-        P2 accept, P1 leave  = put P2 in P1 position in waiting state
-
-        P2 wait,   P1 accept = wait for P2 answer
-        P2 wait,   P1 wait   = wait for both answers
-        P2 wait,   P1 leave  = wait for P2 answer
-
-        P2 leave,  P1 accept = put P1 in waiting position
-        P2 leave,  P1 wait   = wait for P1 answer
-        P2 leave,  P1 leave  = game go to empty state
+        P1 wait,   P2 accept = wait for P1 answer
+        P1 wait,   P2 leave  = wait for P1 answer
+        P1 leave,  P2 wait   = wait for P2 answer
+        P1 accept, P2 wait   = wait for P2 answer
+        P1 wait,   P2 wait   = wait for both answers
 
     */
     playerLeave(socketID) {
@@ -356,6 +334,27 @@ module.exports = class Game {
 
         // All grids were filled, so we tied
         return 0;
+    }
+
+    // Return the state of the game
+    getState() {
+        return this.state;
+    }
+
+    // Return if player 1 is connected or not
+    hasPlayer1() {
+        if (this.p1) {
+            return true;
+        }
+        return false;
+    }
+
+    // Return if player 1 is connected or not
+    hasPlayer2() {
+        if (this.p2) {
+            return true;
+        }
+        return false;
     }
 
 }
