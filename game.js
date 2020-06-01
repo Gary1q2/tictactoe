@@ -255,13 +255,45 @@ module.exports = class Game {
         Waiting for P2 state:
         P1 - Convert to empty state
 
-        Game state:
-        P2 - P1 wins
+        Game state (p1Turn, p2Turn):
         P1 - P2 wins
+        P2 - P1 wins
 
-        End state:
-        P2 -
-        P1 - 
+        End state (p1Won, p2Won, tie):
+        P1 leave end game - wait for P2 to rematch or leave
+        P2 leave end game - wait for P1 to rematch or leave
+
+        P1
+        P2
+
+
+
+        P1 accept, P2 accept = restart game
+        P1 accept, P2 wait   = wait for P2 answer
+        P1 accept, P2 leave  = put P1 in waiting state
+
+        P1 wait,   P2 accept = wait for P1 answer
+        P1 wait,   P2 wait   = wait for both answers
+        P1 wait,   P2 leave  = wait for P1 answer
+
+        P1 leave,  P2 accept = put P2 in P1 position in waiting state
+        P1 leave,  P2 wait   = wait for P2 answer
+        P1 leave,  P2 leave  = game go to empty state
+
+
+
+
+        P2 accept, P2 accept = restart game
+        P2 accept, P1 wait   = wait for P1 answer
+        P2 accept, P1 leave  = put P2 in P1 position in waiting state
+
+        P2 wait,   P1 accept = wait for P2 answer
+        P2 wait,   P1 wait   = wait for both answers
+        P2 wait,   P1 leave  = wait for P2 answer
+
+        P2 leave,  P1 accept = put P1 in waiting position
+        P2 leave,  P1 wait   = wait for P1 answer
+        P2 leave,  P1 leave  = game go to empty state
 
     */
     playerLeave(socketID) {
