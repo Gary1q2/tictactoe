@@ -42,6 +42,7 @@ io.on('connection', function(socket) {
 
     // A player tried to place a mark
     socket.on('place', function(grid) {
+        console.log("state in place socket = " + game.getState());
         console.log("someone tried to place something")
         console.log(grid);
 

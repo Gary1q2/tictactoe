@@ -103,7 +103,7 @@ module.exports = class Game {
         }
 
         if (this.state != GAMESTATE.p1Turn && this.state != GAMESTATE.p2Turn) {
-            throw "Can't place mark when not in gamestate";
+            throw "Can't place mark when not in gamestate     [state = " + this.state;
         }
 
         if (this.grid[y][x] != -1) {
@@ -201,7 +201,11 @@ module.exports = class Game {
 
         // Randomly choose which player goes first
         if (startPlayer == undefined) {
-            this.state = (Math.random() <= 0.5) ? this.setP1TurnState() : this.setP2TurnState();
+            if (Math.random() <= 0.5) {
+                this.setP1TurnState();
+            } else {
+                this.setP2TurnState();
+            }
    
         // Set a player to start
         } else if (startPlayer == 1) {
@@ -223,12 +227,7 @@ module.exports = class Game {
         }
     }
 
-    /* Set state to P2 winning and emit to everyone
-    */
-    setP2WonState() {
-        this.state = GAMESTATE.p2Won;
-        this.io.emit('p2Won', this.grid);
-    }
+
 
     /* Set state to P1 winning and emit to everyone
     */
@@ -237,11 +236,19 @@ module.exports = class Game {
         this.io.emit('p1Won', this.grid);
     }
 
+    /* Set state to P2 winning and emit to everyone
+    */
+    setP2WonState() {
+        this.state = GAMESTATE.p2Won;
+        this.io.emit('p2Won', this.grid);
+    }
+
     /* Set state to P1 turn and emit to everyone
     */
     setP1TurnState() {
         this.state = GAMESTATE.p1Turn;
         this.io.emit('p1Turn', this.grid);  
+        console.log("set state to p1Turn  state = " + this.state);
     }
 
     /* Set state to P2 turn and emit to everyone
@@ -249,6 +256,7 @@ module.exports = class Game {
     setP2TurnState() {
         this.state = GAMESTATE.p2Turn;
         this.io.emit('p2Turn', this.grid);  
+        console.log("set state to p2Turn  state = " + this.state);
     }
 
     /* Set tie state and emit to eveyrone
