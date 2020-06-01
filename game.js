@@ -172,8 +172,7 @@ module.exports = class Game {
 
         // Players tied
         } else if (gridState == 0) {
-            this.state = GAMESTATE.tie;
-            this.io.emit('tie', this.grid);
+            this.setTieState();
 
         // Game still in progress
         } else {
@@ -252,6 +251,12 @@ module.exports = class Game {
         this.io.emit('p2Turn', this.grid);  
     }
 
+    /* Set tie state and emit to eveyrone
+    */
+    setTieState() {
+        this.state = GAMESTATE.tie;
+        this.io.emit('tie', this.grid);
+    }
 
 
 
