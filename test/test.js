@@ -256,13 +256,29 @@ describe('Testing playerLeave()', function() {
 
     context('P1 leaves during game', function() {
         it('P2 wins', function() {
-            
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            game.playerJoin(p1);
+            game.playerJoin(p2);
+            game.startGame(1);
+
+            game.playerLeave(p1);
+            assert(game.getState() == GAMESTATE.p2Won);
         });
     });
 
     context('P2 leaves during game', function() {
         it('P1 wins', function() {
-            
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            game.playerJoin(p1);
+            game.playerJoin(p2);
+            game.startGame(1);
+
+            game.playerLeave(p2);
+            assert(game.getState() == GAMESTATE.p1Won);      
         });
     });
 
@@ -276,6 +292,7 @@ describe('Testing playerLeave()', function() {
             game.acceptRematch(p1);
             game.acceptRematch(p2);
             assert(game.getState() == GAMESTATE.p1Turn || game.getState() == GAMESTATE.p2Turn);
+            assert(game.hasPlayer1() && game.hasPlayer2());
         });
     });
 
@@ -289,8 +306,7 @@ describe('Testing playerLeave()', function() {
             game.playerLeave(p1);
             game.playerLeave(p2);
             assert(game.getState() == GAMESTATE.empty);
-            assert(!game.p1);
-            assert(!game.p2);
+            assert(!game.hasPlayer1() && !game.hasPlayer2());
         });
     });
 
@@ -304,8 +320,7 @@ describe('Testing playerLeave()', function() {
             game.acceptRematch(p1);
             game.playerLeave(p2);
             assert(game.getState() == GAMESTATE.empty);
-            assert(game.p1);
-            assert(!game.p2);
+            assert(game.hasPlayer1() && !game.hasPlayer2());
         });
     });
 
@@ -319,8 +334,7 @@ describe('Testing playerLeave()', function() {
             game.acceptRematch(p1);
             game.playerLeave(p2);
             assert(game.getState() == GAMESTATE.empty);  
-            assert(game.p1);
-            assert(!game.p2);
+            assert(game.hasPlayer1() && !game.hasPlayer2());
         });
     });
 });

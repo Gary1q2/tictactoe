@@ -356,5 +356,4 @@ module.exports = class Game {
         }
         return false;
     }
-
 }
