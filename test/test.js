@@ -11,7 +11,7 @@ const server = http.Server(app);
 const io = socketIO(server);
 
 const GAMESTATE = {
-    empty: "emptyState",
+    empty: "empty",
     p1Turn: "p1Turn",
     p2Turn: "p2Turn",
     p1Won: "p1Won",

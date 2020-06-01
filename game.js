@@ -1,5 +1,5 @@
 const GAMESTATE = {
-    empty: "emptyState",
+    empty: "empty",
     p1Turn: "p1Turn",
     p2Turn: "p2Turn",
     p1Won: "p1Won",
@@ -19,6 +19,10 @@ module.exports = class Game {
                      [-1, -1, -1]];
 
         this.io = io;
+
+        this.p1Rematch = false;
+        this.p2Rematch = false;
+
         this.printGrid();
     }
 
@@ -36,6 +40,20 @@ module.exports = class Game {
         console.log("End =====================================================");
     }
 
+
+    /* Restarts the game with the same players
+    */
+    restartGameSamePlayers() {
+        console.log('Restarted the game with same players!!!');
+        this.clearGrid();
+
+        this.p1Rematch = false;
+        this.p2Rematch = false;
+
+        this.startGame();
+    }
+
+
     /* Resets the grid to being empty
     */
     clearGrid() {
@@ -47,8 +65,36 @@ module.exports = class Game {
     }
 
     /* Player accepted the rematch
+       
+       Can only be called by P1 and P2
+       Can only be called in GAMESTATES p1Won, p2Won, tie
     */
     acceptRematch(socketID) {
+
+        if (socketID != this.p1 && socketID != this.p2) {
+            throw 'Invalid player pressed rematch';
+        }
+
+        if (this.state != GAMESTATE.p1Won && this.state != GAMESTATE.p2Won &&
+            this.state != GAMESTATE.tie) {
+            throw 'Can only rematch when game is not in progress';
+        }
+
+        if (socketID == this.p1 && !this.p1Rematch) {
+            this.p1Rematch = true;
+            this.io.to(this.p2).emit('wantRematch');
+            console.log("p1 wants to rematch....");
+
+        } else if (socketID == this.p2 && !this.p2Rematch) {
+            this.p2Rematch = true;
+            this.io.to(this.p1).emit('wantRematch');
+            console.log("p2 wants to rematch....");
+        }
+
+        // Restart the game with same players
+        if (this.p1Rematch && this.p2Rematch) {
+            this.restartGameSamePlayers();
+        }
 
     }
 
@@ -170,9 +216,10 @@ module.exports = class Game {
        If player is undefined, a random player is selected to start first
     */
     startGame(startPlayer) {
-
-        if (this.state == GAMESTATE.emptyState || this.state == GAMESTATE.p1Won ||
-            this.state == GAMESTATE.p2Won || this.state == GAMESTATE.tie) {
+        console.log("startGame state = " + this.state);
+        if (this.state != GAMESTATE.empty && this.state != GAMESTATE.p1Won &&
+            this.state != GAMESTATE.p2Won && this.state != GAMESTATE.tie) {
+            console.log("state = " + this.state);
             throw 'Can only start game when game has not started or is over'
         }
 

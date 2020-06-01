@@ -53,6 +53,14 @@ io.on('connection', function(socket) {
         game.printGrid();
     });
 
+
+    // A player wanted to rematch
+    socket.on('acceptRematch', function() {
+        console.log("someone wanted to REMATCH!!!");
+
+        game.acceptRematch(socket.id);
+    });
+
     // A player disconnected
     socket.on('disconnect', function() {
         game.playerLeave(socket.id);

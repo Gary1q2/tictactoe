@@ -20,13 +20,21 @@ class Game {
                     document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>";
                 } else if (this.grid[i][j] == "O") {
                     document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
+                } else {
+                    document.getElementById("grid_" + i + j).innerHTML = "";
                 }
             }
         }
     }
 }
 
+/* Client pressed rematch button
+*/
+function rematchPress() {
+    socket.emit('acceptRematch');
 
+    document.getElementById('msgBox').innerHTML = "Waiting for opponent to accept rematch";
+}
 
 
 // =================================================
@@ -35,14 +43,23 @@ class Game {
 
 const socket = io();
 
+
+/* Opponent is asking for a rematch
+*/
+socket.on('wantRematch', function() {
+    document.getElementById('msgBox').innerHTML = 'Your opponent would like a rematch';
+});
+
+
+
 /* Show that players tied
 */
 socket.on('tie', function(data) {
     game.updateGrid(data);
 
     document.getElementById('msgBox').innerHTML = "Tie.....";  
-
-})
+    document.getElementById('rematchButton').style.visibility = 'visible';
+});
 
 /* Show that player 1 won
 */
@@ -55,7 +72,8 @@ socket.on('p1Won', function(data) {
         document.getElementById('msgBox').innerHTML = "You lost :(((";  
     }
 
-})
+    document.getElementById('rematchButton').style.visibility = 'visible';
+});
 
 /* Show that player 2 won
 */
@@ -68,7 +86,8 @@ socket.on('p2Won', function(data) {
         document.getElementById('msgBox').innerHTML = "You lost :(((";  
     }
 
-})
+    document.getElementById('rematchButton').style.visibility = 'visible';
+});
 
 /* Player 1's turn
 */
