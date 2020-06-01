@@ -41,15 +41,6 @@ module.exports = class Game {
     }
 
 
-    /* Restarts the game with the same players
-    */
-    restartGameSamePlayers() {
-        console.log('Restarted the game with same players!!!');
-        this.setEmptyState();
-        this.startGame();
-    }
-
-
     /* Resets the grid to being empty
     */
     clearGrid() {
@@ -313,8 +304,9 @@ module.exports = class Game {
 
         // Both players still here and want to play again
         } else if (this.p1 && this.p2 && this.p1Rematch && this.p2Rematch) {
-            this.restartGameSamePlayers();
             console.log("both players want to play again.. ");
+            this.setEmptyState();
+            this.startGame();
         }
     }
 
