@@ -10,6 +10,16 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
+const GAMESTATE = {
+    empty: "emptyState",
+    p1Turn: "p1Turn",
+    p2Turn: "p2Turn",
+    p1Won: "p1Won",
+    p2Won: "p2Won",
+    tie: "tie"
+}
+
+
 // Testing checkGrid()
 describe('Testing checkGrid()', function() {
     context('P1 horizontal line', function() {
@@ -173,7 +183,7 @@ describe('Testing checkGrid()', function() {
 
 
 // Testing startGame()
-/*describe('Testing startGame()', function() {
+describe('Testing startGame()', function() {
     context('Undefined player', function() {
         it('P1 or P2 could start first', function() {
             const game = new Game(io);
@@ -182,9 +192,37 @@ describe('Testing checkGrid()', function() {
 
             game.playerJoin(p1Socket);
             game.playerJoin(p2Socket);
+            game.startGame()
 
-                      
-            assert(game.checkGrid() == 1);
+            assert(game.state == GAMESTATE.p1Turn || game.state == GAMESTATE.p2Turn);
         })
     })
-})*/
+
+    context('Player 1 set to go first', function() {
+        it('Player 1 will go first', function() {
+            const game = new Game(io);
+            var p1Socket = "player1";
+            var p2Socket = "player2";
+
+            game.playerJoin(p1Socket);
+            game.playerJoin(p2Socket);
+            game.startGame(1)
+
+            assert(game.state == GAMESTATE.p1Turn);
+        })
+    })
+
+    context('Player 2 set to go first', function() {
+        it('Player 2 will go first', function() {
+            const game = new Game(io);
+            var p1Socket = "player1";
+            var p2Socket = "player2";
+
+            game.playerJoin(p1Socket);
+            game.playerJoin(p2Socket);
+            game.startGame(2)
+
+            assert(game.state == GAMESTATE.p2Turn);
+        })
+    })
+})
