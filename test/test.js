@@ -230,29 +230,41 @@ describe('Testing startGame()', function() {
 
 /* Testing playerLeave() && acceptRematch() together
 
-   Spectator - do nothing
+   Spectator =================================================================================================
+   Do nothing atm
 
-   Waiting for P2 state:
-   P1 - Convert to empty state
+   Waiting for P2 state ======================================================================================
+   P1 - Convert to empty state                                        playerLeave
 
-   Game state (p1Turn, p2Turn):
-   P1 leave = P2 wins
-   P2 leave = P1 wins
+   Game state (p1Turn, p2Turn) ===============================================================================
+   P1 leave = P2 wins                                                 playerLeave
+   P2 leave = P1 wins                                                 playerLeave
 
-   End state (p1Won, p2Won, tie) VICE VERSA <-->:
-   P1 accept, P2 accept = restart game
-   P1 accept, P2 wait   = wait for P2 answer
-   P1 accept, P2 leave  = put P1 in waiting state
+   End state (p1Won, p2Won, tie) VICE VERSA <--> =============================================================
+   P1 accept <-> P2 accept = restart game                             acceptRematch for both
+   P1 accept <-> P2 leave  = put P1 in waiting state                  acceptRematch <-> playerLeave
+   P1 leave  <-> P2 accept = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave
+   P1 leave  <-> P2 leave  = game go to empty state                   playerLeave for both
 
-   P1 leave,  P2 accept = put P2 in P1 position in waiting state
-   P1 leave,  P2 wait   = wait for P2 answer
-   P1 leave,  P2 leave  = game go to empty state
+   P1 accept <-> P2 wait   = wait for P2 answer                       ?
+   P1 leave  <-> P2 wait   = wait for P2 answer                       ?
+   P1 wait   <-> P2 accept = wait for P1 answer                       ?
+   P1 wait   <-> P2 wait   = wait for both answers                    ?
+   P1 wait   <-> P2 leave  = wait for P1 answer                       ?
 
-   P1 wait,   P2 accept = wait for P1 answer
-   P1 wait,   P2 wait   = wait for both answers
-   P1 wait,   P2 leave  = wait for P1 answer
+   Player 2 versions =========================================================================================
+   P2 accept <-> P1 accept = restart game                             acceptRematch for both
+   P2 accept <-> P1 leave  = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave
+   P2 leave  <-> P1 accept = put P1 in waiting state                  acceptRematch <-> playerLeave
+   P2 leave  <-> P1 leave  = game go to empty state                   playerLeave for both
+
+   P2 accept <-> P1 wait   = wait for P1 answer                       ?   
+   P2 leave  <-> P1 wait   = wait for P1 answer                       ?
+   P2 wait   <-> P1 accept = wait for P2 answer                       ?
+   P2 wait   <-> P1 wait   = wait for both answers                    ?
+   P2 wait   <-> P1 leave  = wait for P2 answer                       ?
 */
-describe('Testing playerLeave()', function() {
+describe('Testing playerLeave() && acceptRematch()', function() {
 
     // Setup P1 win gameover scenario
     function setup(game, p1, p2) { 
@@ -317,7 +329,21 @@ describe('Testing playerLeave()', function() {
             assert(game.getState() == GAMESTATE.p1Turn || game.getState() == GAMESTATE.p2Turn);
             assert(game.hasPlayer1() && game.hasPlayer2());
         });
+
+        it('Game restarts simply swapped', function() {
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            setup(game, p1, p2);    
+
+            game.acceptRematch(p2);
+            game.acceptRematch(p1);
+            assert(game.getState() == GAMESTATE.p1Turn || game.getState() == GAMESTATE.p2Turn);
+            assert(game.hasPlayer1() && game.hasPlayer2());
+        });
     });
+
+
 
     context('P1 and P2 leave after gameover', function() {
         it('Set to empty state', function() {
@@ -328,6 +354,18 @@ describe('Testing playerLeave()', function() {
 
             game.playerLeave(p1);
             game.playerLeave(p2);
+            assert(game.getState() == GAMESTATE.empty);
+            assert(!game.hasPlayer1() && !game.hasPlayer2());
+        });
+
+        it('Set to empty state swapped', function() {
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            setup(game, p1, p2);
+
+            game.playerLeave(p2);
+            game.playerLeave(p1);
             assert(game.getState() == GAMESTATE.empty);
             assert(!game.hasPlayer1() && !game.hasPlayer2());
         });
@@ -345,6 +383,18 @@ describe('Testing playerLeave()', function() {
             assert(game.getState() == GAMESTATE.empty);
             assert(game.hasPlayer1() && !game.hasPlayer2());
         });
+
+        it('P1 set to wait for new game swapped', function() {
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            setup(game, p1, p2);
+    
+            game.playerLeave(p2);
+            game.acceptRematch(p1);
+            assert(game.getState() == GAMESTATE.empty);
+            assert(game.hasPlayer1() && !game.hasPlayer2());
+        });
     });
 
     context('P2 accept rematch, but P1 leaves', function() {
@@ -354,8 +404,20 @@ describe('Testing playerLeave()', function() {
             var p2 = "player2";
             setup(game, p1, p2);
     
-            game.acceptRematch(p1);
-            game.playerLeave(p2);
+            game.acceptRematch(p2);
+            game.playerLeave(p1);
+            assert(game.getState() == GAMESTATE.empty);  
+            assert(game.hasPlayer1() && !game.hasPlayer2());
+        });
+
+        it('P2 converted to P1 and set to wait for new game swapped', function() {
+            const game = new Game(io);
+            var p1 = "player1";
+            var p2 = "player2";
+            setup(game, p1, p2);
+    
+            game.playerLeave(p1);
+            game.acceptRematch(p2);
             assert(game.getState() == GAMESTATE.empty);  
             assert(game.hasPlayer1() && !game.hasPlayer2());
         });

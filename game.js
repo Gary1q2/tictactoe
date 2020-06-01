@@ -64,56 +64,14 @@ module.exports = class Game {
         }
     }
 
-    /* Player accepted the rematch
-       
-       Can only be called by P1 and P2
-       Can only be called in GAMESTATES p1Won, p2Won, tie
-
-       P1 accept, P2 accept - restart easily
-       P1 accept, P2 left   - Set P1 to wait for new game
-
-       P1 left  , P2 left   - Set to empty state
-       P1 left  , P2 accept - Move P2 to P1 and set to wait new game
-
-       P2 accept, P1 accept - restart easily
-       P2 accept, P1 left   - Move P2 to P1 and set to wait new game
-
-       P2 left  , P1 left   - Set to empty state
-       P2 left  , P1 accept - Set P1 to wait for new game
-    */
-    acceptRematch(socketID) {
-
-        if (socketID != this.p1 && socketID != this.p2) {
-            throw 'Invalid player pressed rematch';
-        }
-
-        if (this.state != GAMESTATE.p1Won && this.state != GAMESTATE.p2Won &&
-            this.state != GAMESTATE.tie) {
-            throw 'Can only rematch when game is not in progress';
-        }
-
-        if (socketID == this.p1 && !this.p1Rematch) {
-            this.p1Rematch = true;
-            this.io.to(this.p2).emit('wantRematch');
-            console.log("p1 wants to rematch....");
-
-        } else if (socketID == this.p2 && !this.p2Rematch) {
-            this.p2Rematch = true;
-            this.io.to(this.p1).emit('wantRematch');
-            console.log("p2 wants to rematch....");
-        }
-
-        // Restart the game with same players
-        if (this.p1Rematch && this.p2Rematch) {
-            this.restartGameSamePlayers();
-        }
-
-    }
 
     /* Shift the remaining player into P1 position if they are P2
     */
     shiftToP1() {
+        this.p1 = this.p2;
 
+        this.p2 = false;
+        this.p2Rematch = false;
     }
 
 
@@ -260,70 +218,121 @@ module.exports = class Game {
         }
     }
 
+    /* Resets the given players values
+    */
+    removePlayer(player) {
+        if (player == 1) {
+            this.p1 = false;
+            this.p1Rematch = false;
+        } else {
+            this.p2 = false;
+            this.p2Rematch = false;
+        }
+    }
+
+    /* Checks if game is ready to be reset and
+       resets if it is
+    */
+    checkGameRestart() {
+
+        // Everyone left
+        if (!this.p1 && !this.p2) {
+            this.state = GAMESTATE.empty;
+            console.log("nobody remains.... game is reset");
+
+        } else if (!this.p1 && this.p2) {
+
+            // P1 left during a game
+            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
+                this.state = GAMESTATE.p2Won;
+                this.io.to(this.p2).emit('p2Won', this.grid);
+                console.log("p1 left.... dog");
+
+            // P1 left after game && P2 want to play again
+            } else {
+                if (this.p2Rematch) {
+                    this.state = GAMESTATE.empty;
+                    this.shiftToP1();
+                    this.io.to(this.p1).emit('p1-joinWaitForP2');
+                    console.log("p2 is ready to play again");
+                }
+            }
+
+        } else if (this.p1 && !this.p2) {
+
+            // P2 left during a game
+            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
+                this.state = GAMESTATE.p1Won;
+                this.io.to(this.p1).emit('p1Won', this.grid);
+                console.log("p2 left.... dog");
+
+            // P2 left after game && P1 want to play again
+            } else {
+                if (this.p1Rematch) {
+                    this.state = GAMESTATE.empty;
+                    this.io.to(this.p1).emit('p1-joinWaitForP2');
+                    console.log("p1 is ready to play again");
+                }
+            }
+
+        // Both players still here and want to play again
+        } else if (this.p1 && this.p2 && this.p1Rematch && this.p2Rematch) {
+            this.restartGameSamePlayers();
+            console.log("both players want to play again.. ");
+        }
+    }
+
+
+    /* Player accepted the rematch
+       
+       Can only be called by P1 and P2
+       Can only be called in GAMESTATES p1Won, p2Won, tie
+
+       Refer to the test for specifications
+    */
+    acceptRematch(socketID) {
+
+        if (socketID != this.p1 && socketID != this.p2) {
+            throw 'Invalid player pressed rematch';
+        }
+
+        if (this.state != GAMESTATE.p1Won && this.state != GAMESTATE.p2Won &&
+            this.state != GAMESTATE.tie) {
+            throw 'Can only rematch when game is not in progress';
+        }
+
+        // P1 or P2 want to rematch
+        if (socketID == this.p1) {
+            this.p1Rematch = true;
+        } else {
+            this.p2Rematch = true;
+        }
+
+        this.checkGameRestart();
+    }
+
+
+
 
     /* Decides what to do when somebody leaves
-
-       Spectator - do nothing
-
-       Waiting for P2 state:
-       P1 - Convert to empty state
-
-       Game state (p1Turn, p2Turn):
-       P1 leave = P2 wins
-       P2 leave = P1 wins
-
-       End state (p1Won, p2Won, tie) VICE VERSA <-->:
-       P1 accept <-> P2 accept = restart game
-       P1 accept <-> P2 wait   = wait for P2 answer
-       P1 accept <-> P2 leave  = put P1 in waiting state
-
-       P1 leave  <-> P2 accept = put P2 in P1 position in waiting state
-       P1 leave  <-> P2 wait   = wait for P2 answer
-       P1 leave  <-> P2 leave  = game go to empty state
-
-       P1 wait   <-> P2 accept = wait for P1 answer
-       P1 wait   <-> P2 wait   = wait for both answers
-       P1 wait   <-> P2 leave  = wait for P1 answer
+       Refer to the test to check for specifications
     */
     playerLeave(socketID) {
 
         // Non critical player left - spectator or invalid socketID
         if (socketID != this.p1 && socketID != this.p2) {
             console.log(`Spectator ${socketID} left... who cares about them OR a fake ID left...`);
-
-        // P1 or P2 left
-        } else if (this.p1 && this.p2) {
-
-            // Player left during a game
-            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-    
-                // P2 wins
-                if (socketID == this.p1) {
-                    this.p1 = false;
-                    this.state = GAMESTATE.p2Won;
-                    this.io.emit('p2Won', this.grid);
-
-                // P1 wins
-                } else {
-                    this.p2 = false;
-                    this.state = GAMESTATE.p1Won;
-                    this.io.emit('p1Won', this.grid);
-                }
-
-            // Player left after game finished
-            } else {
-
-            /*
-            unsure what to put here for nowwwwwww!!!!!!!!!!!!!!!!!!!!
-                if (socketID == this.p1) {
-
-
-                } else {
-
-                }
-            */
-            }
+            return "out";
         }
+
+        // Remove the player from the game
+        if (socketID == this.p1) {
+            this.removePlayer(1);
+        } else {
+            this.removePlayer(2);
+        }
+
+        this.checkGameRestart();
     }
 
 
