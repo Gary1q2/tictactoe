@@ -228,7 +228,30 @@ describe('Testing startGame()', function() {
 });
 
 
-// Testing playerLeave()
+/* Testing playerLeave() && acceptRematch() together
+
+   Spectator - do nothing
+
+   Waiting for P2 state:
+   P1 - Convert to empty state
+
+   Game state (p1Turn, p2Turn):
+   P1 leave = P2 wins
+   P2 leave = P1 wins
+
+   End state (p1Won, p2Won, tie) VICE VERSA <-->:
+   P1 accept, P2 accept = restart game
+   P1 accept, P2 wait   = wait for P2 answer
+   P1 accept, P2 leave  = put P1 in waiting state
+
+   P1 leave,  P2 accept = put P2 in P1 position in waiting state
+   P1 leave,  P2 wait   = wait for P2 answer
+   P1 leave,  P2 leave  = game go to empty state
+
+   P1 wait,   P2 accept = wait for P1 answer
+   P1 wait,   P2 wait   = wait for both answers
+   P1 wait,   P2 leave  = wait for P1 answer
+*/
 describe('Testing playerLeave()', function() {
 
     // Setup P1 win gameover scenario

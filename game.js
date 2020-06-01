@@ -68,6 +68,18 @@ module.exports = class Game {
        
        Can only be called by P1 and P2
        Can only be called in GAMESTATES p1Won, p2Won, tie
+
+       P1 accept, P2 accept - restart easily
+       P1 accept, P2 left   - Set P1 to wait for new game
+
+       P1 left  , P2 left   - Set to empty state
+       P1 left  , P2 accept - Move P2 to P1 and set to wait new game
+
+       P2 accept, P1 accept - restart easily
+       P2 accept, P1 left   - Move P2 to P1 and set to wait new game
+
+       P2 left  , P1 left   - Set to empty state
+       P2 left  , P1 accept - Set P1 to wait for new game
     */
     acceptRematch(socketID) {
 
@@ -250,39 +262,67 @@ module.exports = class Game {
 
 
     /* Decides what to do when somebody leaves
-        Spectator - do nothing
 
-        Waiting for P2 state:
-        P1 - Convert to empty state
+       Spectator - do nothing
 
-        Game state (p1Turn, p2Turn):
-        P1 - P2 wins
-        P2 - P1 wins
+       Waiting for P2 state:
+       P1 - Convert to empty state
 
-        End state (p1Won, p2Won, tie):
-        P1 accept, P2 accept = restart game
+       Game state (p1Turn, p2Turn):
+       P1 leave = P2 wins
+       P2 leave = P1 wins
 
-        P1 leave,  P2 leave  = game go to empty state
+       End state (p1Won, p2Won, tie) VICE VERSA <-->:
+       P1 accept <-> P2 accept = restart game
+       P1 accept <-> P2 wait   = wait for P2 answer
+       P1 accept <-> P2 leave  = put P1 in waiting state
 
-        P1 accept, P2 leave  = put P1 in waiting state
-        P1 leave,  P2 accept = put P2 in P1 position in waiting state
+       P1 leave  <-> P2 accept = put P2 in P1 position in waiting state
+       P1 leave  <-> P2 wait   = wait for P2 answer
+       P1 leave  <-> P2 leave  = game go to empty state
 
-        P1 wait,   P2 accept = wait for P1 answer
-        P1 wait,   P2 leave  = wait for P1 answer
-        P1 leave,  P2 wait   = wait for P2 answer
-        P1 accept, P2 wait   = wait for P2 answer
-        P1 wait,   P2 wait   = wait for both answers
-
+       P1 wait   <-> P2 accept = wait for P1 answer
+       P1 wait   <-> P2 wait   = wait for both answers
+       P1 wait   <-> P2 leave  = wait for P1 answer
     */
     playerLeave(socketID) {
 
-        // Critical player left
-        if (socketID == this.p1 || socketID == this.p2) {
+        // Non critical player left - spectator or invalid socketID
+        if (socketID != this.p1 && socketID != this.p2) {
+            console.log(`Spectator ${socketID} left... who cares about them OR a fake ID left...`);
+
+        // P1 or P2 left
+        } else if (this.p1 && this.p2) {
+
+            // Player left during a game
+            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
+    
+                // P2 wins
+                if (socketID == this.p1) {
+                    this.p1 = false;
+                    this.state = GAMESTATE.p2Won;
+                    this.io.emit('p2Won', this.grid);
+
+                // P1 wins
+                } else {
+                    this.p2 = false;
+                    this.state = GAMESTATE.p1Won;
+                    this.io.emit('p1Won', this.grid);
+                }
+
+            // Player left after game finished
+            } else {
+
+            /*
+            unsure what to put here for nowwwwwww!!!!!!!!!!!!!!!!!!!!
+                if (socketID == this.p1) {
 
 
-        // Spectator left
-        } else {
-            console.log(`Spectator ${socketID} left... who cares about them`);
+                } else {
+
+                }
+            */
+            }
         }
     }
 
