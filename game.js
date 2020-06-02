@@ -70,8 +70,6 @@ module.exports = class Game {
         this.clearGrid();
         this.p1Rematch = false;
         this.p2Rematch = false;
-
-        this.io.emit('emptyState', this.grid);  
     }
 
 
@@ -157,11 +155,19 @@ module.exports = class Game {
         // Player 1 won
         var gridState = this.checkGrid();
         if (gridState == 1) {
-            this.setP1WonState();
+            this.state = GAMESTATE.p1Won;
+            this.io.emit('p1Won', {
+                grid: this.grid,
+                left: false
+            });
 
         // Player 2 won
         } else if (gridState == 2) {
-            this.setP2WonState();
+            this.state = GAMESTATE.p2Won;
+            this.io.emit('p2Won', {
+                grid: this.grid,
+                left: false
+            });
 
         // Players tied
         } else if (gridState == 0) {
@@ -224,17 +230,17 @@ module.exports = class Game {
 
     /* Set state to P1 winning and emit to everyone
     */
-    setP1WonState() {
-        this.state = GAMESTATE.p1Won;
-        this.io.emit('p1Won', this.grid);
-    }
+    //setP1WonState() {
+    //    this.state = GAMESTATE.p1Won;
+    //    this.io.emit('p1Won', this.grid);
+    //}
 
     /* Set state to P2 winning and emit to everyone
     */
-    setP2WonState() {
-        this.state = GAMESTATE.p2Won;
-        this.io.emit('p2Won', this.grid);
-    }
+    //setP2WonState() {
+    //    this.state = GAMESTATE.p2Won;
+    //    this.io.emit('p2Won', this.grid);
+    //}
 
     /* Set state to P1 turn and emit to everyone
     */
@@ -275,7 +281,11 @@ module.exports = class Game {
 
             // P1 left during a game
             if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.setP2WonState();
+                this.state = GAMESTATE.p2Won;
+                this.io.emit('p2Won', {
+                    grid: this.grid,
+                    left: true
+                });
                 console.log("p1 left.... dog");
 
             // P1 left after game && P2 want to play again
@@ -292,7 +302,12 @@ module.exports = class Game {
 
             // P2 left during a game
             if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.setP1WonState();
+                this.state = GAMESTATE.p1Won;
+                this.io.emit('p1Won', {
+                    grid: this.grid,
+                    left: true
+                });
+
                 console.log("p2 left.... dog");
 
             // P2 left after game && P1 want to play again
@@ -334,8 +349,10 @@ module.exports = class Game {
         // P1 or P2 want to rematch
         if (socketID == this.p1) {
             this.p1Rematch = true;
+            this.io.to(this.p2).emit('wantRematch');
         } else {
             this.p2Rematch = true;
+            this.io.to(this.p1).emit('wantRematch');
         }
 
         this.checkGameRestart();
