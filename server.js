@@ -33,7 +33,11 @@ server.listen(PORT, function() {
 io.on('connection', function(socket) {
 
     // A player joined
-    game.playerJoin(socket.id)
+    try {
+        game.playerJoin(socket.id)
+    } catch (err) {
+        console.log(err);
+    }
 
     // Start the game is P2 joins  (illegal move...)
     if (socket.id == game.p2) {

@@ -67,6 +67,8 @@ module.exports = class Game {
     */
     setEmptyState() {
         console.log("Setting gamestate to empty -> clearing stuff...");
+        this.state = GAMESTATE.empty;
+        
         this.clearGrid();
         this.p1Rematch = false;
         this.p2Rematch = false;
@@ -122,6 +124,11 @@ module.exports = class Game {
         Returns
     */
     playerJoin(socketID) {
+
+
+        if (this.state != GAMESTATE.empty) {
+            throw "New contestants can ONLY join in empty state   state = " + this.state;
+        }
 
         if (!this.p1 && !this.p2) {
             console.log("P1 joined!");
