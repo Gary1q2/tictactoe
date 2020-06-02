@@ -43,6 +43,11 @@ function rematchPress() {
 
 const socket = io();
 
+/* Set the game to empty state, ready to play again
+*/
+socket.on('emptyState', function(data) {
+    document.getElementById('rematchButton').style.visibility = 'hidden';
+});
 
 /* Opponent is asking for a rematch
 */
@@ -131,8 +136,6 @@ socket.on('p1-joinWaitForP2', function() {
     document.getElementById('p1Name').innerHTML = "YOU";
     document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>"
     document.getElementById('msgBox').innerHTML = "Waiting for player 2";
-
-
 
     // Setup buttons
     //var grids = document.getElementsByClassName('clicker');

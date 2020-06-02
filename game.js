@@ -70,6 +70,8 @@ module.exports = class Game {
         this.clearGrid();
         this.p1Rematch = false;
         this.p2Rematch = false;
+
+        this.io.emit('emptyState', this.grid);  
     }
 
 
