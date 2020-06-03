@@ -6,7 +6,6 @@
     </head>
 
     <body>
-
         <div id='gameBox'>
             <div id='p1Box'>
                 <div id='p1Piece'></div>
@@ -50,6 +49,13 @@
 
             <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
         </div>
+
+        <div id='welcomeBox'>
+            <div id='welcomeMsg'>Enter your name:</div>
+            <input id='nameInput' type='text'>
+            <button onclick='submitName()'>Submit</button>
+        </div>
+
         <script src='./client.js'></script>
     </body>
 </html>

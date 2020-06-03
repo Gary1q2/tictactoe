@@ -32,17 +32,24 @@ server.listen(PORT, function() {
 // Handling communications
 io.on('connection', function(socket) {
 
-    // A player joined
-    try {
-        game.playerJoin(socket.id)
-    } catch (err) {
-        console.log(err);
-    }
+    // Player logged in
+    socket.on('submitName', function(name) {
 
-    // Start the game is P2 joins  (illegal move...)
-    if (socket.id == game.p2) {
-        game.startGame();
-    }
+        try {
+            game.playerJoin(socket.id, name)
+        } catch (err) {
+            console.log(err);
+        }
+
+        // Start the game if P2 joins
+        if (socket.id == game.p2) {
+            game.startGame();
+
+        // Spectator joined...
+        } else if (socket.id != game.p1 && socket.id != game.p2) {
+            //send a spectator page...
+        }
+    });
 
     // A player tried to place a mark
     socket.on('place', function(grid) {

@@ -40,6 +40,26 @@ function rematchPress() {
 }
 
 
+/* Client submitted their name
+*/
+function submitName() {
+
+    // Client side empty name preventation
+    if (document.getElementById('nameInput').value == '') {
+        document.getElementById('welcomeMsg').innerHTML = 'Plz enter a real name:';
+ 
+    // Submit the name and get result
+    } else {
+        socket.emit('submitName', document.getElementById('nameInput').value);
+
+        // Reveal the game zone
+        document.getElementById('welcomeBox').style.visibility = 'hidden';
+        document.getElementById('gameBox').style.visibility = 'visible';    
+    }
+}
+
+
+
 // =================================================
 // Socket stuff
 // =================================================
@@ -47,13 +67,11 @@ function rematchPress() {
 const socket = io();
 
 
-
 /* Opponent is asking for a rematch
 */
 socket.on('wantRematch', function() {
     document.getElementById('msgBox').innerHTML = 'Your opponent would like a rematch';
 });
-
 
 
 /* Show that players tied
@@ -152,13 +170,13 @@ socket.on('p2Turn', function(data) {
 
 /* Player 1 joined - setup page and wait for P2
 */
-socket.on('p1-joinWaitForP2', function() {
+socket.on('p1-joinWaitForP2', function(p1Name) {
     console.log('change my game state to waiting for P2');
 
     game = new Game(1);
 
     // Setup player 1 data
-    document.getElementById('p1Name').innerHTML = "YOU";
+    document.getElementById('p1Name').innerHTML = p1Name;
     document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
 
     // Setup player 2 empty
@@ -176,11 +194,11 @@ socket.on('p1-joinWaitForP2', function() {
 
 
 // Player 2 finally joined - setup page
-socket.on('p1-p2Join', function() {
+socket.on('p1-p2Join', function(p2Name) {
     console.log('Player 2 joined...');
 
     // Setup player 2 data
-    document.getElementById('p2Name').innerHTML = "THEM";
+    document.getElementById('p2Name').innerHTML = p2Name;
     document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>"
     document.getElementById('msgBox').innerHTML = "Game beginning soon..."
 });
@@ -194,17 +212,17 @@ socket.on('p1-p2Join', function() {
 
 /* Player 2 joined - setup page and wait for game to begin
 */
-socket.on('p2-joinWaitForGame', function() {
+socket.on('p2-joinWaitForGame', function(data) {
     console.log('You joined as player 2!!');
 
     game = new Game(2);
 
     // Setup yourself (player 2)
-    document.getElementById('p1Name').innerHTML = "YOU";
+    document.getElementById('p1Name').innerHTML = data.p2Name;
     document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>"
 
     // Setup other (player 1)
-    document.getElementById('p2Name').innerHTML = "THEM";
+    document.getElementById('p2Name').innerHTML = data.p1Name;
     document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>"
 
     document.getElementById('msgBox').innerHTML = "Game beginning soon...";

@@ -14,6 +14,10 @@ module.exports = class Game {
         this.state = GAMESTATE.empty;
         this.p1 = false;
         this.p2 = false;
+
+        this.p1Name = false;
+        this.p2Name = false;
+
         this.grid = [[-1, -1, -1],
                      [-1, -1, -1],
                      [-1, -1, -1]];
@@ -56,8 +60,10 @@ module.exports = class Game {
     */
     shiftToP1() {
         this.p1 = this.p2;
+        this.p1Name = this.p2Name;
 
         this.p2 = false;
+        this.p2Name = false;
         this.p2Rematch = false;
     }
 
@@ -123,8 +129,12 @@ module.exports = class Game {
 
         Returns
     */
-    playerJoin(socketID) {
+    playerJoin(socketID, name) {
+        console.log("new player with name = " + name + "  joined");
 
+        if (name == '') {
+            throw 'Player must login with a valid name!! player ignored as spectator';
+        }
 
         if (this.state != GAMESTATE.empty) {
             throw "New contestants can ONLY join in empty state   state = " + this.state;
@@ -133,13 +143,18 @@ module.exports = class Game {
         if (!this.p1 && !this.p2) {
             console.log("P1 joined!");
             this.p1 = socketID;
-            this.io.to(this.p1).emit('p1-joinWaitForP2');
+            this.p1Name = name;
+            this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
 
         } else if (this.p1 && !this.p2) {
             console.log("P2 joined!");
             this.p2 = socketID;
-            this.io.to(this.p1).emit('p1-p2Join');
-            this.io.to(this.p2).emit('p2-joinWaitForGame');
+            this.p2Name = name;
+            this.io.to(this.p1).emit('p1-p2Join', this.p2Name);
+            this.io.to(this.p2).emit('p2-joinWaitForGame', {
+                p1Name: this.p1Name,
+                p2Name: this.p2Name
+            });
 
         } else if (this.p1 && this.p2) {
             console.log("Spectator joined. oi stop chiming in");
@@ -226,9 +241,11 @@ module.exports = class Game {
     removePlayer(player) {
         if (player == 1) {
             this.p1 = false;
+            this.p1Name = false;
             this.p1Rematch = false;
         } else {
             this.p2 = false;
+            this.p2Name = false;
             this.p2Rematch = false;
         }
     }
@@ -300,7 +317,7 @@ module.exports = class Game {
                 if (this.p2Rematch) {
                     this.setEmptyState();
                     this.shiftToP1();
-                    this.io.to(this.p1).emit('p1-joinWaitForP2');
+                    this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
                     console.log("p2 is ready to play again");
                 }
             }
@@ -321,7 +338,7 @@ module.exports = class Game {
             } else {
                 if (this.p1Rematch) {
                     this.setEmptyState();
-                    this.io.to(this.p1).emit('p1-joinWaitForP2');
+                    this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
                     console.log("p1 is ready to play again");
                 }
             }
