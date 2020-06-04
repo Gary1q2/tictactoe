@@ -37,8 +37,8 @@ body {
 }
 #gridPieces {
     position: absolute;
-    top: 150px;
-    left: 350px;
+    top: 100px;
+    left: 300px;
 
     width: 300px;
     height: 300px;
@@ -55,13 +55,23 @@ body {
 }
 #moveBox {
     position: absolute;
-    top: 150px;
-    left: 350px;
+    top: 100px;
+    left: 300px;
 
     width: 300px;
     height: 300px;
     border: 3px solid black;
 }
+#gridBox {
+    position: absolute;
+    top: 100px;
+    left: 300px;
+
+    width: 300px;
+    height: 300px;
+    border: 2px solid black;
+}
+
 
 
 
@@ -69,8 +79,8 @@ body {
 #gameBox {
     position: absolute;
 
-    width: 100%;
-    height: 100%; 
+    width: 900px;
+    height: 600px; 
     border: 3px solid black;
     visibility: hidden;
 }
@@ -80,7 +90,7 @@ body {
 #p1Box {
     position: absolute;
     left: 50px;
-    top: 200px;
+    top: 150px;
 
     text-align: center;
     font-size: 40px;
@@ -91,7 +101,7 @@ body {
 #p2Box {
     position: absolute;
     right: 50px;
-    top: 200px;
+    top: 150px;
 
     text-align: center;
     font-size: 40px;
@@ -123,25 +133,13 @@ body {
 
 
 
-/* The grid of the game */
-#gridBox {
-    position: absolute;
-    left: 350px;
-    top: 150px;
-
-    width: 300px;
-    height: 300px;
-    border: 2px solid black;
-}
-
-
 
 
 /* Message box */
 #msgBox {
     position: absolute;
-    left: 30%;
-    bottom: 100px;
+    left: 200px;
+    bottom: 50px;
 
     font-size: 40px;
     width: 500px;
