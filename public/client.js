@@ -20,9 +20,9 @@ class Game {
         for (var i = 0; i < this.grid.length; i++) {
             for (var j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j] == "X") {
-                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>";
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>";
                 } else if (this.grid[i][j] == "O") {
-                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
                 } else {
                     document.getElementById("grid_" + i + j).innerHTML = "";
                 }
@@ -146,12 +146,12 @@ socket.on('p2Won', function(data) {
 /* Player 1's turn
 */
 socket.on('p1Turn', function(data) {
-    game.updateGrid(data);
+    game.updateGrid(data.grid);
 
     if (game.player == 1) {
         document.getElementById('msgBox').innerHTML = "It is your turn...";   
     } else {
-        document.getElementById('msgBox').innerHTML = "Enemy's turn...";  
+        document.getElementById('msgBox').innerHTML = data.p1Name + "'s turn...";  
     }
 
     // Remove rematch button
@@ -161,12 +161,12 @@ socket.on('p1Turn', function(data) {
 /* Player 2's turn
 */
 socket.on('p2Turn', function(data) {
-    game.updateGrid(data);
+    game.updateGrid(data.grid);
 
     if (game.player == 2) {
         document.getElementById('msgBox').innerHTML = "It is your turn...";   
     } else {
-        document.getElementById('msgBox').innerHTML = "Enemy's turn...";  
+        document.getElementById('msgBox').innerHTML = data.p2Name + "'s turn...";  
     }
 
     // Remove rematch button

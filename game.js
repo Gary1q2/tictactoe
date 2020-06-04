@@ -267,7 +267,10 @@ module.exports = class Game {
     */
     setP1TurnState() {
         this.state = GAMESTATE.p1Turn;
-        this.io.emit('p1Turn', this.grid);  
+        this.io.emit('p1Turn', {
+            grid: this.grid,
+            p1Name: this.p1Name
+        });  
         console.log("set state to p1Turn  state = " + this.state);
     }
 
@@ -275,7 +278,10 @@ module.exports = class Game {
     */
     setP2TurnState() {
         this.state = GAMESTATE.p2Turn;
-        this.io.emit('p2Turn', this.grid);  
+        this.io.emit('p2Turn', { 
+            grid: this.grid,
+            p2Name: this.p2Name
+        });  
         console.log("set state to p2Turn  state = " + this.state);
     }
 
