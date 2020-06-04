@@ -82,6 +82,7 @@ body {
     left: 50px;
     top: 200px;
 
+    text-align: center;
     font-size: 40px;
     width: 200px;
     height: 200px;
@@ -92,20 +93,22 @@ body {
     right: 50px;
     top: 200px;
 
+    text-align: center;
     font-size: 40px;
     width: 200px;
     height: 200px;
     border: 1px solid black;
 }
 #p1Piece {
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
+    display: inline-block;
+
+    width: 150px;
+    height: 150px;
 }
 #p2Piece {
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
+    display: inline-block;
+    width: 150px;
+    height: 150px;
 }
 #p1Name {
     width: 200px;

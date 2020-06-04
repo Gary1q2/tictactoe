@@ -20,9 +20,9 @@ class Game {
         for (var i = 0; i < this.grid.length; i++) {
             for (var j = 0; j < this.grid[0].length; j++) {
                 if (this.grid[i][j] == "X") {
-                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>";
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>";
                 } else if (this.grid[i][j] == "O") {
-                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
+                    document.getElementById("grid_" + i + j).innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
                 } else {
                     document.getElementById("grid_" + i + j).innerHTML = "";
                 }
@@ -189,7 +189,7 @@ socket.on('p1-joinWaitForP2', function(p1Name) {
 
     // Setup player 1 data
     document.getElementById('p1Name').innerHTML = p1Name;
-    document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>";
+    document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
 
     // Setup player 2 empty
     document.getElementById('p2Name').innerHTML = "??";
@@ -211,7 +211,7 @@ socket.on('p1-p2Join', function(p2Name) {
 
     // Setup player 2 data
     document.getElementById('p2Name').innerHTML = p2Name;
-    document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>"
+    document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>"
     document.getElementById('msgBox').innerHTML = "Game beginning soon..."
 });
 
@@ -231,11 +231,11 @@ socket.on('p2-joinWaitForGame', function(data) {
 
     // Setup yourself (player 2)
     document.getElementById('p1Name').innerHTML = data.p2Name;
-    document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='100' height='100'>"
+    document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>"
 
     // Setup other (player 1)
     document.getElementById('p2Name').innerHTML = data.p1Name;
-    document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='100' height='100'>"
+    document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>"
 
     document.getElementById('msgBox').innerHTML = "Game beginning soon...";
 })
