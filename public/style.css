@@ -1,23 +1,26 @@
 body {
+    user-select: none;
     border: 2px solid red;
 }
 
 /* Welcome name input */
 #nameInput {
+    display: inline-block;
     font-size: 50px;
     width: 200px;
     height: 50px;
 }
 #nameButton {
+    display: inline-block;
     font-size: 50px;
 }
 #welcomeBox {
     position: absolute;
-
-    font-size: 50px;
     top: 300px;
     left: 300px;
-    width: 400px;
+
+    font-size: 50px;
+    width: 900px;
     height: 200px;
     border: 1px solid black;
 }
