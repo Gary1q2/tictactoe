@@ -376,10 +376,10 @@ module.exports = class Game {
         // P1 or P2 want to rematch
         if (socketID == this.p1) {
             this.p1Rematch = true;
-            this.io.to(this.p2).emit('wantRematch');
+            this.io.to(this.p2).emit('wantRematch', this.p1Name);
         } else {
             this.p2Rematch = true;
-            this.io.to(this.p1).emit('wantRematch');
+            this.io.to(this.p1).emit('wantRematch', this.p2Name);
         }
 
         this.checkGameRestart();

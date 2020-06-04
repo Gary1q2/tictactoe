@@ -4,7 +4,8 @@ var game;
 */
 class Game {
     constructor(player) {
-        this.player = player;
+        this.player = player;  // Indicates whether player 1 or player 2
+
         this.grid = [[-1, -1, -1],
                      [-1, -1, -1],
                      [-1, -1, -1]];
@@ -48,7 +49,8 @@ document.getElementById('nameInput').onkeypress = function(e) {
 function rematchPress() {
     socket.emit('acceptRematch');
 
-    document.getElementById('msgBox').innerHTML = "Waiting for opponent to accept rematch";
+    var opponentName = document.getElementById('p2Name').innerHTML;
+    document.getElementById('msgBox').innerHTML = "Waiting for "+opponentName+" to accept rematch";
 }
 
 
@@ -81,8 +83,8 @@ const socket = io();
 
 /* Opponent is asking for a rematch
 */
-socket.on('wantRematch', function() {
-    document.getElementById('msgBox').innerHTML = 'Your opponent would like a rematch';
+socket.on('wantRematch', function(name) {
+    document.getElementById('msgBox').innerHTML = name + ' would like a rematch';
 });
 
 
