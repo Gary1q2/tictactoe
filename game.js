@@ -91,9 +91,6 @@ module.exports = class Game {
     placeMark(socketID, x, y) {
 
         if ((this.state == GAMESTATE.p1Turn && socketID != this.p1) || (this.state == GAMESTATE.p2Turn && socketID != this.p2)) {
-            console.log("gamestate = " + this.state);
-            console.log("socketID = " + socketID);
-            console.log("p1="+this.p1 +"     p2="+this.p2);
             throw 'Wrong player turn';
         }
 

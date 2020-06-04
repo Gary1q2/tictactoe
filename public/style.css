@@ -46,6 +46,7 @@ body {
 .clicker {
     display: inline-block;
 
+    cursor: pointer;
     font-size: 60px;
     width: 94px;
     height: 96px;

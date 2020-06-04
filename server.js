@@ -59,10 +59,10 @@ io.on('connection', function(socket) {
 
         try {
             game.placeMark(socket.id, grid.x, grid.y);
+            game.printGrid();
         } catch (err) {
             console.log(err);
-        }
-        game.printGrid();
+        }  
     });
 
 
