@@ -31,6 +31,18 @@ class Game {
     }
 }
 
+// Focus the name input text box
+document.getElementById('nameInput').focus();
+
+// Submit name input with enter
+document.getElementById('nameInput').onkeypress = function(e) {
+    if (e.keyCode == 13) {
+        console.log("pressed enter to submit");
+        submitName();
+    }
+}
+
+
 /* Client pressed rematch button
 */
 function rematchPress() {
