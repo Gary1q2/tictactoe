@@ -27,13 +27,12 @@ body {
 
 
 
-/* Grid pieces */
+/* Grid pieces to display */
 .pieceDisplay {
     display: inline-block;
 
     width: 94px;
     height: 96px;
-    border: 1px solid blue;
 }
 #gridPieces {
     position: absolute;
@@ -42,8 +41,8 @@ body {
 
     width: 300px;
     height: 300px;
-    border: 3px solid black;
 }
+/* Input to press for grid pieces */
 .clicker {
     display: inline-block;
 
@@ -51,7 +50,6 @@ body {
     font-size: 60px;
     width: 94px;
     height: 96px;
-    border: 1px solid green;
 }
 #moveBox {
     position: absolute;
@@ -60,7 +58,6 @@ body {
 
     width: 300px;
     height: 300px;
-    border: 3px solid black;
 }
 #gridBox {
     position: absolute;
