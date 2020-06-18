@@ -1,5 +1,7 @@
 const STATE = {
-    lobby: "lobby"
+    lobby: "lobby",
+    user: "user",
+    system: "system"
 }
 
 module.exports = class Lobby {
@@ -42,10 +44,27 @@ module.exports = class Lobby {
 
     }
 
-    /* Player sent a message
+    /* Player sent a message to lobby chat
     */
-    playerMsg() {
+    playerMsg(socketID, msg) {
+        if (msg == '') {
+            throw 'Message by player cannot be empty';
+        }
 
+        if (!(socketID in this.players)) {
+            throw 'Invalid socketID during message send... stale playe?';
+        }
+        console.log(this.players[socketID].name + ' sent msg ' + msg);
+
+        // Update the chat log
+        this.messages.push({
+            type: STATE.user,
+            msg: msg,
+            user: this.players[socketID].name
+        })
+        
+        // Send chat update to everyone
+         this.io.emit('addMsg', this.players[socketID].name +": " + msg);
     }
 
     /* Player started a game

@@ -53,6 +53,15 @@ io.on('connection', function(socket) {
         //}
     });
 
+    // Player sent a message in lobby
+    socket.on('msgLobby-player', function(msg) {
+        try {
+            lobby.playerMsg(socket.id, msg);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
     // A player tried to place a mark
     /*socket.on('place', function(grid) {
         console.log("state in place socket = " + game.getState());

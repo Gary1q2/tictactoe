@@ -1,8 +1,8 @@
-var game;
+//var game;
 
 /* Client side gamestate
 */
-class Game {
+/*class Game {
     constructor(player) {
         this.player = player;  // Indicates whether player 1 or player 2
 
@@ -12,11 +12,11 @@ class Game {
 
         // Update the grid!!!
         this.updateGrid(this.grid);
-    }
+    }*/
 
     /* Use new grid from server and update display
     */
-    updateGrid(newGrid) {
+    /*updateGrid(newGrid) {
         this.grid = newGrid;
         for (var i = 0; i < this.grid.length; i++) {
             for (var j = 0; j < this.grid[0].length; j++) {
@@ -29,6 +29,21 @@ class Game {
                 }
             }
         }
+    }
+}*/
+
+
+var lobby;
+class Lobby {
+    constructor() {
+        this.messages = [];
+    }
+
+    /* Push new message from server onto chatbox
+    */
+    addMsg(msg) {
+        this.messages.push(msg);
+        document.getElementById('chatBox').innerHTML = this.messages;
     }
 }
 
@@ -44,14 +59,16 @@ document.getElementById('nameInput').onkeypress = function(e) {
 }
 
 
+
+
 /* Client pressed rematch button
 */
-function rematchPress() {
+/*function rematchPress() {
     socket.emit('acceptRematch');
 
     var opponentName = document.getElementById('p2Name').innerHTML;
     document.getElementById('msgBox').innerHTML = "Waiting for "+opponentName+" to accept rematch";
-}
+}*/
 
 
 /* Client submitted their name
@@ -66,9 +83,23 @@ function submitName() {
     } else {
         socket.emit('submitName', document.getElementById('nameInput').value);
 
-        // Reveal the game zone
+        // Create the lobby and reveal it
+        lobby = new Lobby();
+
         document.getElementById('welcomeBox').style.visibility = 'hidden';
         document.getElementById('gameBox').style.visibility = 'visible';    
+    }
+}
+
+/* Player submitted a message
+*/
+function submitMsg() {
+    console.log("submit msg");
+
+    // Only send message if not empty string
+    if (document.getElementById('msgInput').value != '') {
+        socket.emit('msgLobby-player', document.getElementById('msgInput').value);
+        document.getElementById('msgInput').value = '';
     }
 }
 
@@ -81,25 +112,32 @@ function submitName() {
 const socket = io();
 
 
+/* Update chatbox with new message
+*/
+socket.on('addMsg', function(msg) {
+    lobby.addMsg(msg);
+});
+
+
 /* Opponent is asking for a rematch
 */
-socket.on('wantRematch', function(name) {
+/*socket.on('wantRematch', function(name) {
     document.getElementById('msgBox').innerHTML = name + ' would like a rematch';
-});
+});*/
 
 
 /* Show that players tied
 */
-socket.on('tie', function(data) {
+/*socket.on('tie', function(data) {
     game.updateGrid(data);
 
     document.getElementById('msgBox').innerHTML = "Tie.....";  
     document.getElementById('rematchButton').style.visibility = 'visible';
-});
+});*/
 
 /* Show that player 1 won
 */
-socket.on('p1Won', function(data) {
+/*socket.on('p1Won', function(data) {
     game.updateGrid(data.grid);
 
     // P2 left during the game
@@ -119,11 +157,11 @@ socket.on('p1Won', function(data) {
     }
 
     document.getElementById('rematchButton').style.visibility = 'visible';
-});
+});*/
 
 /* Show that player 2 won
 */
-socket.on('p2Won', function(data) {
+/*socket.on('p2Won', function(data) {
     game.updateGrid(data.grid);
 
     // P1 left during the game
@@ -143,11 +181,11 @@ socket.on('p2Won', function(data) {
     }
 
     document.getElementById('rematchButton').style.visibility = 'visible';
-});
+});*/
 
 /* Player 1's turn
 */
-socket.on('p1Turn', function(data) {
+/*socket.on('p1Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 1) {
@@ -158,11 +196,11 @@ socket.on('p1Turn', function(data) {
 
     // Remove rematch button
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});
+});*/
 
 /* Player 2's turn
 */
-socket.on('p2Turn', function(data) {
+/*socket.on('p2Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 2) {
@@ -173,7 +211,7 @@ socket.on('p2Turn', function(data) {
 
     // Remove rematch button
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});
+});*/
 
 
 
@@ -184,7 +222,7 @@ socket.on('p2Turn', function(data) {
 
 /* Player 1 joined - setup page and wait for P2
 */
-socket.on('p1-joinWaitForP2', function(p1Name) {
+/*socket.on('p1-joinWaitForP2', function(p1Name) {
     console.log('change my game state to waiting for P2');
 
     game = new Game(1);
@@ -202,20 +240,20 @@ socket.on('p1-joinWaitForP2', function(p1Name) {
 
     // Remove rematch
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});
+});*/
 
 
 
 
 // Player 2 finally joined - setup page
-socket.on('p1-p2Join', function(p2Name) {
+/*socket.on('p1-p2Join', function(p2Name) {
     console.log('Player 2 joined...');
 
     // Setup player 2 data
     document.getElementById('p2Name').innerHTML = p2Name;
     document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>"
     document.getElementById('msgBox').innerHTML = "Game beginning soon..."
-});
+});*/
 
 
 
@@ -226,7 +264,7 @@ socket.on('p1-p2Join', function(p2Name) {
 
 /* Player 2 joined - setup page and wait for game to begin
 */
-socket.on('p2-joinWaitForGame', function(data) {
+/*socket.on('p2-joinWaitForGame', function(data) {
     console.log('You joined as player 2!!');
 
     game = new Game(2);
@@ -240,4 +278,4 @@ socket.on('p2-joinWaitForGame', function(data) {
     document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>"
 
     document.getElementById('msgBox').innerHTML = "Game beginning soon...";
-})
+});*/
