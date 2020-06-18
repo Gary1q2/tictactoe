@@ -53,10 +53,19 @@ document.getElementById('nameInput').focus();
 // Submit name input with enter
 document.getElementById('nameInput').onkeypress = function(e) {
     if (e.keyCode == 13) {
-        console.log("pressed enter to submit");
+        console.log("pressed enter to submit name");
         submitName();
     }
 }
+
+// Submit msg input with enter
+document.getElementById('msgInput').onkeypress = function(e) {
+    if (e.keyCode == 13) {
+        console.log("pressed enter to submit msg");
+        submitMsg();
+    }
+}
+
 
 
 
