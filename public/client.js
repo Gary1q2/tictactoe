@@ -43,7 +43,7 @@ class Lobby {
     */
     addMsg(msg) {
         this.messages.push(msg);
-        document.getElementById('chatBox').innerHTML = this.messages;
+        document.getElementById('chatBox').innerHTML += msg + '<br>';
     }
 }
 
