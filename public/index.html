@@ -1,53 +1,18 @@
 <html>
     <head>
-        <title>Tic tac toe</title>
+        <title>Tic tac toe lobby</title>
         <link href='style.css' rel='stylesheet'>
         <script src='/socket.io/socket.io.js'></script>
     </head>
 
     <body>
         <div id='gameBox'>
-            <div id='p1Box'>
-                <div id='p1Piece'></div>
-                <div id='p1Name'>??</div>
-            </div>
-            <div id='p2Box'>
-                <div id='p2Piece'></div>
-                <div id='p2Name'>??</div>
-            </div>
-            <div id='gridBox'>
-                <img src='/img/grid.png' alt='grid' width='300' height='300'>
+            <div id='chatBox'>
+
             </div>
 
-            <div id='gridPieces'>
-                <div class='pieceDisplay' id='grid_00'></div>
-                <div class='pieceDisplay' id='grid_01'></div>
-                <div class='pieceDisplay' id='grid_02'></div>
-                <div class='pieceDisplay' id='grid_10'></div>
-                <div class='pieceDisplay' id='grid_11'></div>
-                <div class='pieceDisplay' id='grid_12'></div>
-                <div class='pieceDisplay' id='grid_20'></div>
-                <div class='pieceDisplay' id='grid_21'></div>
-                <div class='pieceDisplay' id='grid_22'></div>    
+            <div id='playersBox'>
             </div>
-
-            <div id='moveBox'>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:0});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:0});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:0});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:1});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:1});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:1});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:2});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:2});"></div>
-                <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:2});"></div>
-            </div>
-
-            <div id='msgBox'>
-                Waiting for players...
-            </div>
-
-            <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
         </div>
 
         <div id='welcomeBox'>

@@ -4,6 +4,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 
 const Game = require('./game.js');
+const Lobby = require('./lobby.js');
 
 // Global variables
 const app = express();
@@ -11,7 +12,8 @@ const server = http.Server(app);
 const io = socketIO(server);
 
 const PORT = 6969;
-const game = new Game(io);
+const lobby = new Lobby(io);
+//const game = new Game(io);
 
 
 // Set folder to public
@@ -36,23 +38,23 @@ io.on('connection', function(socket) {
     socket.on('submitName', function(name) {
 
         try {
-            game.playerJoin(socket.id, name)
+            lobby.playerJoin(socket.id, name)
         } catch (err) {
             console.log(err);
         }
 
         // Start the game if P2 joins
-        if (socket.id == game.p2) {
-            game.startGame();
+        //if (socket.id == game.p2) {
+        //    game.startGame();
 
         // Spectator joined...
-        } else if (socket.id != game.p1 && socket.id != game.p2) {
+        //} else if (socket.id != game.p1 && socket.id != game.p2) {
             //send a spectator page...
-        }
+        //}
     });
 
     // A player tried to place a mark
-    socket.on('place', function(grid) {
+    /*socket.on('place', function(grid) {
         console.log("state in place socket = " + game.getState());
         console.log("someone tried to place something")
         console.log(grid);
@@ -63,19 +65,22 @@ io.on('connection', function(socket) {
         } catch (err) {
             console.log(err);
         }  
-    });
+    });*/
 
 
     // A player wanted to rematch
-    socket.on('acceptRematch', function() {
+    /*socket.on('acceptRematch', function() {
         console.log("someone wanted to REMATCH!!!");
 
         game.acceptRematch(socket.id);
-    });
+    });*/
 
     // A player disconnected
     socket.on('disconnect', function() {
-        game.playerLeave(socket.id);
-
+        try {
+            lobby.playerLeave(socket.id);
+        } catch (err) {
+            console.log(err);
+        }
     });
 });

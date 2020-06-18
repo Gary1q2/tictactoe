@@ -3,6 +3,47 @@ body {
     border: 2px solid red;
 }
 
+
+
+/* The main game area */
+#gameBox {
+    position: absolute;
+
+    width: 900px;
+    height: 600px; 
+    border: 3px solid black;
+    visibility: hidden;
+}
+
+
+/*======================================================
+   Lobby 
+  ======================================================
+*/
+
+#chatBox {
+    position: absolute;
+
+    width: 600px;
+    height: 550px;
+    border: 2px black solid;
+}
+
+
+#playersBox {
+    position: absolute;
+    right: 0px;
+
+    width: 300px;
+    height: 500px;
+    border: 2px red solid;
+}
+
+
+
+
+
+
 /* Welcome name input */
 #nameInput {
     display: inline-block;
@@ -72,15 +113,7 @@ body {
 
 
 
-/* The main game area */
-#gameBox {
-    position: absolute;
 
-    width: 900px;
-    height: 600px; 
-    border: 3px solid black;
-    visibility: hidden;
-}
 
 
 /* P1 & P2 info */
