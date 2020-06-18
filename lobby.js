@@ -25,6 +25,8 @@ module.exports = class Lobby {
             name: name,
             state: STATE.lobby
         };
+
+        this.systemMsg(name + ' has joined the lobby!');
     }
 
     /* A player left the lobby
@@ -38,10 +40,22 @@ module.exports = class Lobby {
         delete this.players[socketID];
     }
 
-    /* System broadcasted a message
+    /* System broadcasted a message to lobby chat
     */
-    systemMsg() {
+    systemMsg(msg) {
+        if (msg == '') {
+            throw 'System message CANNOT be empty';
+        }
 
+        // Update the chat log
+        this.messages.push({
+            type: STATE.system,
+            msg: msg,
+            user: STATE.system
+        })
+
+        // Send chat update to everyone
+        this.io.emit('addMsg', msg);
     }
 
     /* Player sent a message to lobby chat
@@ -64,7 +78,7 @@ module.exports = class Lobby {
         })
         
         // Send chat update to everyone
-         this.io.emit('addMsg', this.players[socketID].name +": " + msg);
+        this.io.emit('addMsg', this.players[socketID].name +": " + msg);
     }
 
     /* Player started a game
