@@ -87,7 +87,7 @@ io.on('connection', function(socket) {
     // A player disconnected
     socket.on('disconnect', function() {
         try {
-            lobby.playerLeave(socket.id);
+            lobby.playerLeave(socket);
         } catch (err) {
             console.log(err);
         }

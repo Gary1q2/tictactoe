@@ -62,6 +62,13 @@ class Lobby {
         this.refreshPlayersBox();
     }
 
+    /* Remove player from playerbox
+    */
+    removePlayer(socketID) {
+        delete this.players[socketID];
+        this.refreshPlayersBox();
+    }
+
     /* Update the chatbox
     */
     refreshChatbox() {
@@ -168,6 +175,13 @@ socket.on('addMsg', function(msgData) {
 socket.on('addPlayer', function(data) {
     lobby.addPlayer(data.player, data.socketID);
 });
+
+/* Update playerbox with removed player
+*/
+socket.on('removePlayer', function(socketID) {
+    lobby.removePlayer(socketID);
+});
+
 
 /* Setup the lobby for client
 */

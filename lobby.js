@@ -45,13 +45,20 @@ module.exports = class Lobby {
 
     /* A player left the lobby
     */
-    playerLeave(socketID) {
-        if (!(socketID in this.players)) {
+    playerLeave(socket) {
+        if (!(socket.id in this.players)) {
             throw 'Invalid socketID leaving game.... must be stale player?';
         }
 
-        console.log('player ' + this.players[socketID].name + 'left :(');
-        delete this.players[socketID];
+        console.log('player ' + this.players[socket.id].name + 'left :(');
+
+        // Send player removal to all players
+        socket.broadcast.emit('removePlayer', socket.id);
+
+        this.systemMsg(this.players[socket.id].name + ' has left the lobby.');
+        delete this.players[socket.id];
+
+
     }
 
     /* System broadcasted a message to lobby chat
