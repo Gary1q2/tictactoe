@@ -40,25 +40,43 @@ const STATE = {
 
 var lobby;
 class Lobby {
-    constructor(players) {
-        this.players = players;
-        this.messages = [];
+    constructor(players, messages) {
+        this.players = players;   // array
+        this.messages = messages; // dict
 
+        this.refreshChatbox();
         this.refreshPlayersBox();
     }
 
     /* Push new message from server onto chatbox
     */
-    addMsg(msg) {
-        this.messages.push(msg);
-        document.getElementById('chatBox').innerHTML += msg + '<br>';
-    }
+    addMsg(msgData) {
+        this.messages.push(msgData);
+        this.refreshChatbox();
+   }
 
     /* Push new player to playerbox
     */
     addPlayer(playerData, socketID) {
         this.players[socketID] = playerData;
         this.refreshPlayersBox();
+    }
+
+    /* Update the chatbox
+    */
+    refreshChatbox() {
+        var chatbox = document.getElementById('chatBox');
+        chatbox.innerHTML = '';
+
+        // Populate the chatbox with the right style
+        for (var i = 0; i < this.messages.length; i++) {
+            var msg = this.messages[i];
+            if (msg.type == STATE.system) {
+                chatbox.innerHTML += msg.msg + '<br>';
+            } else {
+                chatbox.innerHTML += msg.user + ': ' + msg.msg + '<br>';
+            }
+        } 
     }
 
     /* Update the players box
@@ -141,8 +159,8 @@ const socket = io();
 
 /* Update chatbox with new message
 */
-socket.on('addMsg', function(msg) {
-    lobby.addMsg(msg);
+socket.on('addMsg', function(msgData) {
+    lobby.addMsg(msgData);
 });
 
 /* Update playerbox with new player
@@ -153,8 +171,8 @@ socket.on('addPlayer', function(data) {
 
 /* Setup the lobby for client
 */
-socket.on('setupLobby', function(players) {
-    lobby = new Lobby(players);
+socket.on('setupLobby', function(data) {
+    lobby = new Lobby(data.players, data.messages);
     document.getElementById('welcomeBox').style.visibility = 'hidden';
     document.getElementById('gameBox').style.visibility = 'visible';   
 });

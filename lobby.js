@@ -29,7 +29,10 @@ module.exports = class Lobby {
         this.players[socket.id] = player;
 
         // Send lobby stuff to new player
-        socket.emit('setupLobby', this.players);
+        socket.emit('setupLobby', {
+            players: this.players, 
+            messages: this.messages
+        });
 
         // Send player update to all players
         socket.broadcast.emit('addPlayer', {
@@ -53,43 +56,45 @@ module.exports = class Lobby {
 
     /* System broadcasted a message to lobby chat
     */
-    systemMsg(msg) {
-        if (msg == '') {
+    systemMsg(string) {
+        if (string == '') {
             throw 'System message CANNOT be empty';
         }
 
         // Update the chat log
-        this.messages.push({
+        var msgData = {
             type: STATE.system,
-            msg: msg,
+            msg: string,
             user: STATE.system
-        })
+        };
+        this.messages.push(msgData);
 
         // Send chat update to everyone
-        this.io.emit('addMsg', msg);
+        this.io.emit('addMsg', msgData);
     }
 
     /* Player sent a message to lobby chat
     */
-    playerMsg(socketID, msg) {
-        if (msg == '') {
+    playerMsg(socketID, string) {
+        if (string == '') {
             throw 'Message by player cannot be empty';
         }
 
         if (!(socketID in this.players)) {
             throw 'Invalid socketID during message send... stale playe?';
         }
-        console.log(this.players[socketID].name + ' sent msg ' + msg);
+        console.log(this.players[socketID].name + ' sent msg ' + string);
 
         // Update the chat log
-        this.messages.push({
+        var msgData = {
             type: STATE.user,
-            msg: msg,
+            msg: string,
             user: this.players[socketID].name
-        })
-        
+        };
+        this.messages.push(msgData);
+
         // Send chat update to everyone
-        this.io.emit('addMsg', this.players[socketID].name +": " + msg);
+        this.io.emit('addMsg', msgData);
     }
 
     /* Player started a game
