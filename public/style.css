@@ -44,6 +44,7 @@ body {
     position: absolute;
     right: 0px;
 
+    font-size: 50px;
     width: 300px;
     height: 500px;
     border: 1px red solid;
