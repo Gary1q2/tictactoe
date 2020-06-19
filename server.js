@@ -38,7 +38,7 @@ io.on('connection', function(socket) {
     socket.on('submitName', function(name) {
 
         try {
-            lobby.playerJoin(socket.id, name)
+            lobby.playerJoin(socket, name)
         } catch (err) {
             console.log(err);
         }

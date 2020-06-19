@@ -32,11 +32,19 @@
     }
 }*/
 
+const STATE = {
+    lobby: "lobby",
+    user: "user",
+    system: "system"
+}
 
 var lobby;
 class Lobby {
-    constructor() {
+    constructor(players) {
+        this.players = players;
         this.messages = [];
+
+        this.refreshPlayersBox();
     }
 
     /* Push new message from server onto chatbox
@@ -44,6 +52,22 @@ class Lobby {
     addMsg(msg) {
         this.messages.push(msg);
         document.getElementById('chatBox').innerHTML += msg + '<br>';
+    }
+
+    /* Push new player to playerbox
+    */
+    addPlayer(playerData, socketID) {
+        this.players[socketID] = playerData;
+        this.refreshPlayersBox();
+    }
+
+    /* Update the players box
+    */
+    refreshPlayersBox() {
+        document.getElementById('playersBox').innerHTML = '';
+        for (var key in this.players) {
+            document.getElementById('playersBox').innerHTML += this.players[key].name + ' - ' + this.players[key].state + '<br>';
+        }
     }
 }
 
@@ -90,13 +114,7 @@ function submitName() {
  
     // Submit the name and get result
     } else {
-        socket.emit('submitName', document.getElementById('nameInput').value);
-
-        // Create the lobby and reveal it
-        lobby = new Lobby();
-
-        document.getElementById('welcomeBox').style.visibility = 'hidden';
-        document.getElementById('gameBox').style.visibility = 'visible';    
+        socket.emit('submitName', document.getElementById('nameInput').value); 
     }
 }
 
@@ -127,6 +145,19 @@ socket.on('addMsg', function(msg) {
     lobby.addMsg(msg);
 });
 
+/* Update playerbox with new player
+*/
+socket.on('addPlayer', function(data) {
+    lobby.addPlayer(data.player, data.socketID);
+});
+
+/* Setup the lobby for client
+*/
+socket.on('setupLobby', function(players) {
+    lobby = new Lobby(players);
+    document.getElementById('welcomeBox').style.visibility = 'hidden';
+    document.getElementById('gameBox').style.visibility = 'visible';   
+});
 
 /* Opponent is asking for a rematch
 */

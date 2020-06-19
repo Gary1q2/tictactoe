@@ -14,17 +14,28 @@ module.exports = class Lobby {
 
     /* A new player joined the lobby
     */
-    playerJoin(socketID, name) {
+    playerJoin(socket, name) {
         console.log("new player with name = " + name + "  connected to lobby");
 
         if (name == '') {
             throw 'Player must login with a valid name!! player ignored as fail spectator';
         }
 
-        this.players[socketID] = {
+        // Add player to dict
+        var player = {
             name: name,
             state: STATE.lobby
         };
+        this.players[socket.id] = player;
+
+        // Send lobby stuff to new player
+        socket.emit('setupLobby', this.players);
+
+        // Send player update to all players
+        socket.broadcast.emit('addPlayer', {
+            player: player,
+            socketID: socket.id
+        });
 
         this.systemMsg(name + ' has joined the lobby!');
     }
