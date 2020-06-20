@@ -24,6 +24,8 @@ body {
 #chatBox {
     position: absolute;
 
+    text-align: left;
+    overflow-wrap: break-word;
     font-size: 50px;
     width: 600px;
     height: 550px;
