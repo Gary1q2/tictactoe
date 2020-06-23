@@ -71,13 +71,26 @@ body {
 #playButton {
     position: absolute;
     bottom: 0px;
-    right: 0px;
+    left: 600px;
 
-    font-size: 50px;
+    font-size: 40px;
     width: 300px;
     height: 100px;
     border: 1px black solid;
 }
+
+#cancelButton {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+
+    font-size: 50px;
+    width: 100px;
+    height: 100px;
+    border: 1px black solid;
+    visibility: hidden;
+}
+
 
 
 #msgInput {

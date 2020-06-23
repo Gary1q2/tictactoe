@@ -6,10 +6,61 @@ const STATE = {
 
 module.exports = class Lobby {
     constructor(io) {
-        this.players = {};
-        this.messages = [];
+        this.players = {};   // Store player info
+        this.messages = [];  // Store messages send
+
+        this.queue = [];     // Queue of players
+        this.games = [];     // Current running games
 
         this.io = io;
+    }
+
+    /* Checks and matches queued players for a game
+    */
+    matchPlayersForGame() {
+        while (this.queue.length >= 2) {
+            console.log('matched a game for 2 players!');
+
+            console.log("cancel p1");
+            this.cancelQueue(this.queue[0]);
+
+            console.log("cancel p2");
+            this.cancelQueue(this.queue[0]);
+        }
+    }
+
+
+    /* Queue player up for a game
+    */
+    queuePlayer(socket) {
+        console.log("player queued!");
+        if (this.queue.includes(socket.id)) {
+            throw 'Player cannot join the queue more than once...';
+        }
+
+        socket.emit('queued');
+        this.queue.push(socket.id);
+        this.matchPlayersForGame();
+    }
+
+    /* Player canceled queue for game
+    */
+    cancelQueue(socketID) {
+        console.log("player dequeued!");
+
+        //console.log("queue len = " + this.queue.length)
+        if (!this.queue.includes(socketID)) {
+            throw 'Cannot cancel queue if not already in queue';
+        }
+
+        // Remove player from the queue
+        for (var i = 0; i < this.queue.length; i++) {
+            if (this.queue[i] == socketID) {
+                this.queue.splice(i, 1);
+                break;
+            }
+        }
+        this.io.to(socketID).emit('dequeued');
     }
 
     /* A new player joined the lobby

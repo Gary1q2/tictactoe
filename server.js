@@ -62,6 +62,25 @@ io.on('connection', function(socket) {
         }
     });
 
+
+    // Player queued up for game
+    socket.on('playerQueued', function() {
+        try {
+            lobby.queuePlayer(socket);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    // Player canceled queue for game
+    socket.on('cancelQueue', function() {
+        try {
+            lobby.cancelQueue(socket.id);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
     // A player tried to place a mark
     /*socket.on('place', function(grid) {
         console.log("state in place socket = " + game.getState());

@@ -35,7 +35,8 @@
 const STATE = {
     lobby: "lobby",
     user: "user",
-    system: "system"
+    system: "system",
+    queued: "queued"
 }
 
 var lobby;
@@ -44,11 +45,30 @@ class Lobby {
         this.players = players;   // array
         this.messages = messages; // dict
 
+        this.playerState = STATE.lobby;
+
         this.refreshChatbox();
         this.refreshPlayersBox();
         this.refreshOnlineCount();
     }
 
+    /* Show the normal lobby state after dequeueing
+    */
+    dequeue() {
+        this.playerState = STATE.lobby;
+        document.getElementById('playButton').innerHTML = 'Play';
+        document.getElementById('playButton').style.width = '300px';
+        document.getElementById('cancelButton').style.visibility = 'hidden';
+    }
+
+    /* Set client state to display queued lobby state
+    */
+    inQueue() {
+        this.playerState = STATE.queued;
+        document.getElementById('playButton').innerHTML = 'in queue';
+        document.getElementById('playButton').style.width = '200px';
+        document.getElementById('cancelButton').style.visibility = 'visible';
+    }
 
     /* Push new message from server onto chatbox
     */
@@ -172,7 +192,23 @@ function submitMsg() {
     }
 }
 
+/* Player pressed play button to queue up for game
+*/
+function queueUp() {
+    if (lobby.playerState == STATE.lobby) {
+        console.log("queued up for game...");
+        socket.emit('playerQueued');    
+    }
+}
 
+/* Player pressed cancel queue button
+*/
+function cancelQueue() {
+    if (lobby.playerState == STATE.queued) {
+        console.log("player CANCELED QUEUE!!!");
+        socket.emit('cancelQueue');
+    }
+}
 
 // =================================================
 // Socket stuff
@@ -180,6 +216,17 @@ function submitMsg() {
 
 const socket = io();
 
+/* Show the normal lobby state
+*/
+socket.on('dequeued', function() {
+    lobby.dequeue();
+});
+
+/* Show the queued state of lobby
+*/
+socket.on('queued', function() {
+    lobby.inQueue();
+});
 
 /* Update chatbox with new message
 */
