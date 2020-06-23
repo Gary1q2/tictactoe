@@ -46,6 +46,7 @@ class Lobby {
 
         this.refreshChatbox();
         this.refreshPlayersBox();
+        this.refreshOnlineCount();
     }
 
 
@@ -61,6 +62,7 @@ class Lobby {
     addPlayer(playerData, socketID) {
         this.players[socketID] = playerData;
         this.refreshPlayersBox();
+        this.refreshOnlineCount();
     }
 
     /* Remove player from playerbox
@@ -68,6 +70,13 @@ class Lobby {
     removePlayer(socketID) {
         delete this.players[socketID];
         this.refreshPlayersBox();
+        this.refreshOnlineCount();
+    }
+
+    /* Update the number of online people number
+    */
+    refreshOnlineCount() {
+        document.getElementById('playersOnline').innerHTML = Object.keys(this.players).length + ' online!';
     }
 
     /* Update the chatbox and scrollbar

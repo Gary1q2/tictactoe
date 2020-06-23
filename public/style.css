@@ -44,15 +44,27 @@ body {
     border: 1px black solid;
 }
 
+#playersOnline {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+    font-size: 50px;
+    width: 300px;
+    height: 60px;
+    border: 1px red solid;
+}
+
 #playersBox {
     position: absolute;
+    top: 60px;
     right: 0px;
 
     overflow-wrap: break-word;
     overflow-y: scroll;
     font-size: 50px;
     width: 300px;
-    height: 200px;
+    height: 440px;
     border: 1px red solid;
 }
 
