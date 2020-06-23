@@ -48,20 +48,12 @@ class Lobby {
         this.refreshPlayersBox();
     }
 
-    /* Update location of chatbox scrollbar
-    */
-    refreshChatboxScrollbar() {
-        var chatbox = document.getElementById('chatBox');
-        //if (chatbox is )
-    }
-
 
     /* Push new message from server onto chatbox
     */
     addMsg(msgData) {
         this.messages.push(msgData);
         this.refreshChatbox();
-        this.refreshChatboxScrollbar();
    }
 
     /* Push new player to playerbox
@@ -78,11 +70,13 @@ class Lobby {
         this.refreshPlayersBox();
     }
 
-    /* Update the chatbox
+    /* Update the chatbox and scrollbar
     */
     refreshChatbox() {
+
         var chatbox = document.getElementById('chatBox');
         chatbox.innerHTML = '';
+        var oldScrollHeight = chatbox.scrollHeight;
 
         // Populate the chatbox with the right style
         for (var i = 0; i < this.messages.length; i++) {
@@ -93,6 +87,11 @@ class Lobby {
                 chatbox.innerHTML += msg.user + ': ' + msg.msg + '<br>';
             }
         } 
+
+        // Update the scrollbar because scrollHeight has changed
+        if (oldScrollHeight != chatbox.scrollHeight) {
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
     }
 
     /* Update the players box
