@@ -48,11 +48,20 @@ class Lobby {
         this.refreshPlayersBox();
     }
 
+    /* Update location of chatbox scrollbar
+    */
+    refreshChatboxScrollbar() {
+        var chatbox = document.getElementById('chatBox');
+        //if (chatbox is )
+    }
+
+
     /* Push new message from server onto chatbox
     */
     addMsg(msgData) {
         this.messages.push(msgData);
         this.refreshChatbox();
+        this.refreshChatboxScrollbar();
    }
 
     /* Push new player to playerbox
