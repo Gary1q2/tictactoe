@@ -81,19 +81,24 @@ io.on('connection', function(socket) {
         }
     });
 
+
+
+
     // A player tried to place a mark
-    /*socket.on('place', function(grid) {
-        console.log("state in place socket = " + game.getState());
-        console.log("someone tried to place something")
+    socket.on('place', function(grid) {;
+        console.log("someone tried to place something");
         console.log(grid);
 
         try {
+            var gameIndex = lobby.findPlayersGame(socket.id);
+            var game = lobby.games[gameIndex];
+            console.log("state in place socket = " + game.getState())
             game.placeMark(socket.id, grid.x, grid.y);
             game.printGrid();
         } catch (err) {
             console.log(err);
-        }  
-    });*/
+        }
+    });
 
 
     // A player wanted to rematch
@@ -102,6 +107,9 @@ io.on('connection', function(socket) {
 
         game.acceptRematch(socket.id);
     });*/
+
+
+
 
     // A player disconnected
     socket.on('disconnect', function() {

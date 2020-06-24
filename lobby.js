@@ -36,6 +36,21 @@ module.exports = class Lobby {
     }
 
 
+    /* Given the socket.id, return the game index the player belongs in
+        Returns - int (the index of the game)
+    */
+    findPlayersGame(socketID) {
+        for (var i = 0; i < this.games.length; i++) {
+            if (socketID == this.games[i].p1 || socketID == this.games[i].p2) {
+                console.log(socketID + " id found in game index " + i);
+                return i;
+            }
+        }
+        
+        throw 'Player isnt found in any existing games';
+    }
+
+
     /* Queue player up for a game
     */
     queuePlayer(socket) {

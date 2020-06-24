@@ -90,7 +90,7 @@ module.exports = class Game {
        [x,y] must be -1
        Can only be called during P1/P2 turn state
     */
-    /*placeMark(socketID, x, y) {
+    placeMark(socketID, x, y) {
 
         if ((this.state == GAMESTATE.p1Turn && socketID != this.p1) || (this.state == GAMESTATE.p2Turn && socketID != this.p2)) {
             throw 'Wrong player turn';
@@ -117,8 +117,8 @@ module.exports = class Game {
         }
 
         // Send updated state to players
-        this.updateStateAfterTurn();
-    }*/
+        //this.updateStateAfterTurn();
+    }
 
 
     /* Emits the result of the gamestate to the players
@@ -196,22 +196,17 @@ module.exports = class Game {
         // Randomly choose which player goes first
         if (startPlayer == undefined) {
             if (Math.random() <= 0.5) {
-                //this.setP1TurnState();
+                this.setP1TurnState();
             } else {
-                //this.setP2TurnState();
+                this.setP2TurnState();
             }
    
         // Set a player to start
         } else if (startPlayer == 1) {
-            //this.setP1TurnState();
+            this.setP1TurnState();
         } else {
-            //this.setP2TurnState();
+            this.setP2TurnState();
         }
-
-
-
-
-
     }
 
     /* Resets the given players values
@@ -257,14 +252,14 @@ module.exports = class Game {
 
     /* Set state to P2 turn and emit to everyone
     */
-    /*setP2TurnState() {
+    setP2TurnState() {
         this.state = GAMESTATE.p2Turn;
         this.io.emit('p2Turn', { 
             grid: this.grid,
             p2Name: this.p2Name
         });  
         console.log("set state to p2Turn  state = " + this.state);
-    }*/
+    }
 
     /* Set tie state and emit to eveyrone
     */
@@ -438,7 +433,7 @@ module.exports = class Game {
 
         // All grids were filled, so we tied
         return 0;
-    }
+    }*/
 
     // Return the state of the game
     getState() {
@@ -446,7 +441,7 @@ module.exports = class Game {
     }
 
     // Return if player 1 is connected or not
-    hasPlayer1() {
+    /*hasPlayer1() {
         if (this.p1) {
             return true;
         }

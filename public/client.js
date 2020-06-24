@@ -1,4 +1,13 @@
 var game;
+var lobby;
+
+const STATE = {
+    lobby: "lobby",
+    user: "user",
+    system: "system",
+    queued: "queued"
+}
+
 
 /* Client side gamestate
 */
@@ -32,14 +41,8 @@ class Game {
     }
 }
 
-const STATE = {
-    lobby: "lobby",
-    user: "user",
-    system: "system",
-    queued: "queued"
-}
 
-var lobby;
+
 class Lobby {
     constructor(players, messages) {
         this.players = players;   // array
@@ -321,7 +324,7 @@ socket.on('setupLobby', function(data) {
 
 /* Player 1's turn
 */
-/*socket.on('p1Turn', function(data) {
+socket.on('p1Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 1) {
@@ -332,11 +335,11 @@ socket.on('setupLobby', function(data) {
 
     // Remove rematch button
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});*/
+});
 
 /* Player 2's turn
 */
-/*socket.on('p2Turn', function(data) {
+socket.on('p2Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 2) {
@@ -347,7 +350,7 @@ socket.on('setupLobby', function(data) {
 
     // Remove rematch button
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});*/
+});
 
 
 
