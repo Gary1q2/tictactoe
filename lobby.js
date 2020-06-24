@@ -1,3 +1,4 @@
+const Game = require('./game.js');
 const STATE = {
     lobby: "lobby",
     user: "user",
@@ -15,17 +16,22 @@ module.exports = class Lobby {
         this.io = io;
     }
 
+    /* Creates new game with 2 players
+    */
+    createGame(p1, p2) {
+        var game = new Game(p1, this.players[p1].name, p2, this.players[p2].name, this.io);
+        this.games.push(game);
+    }
+
     /* Checks and matches queued players for a game
     */
     matchPlayersForGame() {
-        while (this.queue.length >= 2) {
+        if (this.queue.length >= 2) {
             console.log('matched a game for 2 players!');
 
-            console.log("cancel p1");
-            this.cancelQueue(this.queue[0]);
-
-            console.log("cancel p2");
-            this.cancelQueue(this.queue[0]);
+            var p1 = this.queue.shift();
+            var p2 = this.queue.shift();
+            this.createGame(p1, p2);
         }
     }
 

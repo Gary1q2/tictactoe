@@ -10,13 +10,12 @@ const GAMESTATE = {
 
 // Server side gamestate
 module.exports = class Game {
-    constructor(io) {
+    constructor(p1, p1Name, p2, p2Name, io) {
         this.state = GAMESTATE.empty;
-        this.p1 = false;
-        this.p2 = false;
-
-        this.p1Name = false;
-        this.p2Name = false;
+        this.p1 = p1;
+        this.p2 = p2;;
+        this.p1Name = p1Name;
+        this.p2Name = p2Name;
 
         this.grid = [[-1, -1, -1],
                      [-1, -1, -1],
@@ -28,6 +27,9 @@ module.exports = class Game {
         this.p2Rematch = false;
 
         this.printGrid();
+
+        this.setupGameForClient();
+        this.startGame();
     }
 
     /* Prints out the tictactoe grid 
@@ -58,27 +60,27 @@ module.exports = class Game {
 
     /* Shift the remaining player into P1 position if they are P2
     */
-    shiftToP1() {
+    /*shiftToP1() {
         this.p1 = this.p2;
         this.p1Name = this.p2Name;
 
         this.p2 = false;
         this.p2Name = false;
         this.p2Rematch = false;
-    }
+    }*/
 
 
     /* Set the game to an empty state
        Clears the grid and sets rematching to false
     */
-    setEmptyState() {
+    /*setEmptyState() {
         console.log("Setting gamestate to empty -> clearing stuff...");
         this.state = GAMESTATE.empty;
         
         this.clearGrid();
         this.p1Rematch = false;
         this.p2Rematch = false;
-    }
+    }*/
 
 
     /* Places a circle or cross and moves to next turn
@@ -88,7 +90,7 @@ module.exports = class Game {
        [x,y] must be -1
        Can only be called during P1/P2 turn state
     */
-    placeMark(socketID, x, y) {
+    /*placeMark(socketID, x, y) {
 
         if ((this.state == GAMESTATE.p1Turn && socketID != this.p1) || (this.state == GAMESTATE.p2Turn && socketID != this.p2)) {
             throw 'Wrong player turn';
@@ -116,50 +118,8 @@ module.exports = class Game {
 
         // Send updated state to players
         this.updateStateAfterTurn();
-    }
+    }*/
 
-
-    /* Decides what to do with each new person connecting to the server
-        P1 - Add them to player 1
-        P2 - Add them to player 2
-        Spectator - do nothing
-
-        Returns
-    */
-    playerJoin(socketID, name) {
-        console.log("new player with name = " + name + "  joined");
-
-        if (name == '') {
-            throw 'Player must login with a valid name!! player ignored as spectator';
-        }
-
-        if (this.state != GAMESTATE.empty) {
-            throw "New contestants can ONLY join in empty state   state = " + this.state;
-        }
-
-        if (!this.p1 && !this.p2) {
-            console.log("P1 joined!");
-            this.p1 = socketID;
-            this.p1Name = name;
-            this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
-
-        } else if (this.p1 && !this.p2) {
-            console.log("P2 joined!");
-            this.p2 = socketID;
-            this.p2Name = name;
-            this.io.to(this.p1).emit('p1-p2Join', this.p2Name);
-            this.io.to(this.p2).emit('p2-joinWaitForGame', {
-                p1Name: this.p1Name,
-                p2Name: this.p2Name
-            });
-
-        } else if (this.p1 && this.p2) {
-            console.log("Spectator joined. oi stop chiming in");
-
-        } else {
-            console.log("P2 is true but P1 is false ERRORRRRRR@#$%^&**#&@*&#@$^(*&@#$(*#@$)*$#(&#*(@^$(\n#@$*(&#@$(*&#(*@$!!!!!!!");
-        }
-    }
 
     /* Emits the result of the gamestate to the players
        Outcomes:
@@ -168,7 +128,7 @@ module.exports = class Game {
        -Tie
        -Game still in progress
     */
-    updateStateAfterTurn() {
+    /*updateStateAfterTurn() {
 
         // Check current state of grid
         // Player 1 won
@@ -200,6 +160,22 @@ module.exports = class Game {
                 this.setP1TurnState();           
             }
         }
+    }*/
+
+    /* Helps setup the game on client side
+    */
+    setupGameForClient() {
+        console.log("setuping clients...")
+        this.io.to(this.p1).emit('setupGame', {
+            playerID: 1,
+            p1Name: this.p1Name,
+            p2Name: this.p2Name
+        });
+        this.io.to(this.p2).emit('setupGame', {
+            playerID: 2,
+            p1Name: this.p1Name,
+            p2Name: this.p2Name
+        });
     }
 
     /* Starts the game and sets player parameter as starting turn
@@ -220,22 +196,27 @@ module.exports = class Game {
         // Randomly choose which player goes first
         if (startPlayer == undefined) {
             if (Math.random() <= 0.5) {
-                this.setP1TurnState();
+                //this.setP1TurnState();
             } else {
-                this.setP2TurnState();
+                //this.setP2TurnState();
             }
    
         // Set a player to start
         } else if (startPlayer == 1) {
-            this.setP1TurnState();
+            //this.setP1TurnState();
         } else {
-            this.setP2TurnState();
+            //this.setP2TurnState();
         }
+
+
+
+
+
     }
 
     /* Resets the given players values
     */
-    removePlayer(player) {
+    /*removePlayer(player) {
         if (player == 1) {
             this.p1 = false;
             this.p1Name = false;
@@ -245,7 +226,7 @@ module.exports = class Game {
             this.p2Name = false;
             this.p2Rematch = false;
         }
-    }
+    }*/
 
 
 
@@ -276,28 +257,28 @@ module.exports = class Game {
 
     /* Set state to P2 turn and emit to everyone
     */
-    setP2TurnState() {
+    /*setP2TurnState() {
         this.state = GAMESTATE.p2Turn;
         this.io.emit('p2Turn', { 
             grid: this.grid,
             p2Name: this.p2Name
         });  
         console.log("set state to p2Turn  state = " + this.state);
-    }
+    }*/
 
     /* Set tie state and emit to eveyrone
     */
-    setTieState() {
+    /*setTieState() {
         this.state = GAMESTATE.tie;
         this.io.emit('tie', this.grid);
-    }
+    }*/
 
 
 
     /* Checks if game is ready to be reset and
        resets if it is
     */
-    checkGameRestart() {
+    /*checkGameRestart() {
 
         // Everyone left
         if (!this.p1 && !this.p2) {
@@ -352,7 +333,7 @@ module.exports = class Game {
             this.setEmptyState();
             this.startGame();
         }
-    }
+    }*/
 
 
     /* Player accepted the rematch
@@ -362,7 +343,7 @@ module.exports = class Game {
 
        Refer to the test for specifications
     */
-    acceptRematch(socketID) {
+    /*acceptRematch(socketID) {
 
         if (socketID != this.p1 && socketID != this.p2) {
             throw 'Invalid player pressed rematch';
@@ -383,7 +364,7 @@ module.exports = class Game {
         }
 
         this.checkGameRestart();
-    }
+    }*/
 
 
 
@@ -391,7 +372,7 @@ module.exports = class Game {
     /* Decides what to do when somebody leaves
        Refer to the test to check for specifications
     */
-    playerLeave(socketID) {
+    /*playerLeave(socketID) {
 
         // Non critical player left - spectator or invalid socketID
         if (socketID != this.p1 && socketID != this.p2) {
@@ -407,7 +388,7 @@ module.exports = class Game {
         }
 
         this.checkGameRestart();
-    }
+    }*/
 
 
 
@@ -417,7 +398,7 @@ module.exports = class Game {
                  1 - P1 won
                  2 - P2 won
     */
-    checkGrid() {
+    /*checkGrid() {
 
         // Check for horizontal lines
         for (var i = 0; i < this.grid.length; i++) {
@@ -478,5 +459,5 @@ module.exports = class Game {
             return true;
         }
         return false;
-    }
+    }*/
 }

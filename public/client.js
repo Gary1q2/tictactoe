@@ -1,8 +1,8 @@
-//var game;
+var game;
 
 /* Client side gamestate
 */
-/*class Game {
+class Game {
     constructor(player) {
         this.player = player;  // Indicates whether player 1 or player 2
 
@@ -12,11 +12,11 @@
 
         // Update the grid!!!
         this.updateGrid(this.grid);
-    }*/
+    }
 
     /* Use new grid from server and update display
     */
-    /*updateGrid(newGrid) {
+    updateGrid(newGrid) {
         this.grid = newGrid;
         for (var i = 0; i < this.grid.length; i++) {
             for (var j = 0; j < this.grid[0].length; j++) {
@@ -30,7 +30,7 @@
             }
         }
     }
-}*/
+}
 
 const STATE = {
     lobby: "lobby",
@@ -351,67 +351,30 @@ socket.on('setupLobby', function(data) {
 
 
 
-
-// =================================================================
-// Player 1
-// =================================================================
-
-/* Player 1 joined - setup page and wait for P2
+/* Setup game screen for clients
 */
-/*socket.on('p1-joinWaitForP2', function(p1Name) {
-    console.log('change my game state to waiting for P2');
+socket.on('setupGame', function(data) {
+    game = new Game(data.playerID);
 
-    game = new Game(1);
+    document.getElementById('lobby').style.visibility = 'hidden';
+    document.getElementById('game').style.visibility = 'visible';
 
-    // Setup player 1 data
-    document.getElementById('p1Name').innerHTML = p1Name;
-    document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
+    // Player 1
+    if (data.playerID == 1) {
+        document.getElementById('p1Name').innerHTML = data.p1Name;
+        document.getElementById('p1Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
+        document.getElementById('p2Name').innerHTML = data.p2Name;
+        document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>";
 
-    // Setup player 2 empty
-    document.getElementById('p2Name').innerHTML = "??";
-    document.getElementById('p2Piece').innerHTML = "";
+    // Player 2
+    } else {
+        document.getElementById('p1Name').innerHTML = data.p2Name;
+        document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>";
+        document.getElementById('p2Name').innerHTML = data.p1Name;
+        document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>";
+    }
 
-    // Setup message box
-    document.getElementById('msgBox').innerHTML = "Waiting for player 2";
-
-    // Remove rematch
+    // Setup message box and remove rematch button
+    document.getElementById('msgBox').innerHTML = "Waiting for game to start...";
     document.getElementById('rematchButton').style.visibility = 'hidden';
-});*/
-
-
-
-
-// Player 2 finally joined - setup page
-/*socket.on('p1-p2Join', function(p2Name) {
-    console.log('Player 2 joined...');
-
-    // Setup player 2 data
-    document.getElementById('p2Name').innerHTML = p2Name;
-    document.getElementById('p2Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>"
-    document.getElementById('msgBox').innerHTML = "Game beginning soon..."
-});*/
-
-
-
-
-// =================================================================
-// Player 2
-// =================================================================
-
-/* Player 2 joined - setup page and wait for game to begin
-*/
-/*socket.on('p2-joinWaitForGame', function(data) {
-    console.log('You joined as player 2!!');
-
-    game = new Game(2);
-
-    // Setup yourself (player 2)
-    document.getElementById('p1Name').innerHTML = data.p2Name;
-    document.getElementById('p1Piece').innerHTML = "<img src='/img/cross.png' alt='cross' width='150' height='150'>"
-
-    // Setup other (player 1)
-    document.getElementById('p2Name').innerHTML = data.p1Name;
-    document.getElementById('p2Piece').innerHTML = "<img src='/img/circle.png' alt='circle' width='150' height='150'>"
-
-    document.getElementById('msgBox').innerHTML = "Game beginning soon...";
-});*/
+});
