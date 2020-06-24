@@ -267,16 +267,16 @@ socket.on('setupLobby', function(data) {
 
 /* Show that players tied
 */
-/*socket.on('tie', function(data) {
+socket.on('tie', function(data) {
     game.updateGrid(data);
 
     document.getElementById('msgBox').innerHTML = "Tie.....";  
     document.getElementById('rematchButton').style.visibility = 'visible';
-});*/
+});
 
 /* Show that player 1 won
 */
-/*socket.on('p1Won', function(data) {
+socket.on('p1Won', function(data) {
     game.updateGrid(data.grid);
 
     // P2 left during the game
@@ -296,11 +296,11 @@ socket.on('setupLobby', function(data) {
     }
 
     document.getElementById('rematchButton').style.visibility = 'visible';
-});*/
+});
 
 /* Show that player 2 won
 */
-/*socket.on('p2Won', function(data) {
+socket.on('p2Won', function(data) {
     game.updateGrid(data.grid);
 
     // P1 left during the game
@@ -320,7 +320,7 @@ socket.on('setupLobby', function(data) {
     }
 
     document.getElementById('rematchButton').style.visibility = 'visible';
-});*/
+});
 
 /* Player 1's turn
 */

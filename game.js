@@ -117,7 +117,7 @@ module.exports = class Game {
         }
 
         // Send updated state to players
-        //this.updateStateAfterTurn();
+        this.updateStateAfterTurn();
     }
 
 
@@ -128,7 +128,7 @@ module.exports = class Game {
        -Tie
        -Game still in progress
     */
-    /*updateStateAfterTurn() {
+    updateStateAfterTurn() {
 
         // Check current state of grid
         // Player 1 won
@@ -160,7 +160,7 @@ module.exports = class Game {
                 this.setP1TurnState();           
             }
         }
-    }*/
+    }
 
     /* Helps setup the game on client side
     */
@@ -263,10 +263,10 @@ module.exports = class Game {
 
     /* Set tie state and emit to eveyrone
     */
-    /*setTieState() {
+    setTieState() {
         this.state = GAMESTATE.tie;
         this.io.emit('tie', this.grid);
-    }*/
+    }
 
 
 
@@ -393,7 +393,7 @@ module.exports = class Game {
                  1 - P1 won
                  2 - P2 won
     */
-    /*checkGrid() {
+    checkGrid() {
 
         // Check for horizontal lines
         for (var i = 0; i < this.grid.length; i++) {
@@ -433,7 +433,7 @@ module.exports = class Game {
 
         // All grids were filled, so we tied
         return 0;
-    }*/
+    }
 
     // Return the state of the game
     getState() {
