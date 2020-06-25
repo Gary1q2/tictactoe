@@ -233,18 +233,15 @@ describe('Testing startGame()', function() {
    Spectator =================================================================================================
    Do nothing atm
 
-   Waiting for P2 state ======================================================================================
-   P1 - Convert to empty state                                        playerLeave
-
    Game state (p1Turn, p2Turn) ===============================================================================
-   P1 leave = P2 wins                                                 playerLeave
-   P2 leave = P1 wins                                                 playerLeave
+   P1 leave = P2 wins                                                 playerLeave                       back to lobby
+   P2 leave = P1 wins                                                 playerLeave                       back to lobby
 
    End state (p1Won, p2Won, tie) VICE VERSA <--> =============================================================
-   P1 accept <-> P2 accept = restart game                             acceptRematch for both
-   P1 accept <-> P2 leave  = put P1 in waiting state                  acceptRematch <-> playerLeave
-   P1 leave  <-> P2 accept = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave
-   P1 leave  <-> P2 leave  = game go to empty state                   playerLeave for both
+   P1 accept <-> P2 accept = restart game                             acceptRematch for both            restart game
+   P1 accept <-> P2 leave  = put P1 in waiting state                  acceptRematch <-> playerLeave     restart or lobby
+   P1 leave  <-> P2 accept = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave     restart or lobby
+   P1 leave  <-> P2 leave  = game go to empty state                   playerLeave for both              remove game if players gone...
 
    P1 accept <-> P2 wait   = wait for P2 answer                       ?
    P1 leave  <-> P2 wait   = wait for P2 answer                       ?
@@ -253,10 +250,10 @@ describe('Testing startGame()', function() {
    P1 wait   <-> P2 leave  = wait for P1 answer                       ?
 
    Player 2 versions =========================================================================================
-   P2 accept <-> P1 accept = restart game                             acceptRematch for both
-   P2 accept <-> P1 leave  = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave
-   P2 leave  <-> P1 accept = put P1 in waiting state                  acceptRematch <-> playerLeave
-   P2 leave  <-> P1 leave  = game go to empty state                   playerLeave for both
+   P2 accept <-> P1 accept = restart game                             acceptRematch for both             restart game
+   P2 accept <-> P1 leave  = put P2 in P1 position in waiting state   acceptRematch <-> playerLeave      restart or lobby
+   P2 leave  <-> P1 accept = put P1 in waiting state                  acceptRematch <-> playerLeave      restart or lobby
+   P2 leave  <-> P1 leave  = game go to empty state                   playerLeave for both               remove game if palyers gone
 
    P2 accept <-> P1 wait   = wait for P1 answer                       ?   
    P2 leave  <-> P1 wait   = wait for P1 answer                       ?

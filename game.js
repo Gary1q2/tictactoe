@@ -273,7 +273,7 @@ module.exports = class Game {
     /* Checks if game is ready to be reset and
        resets if it is
     */
-    /*checkGameRestart() {
+    checkGameRestart() {
 
         // Everyone left
         if (!this.p1 && !this.p2) {
@@ -328,7 +328,7 @@ module.exports = class Game {
             this.setEmptyState();
             this.startGame();
         }
-    }*/
+    }
 
 
     /* Player accepted the rematch
@@ -338,7 +338,7 @@ module.exports = class Game {
 
        Refer to the test for specifications
     */
-    /*acceptRematch(socketID) {
+    acceptRematch(socketID) {
 
         if (socketID != this.p1 && socketID != this.p2) {
             throw 'Invalid player pressed rematch';
@@ -359,7 +359,7 @@ module.exports = class Game {
         }
 
         this.checkGameRestart();
-    }*/
+    }
 
 
 

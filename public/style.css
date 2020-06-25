@@ -163,6 +163,17 @@ body {
   ======================================================
 */
 
+#forfeitButton {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+    font-size: 40px;
+    width: 200px;
+    height: 60px;
+    border: 1px black solid;
+}
+
 /* Grid pieces to display */
 .pieceDisplay {
     display: inline-block;

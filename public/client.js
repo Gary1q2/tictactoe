@@ -161,12 +161,12 @@ document.getElementById('msgInput').onkeypress = function(e) {
 
 /* Client pressed rematch button
 */
-/*function rematchPress() {
+function rematchPress() {
     socket.emit('acceptRematch');
 
     var opponentName = document.getElementById('p2Name').innerHTML;
     document.getElementById('msgBox').innerHTML = "Waiting for "+opponentName+" to accept rematch";
-}*/
+}
 
 
 /* Client submitted their name
@@ -211,6 +211,13 @@ function cancelQueue() {
         console.log("player CANCELED QUEUE!!!");
         socket.emit('cancelQueue');
     }
+}
+
+
+/* 
+*/
+function forfeitGame() {
+    
 }
 
 // =================================================
@@ -260,9 +267,9 @@ socket.on('setupLobby', function(data) {
 
 /* Opponent is asking for a rematch
 */
-/*socket.on('wantRematch', function(name) {
+socket.on('wantRematch', function(name) {
     document.getElementById('msgBox').innerHTML = name + ' would like a rematch';
-});*/
+});
 
 
 /* Show that players tied
@@ -360,6 +367,8 @@ socket.on('setupGame', function(data) {
     game = new Game(data.playerID);
 
     document.getElementById('lobby').style.visibility = 'hidden';
+    document.getElementById('cancelButton').style.visibility = 'hidden';
+
     document.getElementById('game').style.visibility = 'visible';
 
     // Player 1

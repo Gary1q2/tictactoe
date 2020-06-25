@@ -34,10 +34,13 @@
                     <div id='p2Piece'></div>
                     <div id='p2Name'>??</div>
                 </div>
+
+                <button id='forfeitButton' onclick='forfeitGame()'>Forfeit</button>
+
+
                 <div id='gridBox'>
                     <img src='/img/grid.png' alt='grid' width='300' height='300'>
                 </div>
-
                 <div id='gridPieces'>
                     <div class='pieceDisplay' id='grid_00'></div>
                     <div class='pieceDisplay' id='grid_01'></div>
@@ -49,7 +52,6 @@
                     <div class='pieceDisplay' id='grid_21'></div>
                     <div class='pieceDisplay' id='grid_22'></div>    
                 </div>
-
                 <div id='moveBox'>
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 0, y:0});"></div>
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:0});"></div>
@@ -61,11 +63,8 @@
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:2});"></div>
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:2});"></div>
                 </div>
-
-                <div id='msgBox'>
-                    Waiting for players...
-                </div>
-
+                
+                <div id='msgBox'>Waiting for players...</div>
                 <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
             </div>
         </div>
