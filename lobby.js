@@ -16,10 +16,36 @@ module.exports = class Lobby {
         this.io = io;
     }
 
+    /* Remove game that doesnt exist anymore
+    */
+    /*purgeGame(gameIndex) {
+        this.games.splice(gameIndex, 1);
+    }*/
+
+
+
+    /* Remove all games that have ended
+    */
+    purgeGames() {
+        console.log("purging games...");
+        var index = 0;
+        while (index < this.games.length) {
+            var game = this.games[index];
+            if (game.p1 == false && game.p2 == false) {
+                this.games.splice(index, 1);
+                console.log("REMOVED game @ index " + index);
+            } else {
+                index++;
+            }
+        }
+
+        console.log("Remaining games = " + this.games.length);
+    }
+
     /* Creates new game with 2 players
     */
     createGame(p1, p2) {
-        var game = new Game(p1, this.players[p1].name, p2, this.players[p2].name, this.io);
+        var game = new Game(p1, this.players[p1].name, p2, this.players[p2].name, this, this.io);
         this.games.push(game);
     }
 

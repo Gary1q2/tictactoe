@@ -217,6 +217,7 @@ function cancelQueue() {
 /* Forfeits and return back to lobby
 */
 function forfeitGame() {
+    console.log("foreited the game");
     socket.emit('forfeitGame');
 }
 
@@ -386,6 +387,7 @@ socket.on('setupGame', function(data) {
     document.getElementById('cancelButton').style.visibility = 'hidden';
 
     document.getElementById('game').style.visibility = 'visible';
+    document.getElementById('forfeitButton').style.visibility = 'visible';
 
     // Player 1
     if (data.playerID == 1) {
@@ -416,6 +418,8 @@ socket.on('loadLobby', function() {
     document.getElementById('playButton').innerHTML = 'Play';
     document.getElementById('playButton').style.width = '300px';
     document.getElementById('cancelButton').style.visibility = 'hidden';
+    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
+    document.getElementById('forfeitButton').style.visibility = 'hidden';
 
     document.getElementById('lobby').style.visibility = 'visible';
     document.getElementById('game').style.visibility = 'hidden';

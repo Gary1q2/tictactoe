@@ -10,7 +10,7 @@ const GAMESTATE = {
 
 // Server side gamestate
 module.exports = class Game {
-    constructor(p1, p1Name, p2, p2Name, io) {
+    constructor(p1, p1Name, p2, p2Name, lobby,  io) {
         this.state = GAMESTATE.empty;
         this.p1 = p1;
         this.p2 = p2;;
@@ -25,6 +25,8 @@ module.exports = class Game {
 
         this.p1Rematch = false;
         this.p2Rematch = false;
+
+        this.lobby = lobby;
 
         this.printGrid();
 
@@ -67,7 +69,17 @@ module.exports = class Game {
             throw 'Invalid socketID when back to lobbying';
         }
 
+        // Set player as left the game
+        if (socketID == this.p1) {
+            this.p1 = false;
+        } else {
+            this.p2 = false;
+        }
+
+
         this.io.to(socketID).emit('loadLobby');
+
+        this.lobby.purgeGames();
     }
 
 
@@ -84,6 +96,7 @@ module.exports = class Game {
 
         // Player 1 left
         if (socketID == this.p1) {
+            console.log('forfeit by player 1')
             this.state = GAMESTATE.p2Won;
             this.io.to(this.p1).emit('loadLobby');
             this.io.to(this.p2).emit('p2Won', {
@@ -91,14 +104,19 @@ module.exports = class Game {
                 left: true
             });
 
+            this.p1 = false;
+
         // Player 2 left
         } else {
+            console.log('forfeit by player 2')
             this.state = GAMESTATE.p1Won;
             this.io.to(this.p2).emit('loadLobby');
             this.io.to(this.p1).emit('p1Won', {
                 grid: this.grid,
                 left: true
             });    
+            
+            this.p2 = false;
         }
     }
 
