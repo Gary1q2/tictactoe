@@ -128,11 +128,17 @@ io.on('connection', function(socket) {
 
 
     // A player wanted to rematch
-    /*socket.on('acceptRematch', function() {
+    socket.on('acceptRematch', function() {
         console.log("someone wanted to REMATCH!!!");
 
-        game.acceptRematch(socket.id);
-    });*/
+        try {
+            var gameIndex = lobby.findPlayersGame(socket.id);
+            var game = lobby.games[gameIndex]; 
+            game.acceptRematch(socket.id);    
+        } catch (err) {
+            console.log(err);
+        }
+    });
 
 
 

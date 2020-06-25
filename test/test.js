@@ -260,6 +260,21 @@ describe('Testing startGame()', function() {
    P2 wait   <-> P1 accept = wait for P2 answer                       ?
    P2 wait   <-> P1 wait   = wait for both answers                    ?
    P2 wait   <-> P1 leave  = wait for P2 answer                       ?
+
+
+   NEW!!!!
+   Game state (p1Turn, p2Turn) ===============================================================================
+   p1 leave/lobbied               = endscreen    (p2)       ya                                             
+   p2 leave/lobbied               = endscreen    (p1)       ya                                     
+
+   End state (p1Won, p2Won, tie) =============================================================
+   p1 accept -> p2 accept         = restart game (both)     ya
+
+   p1 accept -> p2 leave/lobbied  = endscreen    (p1)       ya
+   p1 leave/lobbied               = endscreen    (p2)       ya
+   p2 accept -> p1 leave/lobbied  = endscreen    (p2)       ya
+   p2 leave/lobbied               = endscreen    (p1)       ya
+
 */
 describe('Testing playerLeave() && acceptRematch()', function() {
 

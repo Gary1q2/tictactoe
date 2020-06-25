@@ -157,8 +157,6 @@ document.getElementById('msgInput').onkeypress = function(e) {
 
 
 
-
-
 /* Client pressed rematch button
 */
 function rematchPress() {
@@ -233,6 +231,12 @@ function backToLobby() {
 // =================================================
 
 const socket = io();
+
+/* Show the opponent left on endscreen
+*/
+socket.on('opponentLeft', function() {
+    document.getElementById('rematchButton').style.visibility = 'hidden';
+});
 
 /* Show the normal lobby state
 */
@@ -420,6 +424,8 @@ socket.on('loadLobby', function() {
     document.getElementById('cancelButton').style.visibility = 'hidden';
     document.getElementById('backToLobbyButton').style.visibility = 'hidden';
     document.getElementById('forfeitButton').style.visibility = 'hidden';
+    document.getElementById('rematchButton').style.visibility = 'hidden';
+
 
     document.getElementById('lobby').style.visibility = 'visible';
     document.getElementById('game').style.visibility = 'hidden';

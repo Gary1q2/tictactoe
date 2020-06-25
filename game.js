@@ -69,11 +69,17 @@ module.exports = class Game {
             throw 'Invalid socketID when back to lobbying';
         }
 
-        // Set player as left the game
+        // Set player has left the game
         if (socketID == this.p1) {
             this.p1 = false;
+            if (this.p2 != false) {
+                this.io.to(this.p2).emit('opponentLeft');
+            }
         } else {
             this.p2 = false;
+            if (this.p1 != false) {
+                this.io.to(this.p1).emit('opponentLeft');
+            }
         }
 
 
@@ -115,7 +121,7 @@ module.exports = class Game {
                 grid: this.grid,
                 left: true
             });    
-            
+
             this.p2 = false;
         }
     }
@@ -136,14 +142,14 @@ module.exports = class Game {
     /* Set the game to an empty state
        Clears the grid and sets rematching to false
     */
-    /*setEmptyState() {
+    setEmptyState() {
         console.log("Setting gamestate to empty -> clearing stuff...");
         this.state = GAMESTATE.empty;
         
         this.clearGrid();
         this.p1Rematch = false;
         this.p2Rematch = false;
-    }*/
+    }
 
 
     /* Places a circle or cross and moves to next turn
@@ -338,55 +344,8 @@ module.exports = class Game {
     */
     checkGameRestart() {
 
-        // Everyone left
-        if (!this.p1 && !this.p2) {
-            this.setEmptyState();
-            console.log("nobody remains.... game is reset");
-
-        } else if (!this.p1 && this.p2) {
-
-            // P1 left during a game
-            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.state = GAMESTATE.p2Won;
-                this.io.emit('p2Won', {
-                    grid: this.grid,
-                    left: true
-                });
-                console.log("p1 left.... dog");
-
-            // P1 left after game && P2 want to play again
-            } else {
-                if (this.p2Rematch) {
-                    this.setEmptyState();
-                    this.shiftToP1();
-                    this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
-                    console.log("p2 is ready to play again");
-                }
-            }
-
-        } else if (this.p1 && !this.p2) {
-
-            // P2 left during a game
-            if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
-                this.state = GAMESTATE.p1Won;
-                this.io.emit('p1Won', {
-                    grid: this.grid,
-                    left: true
-                });
-
-                console.log("p2 left.... dog");
-
-            // P2 left after game && P1 want to play again
-            } else {
-                if (this.p1Rematch) {
-                    this.setEmptyState();
-                    this.io.to(this.p1).emit('p1-joinWaitForP2', this.p1Name);
-                    console.log("p1 is ready to play again");
-                }
-            }
-
         // Both players still here and want to play again
-        } else if (this.p1 && this.p2 && this.p1Rematch && this.p2Rematch) {
+        if (this.p1 && this.p2 && this.p1Rematch && this.p2Rematch) {
             console.log("both players want to play again.. ");
             this.setEmptyState();
             this.startGame();
@@ -402,6 +361,10 @@ module.exports = class Game {
        Refer to the test for specifications
     */
     acceptRematch(socketID) {
+
+        if (this.p1 == false || this.p2 == false) {
+            throw 'Can only offer rematch if both players present initially';
+        }
 
         if (socketID != this.p1 && socketID != this.p2) {
             throw 'Invalid player pressed rematch';
