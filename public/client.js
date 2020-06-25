@@ -361,8 +361,9 @@ socket.on('p1Turn', function(data) {
         document.getElementById('msgBox').innerHTML = data.p1Name + "'s turn...";  
     }
 
-    // Remove rematch button
+    document.getElementById('forfeitButton').style.visibility = 'visible';
     document.getElementById('rematchButton').style.visibility = 'hidden';
+    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
 });
 
 /* Player 2's turn
@@ -376,8 +377,9 @@ socket.on('p2Turn', function(data) {
         document.getElementById('msgBox').innerHTML = data.p2Name + "'s turn...";  
     }
 
-    // Remove rematch button
+    document.getElementById('forfeitButton').style.visibility = 'visible';
     document.getElementById('rematchButton').style.visibility = 'hidden';
+    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
 });
 
 
