@@ -35,8 +35,9 @@
                     <div id='p2Name'>??</div>
                 </div>
 
-                <button id='forfeitButton' onclick='forfeitGame()'>Forfeit</button>
 
+                <button id='forfeitButton' onclick='forfeitGame()'>Forfeit</button>
+                <button id='backToLobbyButton' onclick='backToLobby()'>Lobby</button>
 
                 <div id='gridBox'>
                     <img src='/img/grid.png' alt='grid' width='300' height='300'>
@@ -63,7 +64,7 @@
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 1, y:2});"></div>
                     <div class='clicker' type="button" onclick="socket.emit('place', {x: 2, y:2});"></div>
                 </div>
-                
+
                 <div id='msgBox'>Waiting for players...</div>
                 <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
             </div>

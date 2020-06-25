@@ -82,6 +82,32 @@ io.on('connection', function(socket) {
     });
 
 
+    // Bring player back to lobby after end game
+    socket.on('backToLobby', function() {
+        console.log("player back to lobby");
+        try {
+            var gameIndex = lobby.findPlayersGame(socket.id);
+            var game = lobby.games[gameIndex];
+            game.backToLobby(socket.id);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+
+    // Player forfeited the game
+    socket.on('forfeitGame', function() {
+        console.log('player forfeited the game');
+        try {
+            var gameIndex = lobby.findPlayersGame(socket.id);
+            var game = lobby.games[gameIndex];
+            game.forfeitGame(socket.id);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+
 
 
     // A player tried to place a mark

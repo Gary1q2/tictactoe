@@ -214,10 +214,17 @@ function cancelQueue() {
 }
 
 
-/* 
+/* Forfeits and return back to lobby
 */
 function forfeitGame() {
-    
+    socket.emit('forfeitGame');
+}
+
+/* Go back to lobby after game
+*/
+function backToLobby() {
+    console.log("back to lobby time");
+    socket.emit('backToLobby');
 }
 
 // =================================================
@@ -262,7 +269,7 @@ socket.on('removePlayer', function(socketID) {
 socket.on('setupLobby', function(data) {
     lobby = new Lobby(data.players, data.messages);
     document.getElementById('welcomeBox').style.visibility = 'hidden';
-    document.getElementById('gameBox').style.visibility = 'visible';   
+    document.getElementById('gameBox').style.visibility = 'visible';  
 });
 
 /* Opponent is asking for a rematch
@@ -279,6 +286,9 @@ socket.on('tie', function(data) {
 
     document.getElementById('msgBox').innerHTML = "Tie.....";  
     document.getElementById('rematchButton').style.visibility = 'visible';
+
+    document.getElementById('backToLobbyButton').style.visibility = 'visible';
+    document.getElementById('forfeitButton').style.visibility = 'hidden';
 });
 
 /* Show that player 1 won
@@ -295,14 +305,17 @@ socket.on('p1Won', function(data) {
 
         // P1 won fairly
         } else {
-            document.getElementById('msgBox').innerHTML = "YOU WON!!!!";   
+            document.getElementById('msgBox').innerHTML = "YOU WON!!!!"; 
+            document.getElementById('rematchButton').style.visibility = 'visible';  
         }
          
     } else {
         document.getElementById('msgBox').innerHTML = "You lost :(((";  
+        document.getElementById('rematchButton').style.visibility = 'visible';
     }
 
-    document.getElementById('rematchButton').style.visibility = 'visible';
+    document.getElementById('backToLobbyButton').style.visibility = 'visible';
+    document.getElementById('forfeitButton').style.visibility = 'hidden';
 });
 
 /* Show that player 2 won
@@ -320,13 +333,16 @@ socket.on('p2Won', function(data) {
         // P2 won fairly
         } else {
             document.getElementById('msgBox').innerHTML = "YOU WON!!!!"; 
+            document.getElementById('rematchButton').style.visibility = 'visible';
         }
           
     } else {
         document.getElementById('msgBox').innerHTML = "You lost :(((";  
+        document.getElementById('rematchButton').style.visibility = 'visible';
     }
 
-    document.getElementById('rematchButton').style.visibility = 'visible';
+    document.getElementById('backToLobbyButton').style.visibility = 'visible';
+    document.getElementById('forfeitButton').style.visibility = 'hidden';
 });
 
 /* Player 1's turn
@@ -389,4 +405,18 @@ socket.on('setupGame', function(data) {
     // Setup message box and remove rematch button
     document.getElementById('msgBox').innerHTML = "Waiting for game to start...";
     document.getElementById('rematchButton').style.visibility = 'hidden';
+});
+
+
+/* Load the lobby back up after game
+*/
+socket.on('loadLobby', function() {
+    console.log("set state back to lobby");
+    lobby.playerState = STATE.lobby;
+    document.getElementById('playButton').innerHTML = 'Play';
+    document.getElementById('playButton').style.width = '300px';
+    document.getElementById('cancelButton').style.visibility = 'hidden';
+
+    document.getElementById('lobby').style.visibility = 'visible';
+    document.getElementById('game').style.visibility = 'hidden';
 });

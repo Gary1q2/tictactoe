@@ -57,6 +57,51 @@ module.exports = class Game {
         }
     }
 
+    /* Brings player back to the lobby after end game screen
+    */
+    backToLobby(socketID) {
+        if (this.state == GAMESTATE.p1Turn || this.state == GAMESTATE.p2Turn) {
+            throw 'Can only back to lobby during end game';
+        }
+        if (socketID != this.p1 && socketID != this.p2) {
+            throw 'Invalid socketID when back to lobbying';
+        }
+
+        this.io.to(socketID).emit('loadLobby');
+    }
+
+
+    /* Forfeits the game and return player to lobby
+    */
+    forfeitGame(socketID) {
+
+        if (this.state != GAMESTATE.p1Turn && this.state != GAMESTATE.p2Turn) {
+            throw 'Can only forfeit while game in progress';
+        }
+        if (socketID != this.p1 && socketID != this.p2) {
+            throw 'Invalid socketID when forfeiting';
+        }
+
+        // Player 1 left
+        if (socketID == this.p1) {
+            this.state = GAMESTATE.p2Won;
+            this.io.to(this.p1).emit('loadLobby');
+            this.io.to(this.p2).emit('p2Won', {
+                grid: this.grid,
+                left: true
+            });
+
+        // Player 2 left
+        } else {
+            this.state = GAMESTATE.p1Won;
+            this.io.to(this.p2).emit('loadLobby');
+            this.io.to(this.p1).emit('p1Won', {
+                grid: this.grid,
+                left: true
+            });    
+        }
+    }
+
 
     /* Shift the remaining player into P1 position if they are P2
     */
