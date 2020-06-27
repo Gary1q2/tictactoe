@@ -7,6 +7,15 @@ const GAMESTATE = {
     tie: "tie"
 }
 
+const STATE = {
+    lobby: "lobby",
+    queued: "queued",
+    ingame: "ingame",
+    endscreen: "endscreen",
+    user: "user",
+    system: "system"
+}
+
 
 // Server side gamestate
 module.exports = class Game {
@@ -85,6 +94,12 @@ module.exports = class Game {
 
         this.io.to(socketID).emit('loadLobby');
 
+        this.io.emit('updatePlayerStatus', {
+            socketID: socketID,
+            state: STATE.lobby
+        });
+
+
         this.lobby.purgeGames();
     }
 
@@ -110,6 +125,11 @@ module.exports = class Game {
                 left: true
             });
 
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p2,
+                state: STATE.endscreen
+            });
+
             this.p1 = false;
 
         // Player 2 left
@@ -122,8 +142,19 @@ module.exports = class Game {
                 left: true
             });    
 
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p1,
+                state: STATE.endscreen
+            });
+
             this.p2 = false;
         }
+
+
+        this.io.emit('updatePlayerStatus', {
+            socketID: socketID,
+            state: STATE.lobby
+        });
     }
 
 
@@ -209,6 +240,15 @@ module.exports = class Game {
                 left: false
             });
 
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p1,
+                state: STATE.endscreen
+            });
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p2,
+                state: STATE.endscreen
+            });
+
         // Player 2 won
         } else if (gridState == 2) {
             this.state = GAMESTATE.p2Won;
@@ -217,9 +257,27 @@ module.exports = class Game {
                 left: false
             });
 
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p1,
+                state: STATE.endscreen
+            });
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p2,
+                state: STATE.endscreen
+            });
+
         // Players tied
         } else if (gridState == 0) {
             this.setTieState();
+
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p1,
+                state: STATE.endscreen
+            });
+            this.io.emit('updatePlayerStatus', {
+                socketID: this.p2,
+                state: STATE.endscreen
+            });
 
         // Game still in progress
         } else {
@@ -276,6 +334,17 @@ module.exports = class Game {
         } else {
             this.setP2TurnState();
         }
+
+        // Set players to be in game state
+        this.io.emit('updatePlayerStatus', {
+            socketID: this.p1,
+            state: STATE.ingame
+        });
+
+        this.io.emit('updatePlayerStatus', {
+            socketID: this.p2,
+            state: STATE.ingame
+        });
     }
 
     /* Resets the given players values

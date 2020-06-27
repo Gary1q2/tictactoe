@@ -55,6 +55,14 @@ class Lobby {
         this.refreshOnlineCount();
     }
 
+
+    /* Updates a players status in lobby
+    */
+    updatePlayerStatus(socketID, state) {
+        this.players[socketID].state = state;
+        this.refreshPlayersBox();
+    }
+
     /* Show the normal lobby state after dequeueing
     */
     dequeue() {
@@ -231,6 +239,12 @@ function backToLobby() {
 // =================================================
 
 const socket = io();
+
+/* Updates a players status in lobby
+*/
+socket.on('updatePlayerStatus', function(data) {
+    lobby.updatePlayerStatus(data.socketID, data.state);
+});
 
 /* Show the opponent left on endscreen
 */

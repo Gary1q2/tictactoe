@@ -1,6 +1,9 @@
 const Game = require('./game.js');
 const STATE = {
     lobby: "lobby",
+    queued: "queued",
+    ingame: "ingame",
+    endscreen: "endscreen",
     user: "user",
     system: "system"
 }
@@ -44,8 +47,8 @@ module.exports = class Lobby {
 
     /* Creates new game with 2 players
     */
-    createGame(p1, p2) {
-        var game = new Game(p1, this.players[p1].name, p2, this.players[p2].name, this, this.io);
+    createGame(p1Socket, p2Socket) {
+        var game = new Game(p1Socket, this.players[p1Socket].name, p2Socket, this.players[p2Socket].name, this, this.io);
         this.games.push(game);
     }
 
@@ -55,9 +58,9 @@ module.exports = class Lobby {
         if (this.queue.length >= 2) {
             console.log('matched a game for 2 players!');
 
-            var p1 = this.queue.shift();
-            var p2 = this.queue.shift();
-            this.createGame(p1, p2);
+            var p1Socket = this.queue.shift();
+            var p2Socket = this.queue.shift();
+            this.createGame(p1Socket, p2Socket);
         }
     }
 
@@ -85,8 +88,14 @@ module.exports = class Lobby {
             throw 'Player cannot join the queue more than once...';
         }
 
-        socket.emit('queued');
         this.queue.push(socket.id);
+
+        socket.emit('queued');
+        this.io.emit('updatePlayerStatus', {
+            socketID: socket.id,
+            state: STATE.queued
+        });
+
         this.matchPlayersForGame();
     }
 
@@ -108,6 +117,10 @@ module.exports = class Lobby {
             }
         }
         this.io.to(socketID).emit('dequeued');
+        this.io.emit('updatePlayerStatus', {
+            socketID: socketID,
+            state: STATE.lobby
+        });
     }
 
     /* A new player joined the lobby
