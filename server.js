@@ -11,7 +11,7 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 
-const PORT = 6969;
+const PORT = process.env.PORT || 6969;
 const lobby = new Lobby(io);
 //const game = new Game(io);
 
