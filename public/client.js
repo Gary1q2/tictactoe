@@ -250,6 +250,7 @@ socket.on('updatePlayerStatus', function(data) {
 */
 socket.on('opponentLeft', function() {
     document.getElementById('rematchButton').style.visibility = 'hidden';
+    document.getElementById('msgBox').innerHTML += '<br>Opponent left';
 });
 
 /* Show the normal lobby state
