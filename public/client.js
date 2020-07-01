@@ -289,7 +289,7 @@ socket.on('removePlayer', function(socketID) {
 socket.on('setupLobby', function(data) {
     lobby = new Lobby(data.players, data.messages);
     document.getElementById('welcomeBox').style.visibility = 'hidden';
-    document.getElementById('gameBox').style.visibility = 'visible';  
+    document.getElementById('lobby').style.visibility = 'visible';  
 });
 
 /* Opponent is asking for a rematch

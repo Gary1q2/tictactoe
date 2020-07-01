@@ -12,7 +12,6 @@ body {
     width: 900px;
     height: 600px; 
     border: 3px solid black;
-    visibility: hidden;
 }
 
 
@@ -20,11 +19,15 @@ body {
     visibility: hidden;
 }
 
+
 /*======================================================
    Lobby 
   ======================================================
 */
 
+#lobby {
+    visibility: hidden;
+}
 
 #chatBox {
     position: absolute;
