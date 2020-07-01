@@ -35,7 +35,7 @@ server.listen(PORT, function() {
 // Handling communications
 io.on('connection', function(socket) {
 
-    // Player logged in
+    // Player logged in 
     socket.on('submitName', function(name) {
 
         try {
