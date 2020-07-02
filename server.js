@@ -16,14 +16,18 @@ const io = socketIO(server);
 
 const PORT = process.env.PORT || 6969;
 
-const lobby = new Lobby(io);
-const account = new Account(io);
+
+
+// Client classes
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'Guineaisfat12',
     database: 'mydb'
 });
+const lobby = new Lobby(io);
+const account = new Account(io, lobby, db);
+
 
 
 // Set folder to public
@@ -41,6 +45,8 @@ server.listen(PORT, function() {
 
 
 
+
+
 // Connected to SQL database
 db.connect(function(err) {
     if (err) throw err;
@@ -54,7 +60,7 @@ io.on('connection', function(socket) {
     // Player logged in 
     socket.on('login', function(data) {
         try {
-            account.login(data.username, data.password);
+            account.login(socket, data.username, data.password);
         } catch (err) {
             console.log(err);
         }

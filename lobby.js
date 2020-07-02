@@ -126,11 +126,7 @@ module.exports = class Lobby {
     /* A new player joined the lobby
     */
     playerJoin(socket, name) {
-        console.log("new player with name = " + name + "  connected to lobby");
-
-        if (name == '') {
-            throw 'Player must login with a valid name!! player ignored as fail spectator';
-        }
+        console.log(name + " connected to lobby");
 
         // Add player to dict
         var player = {
@@ -161,7 +157,7 @@ module.exports = class Lobby {
             throw 'Invalid socketID leaving game.... must be stale player?';
         }
 
-        console.log('player ' + this.players[socket.id].name + 'left :(');
+        console.log('player ' + this.players[socket.id].name + ' left :(');
 
         // Send player removal to all players
         socket.broadcast.emit('removePlayer', socket.id);

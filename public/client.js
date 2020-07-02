@@ -106,6 +106,14 @@ function backToLobby() {
 
 const socket = io();
 
+/* Failed to login
+*/
+socket.on('loginFail', function() {
+    console.log('got failed login');
+    document.getElementById('loginMsg').innerHTML = 'Incorrect user or pass';
+});
+
+
 /* Updates a players status in lobby
 */
 socket.on('updatePlayerStatus', function(data) {
@@ -154,7 +162,7 @@ socket.on('removePlayer', function(socketID) {
 */
 socket.on('setupLobby', function(data) {
     lobby = new Lobby(data.players, data.messages);
-    document.getElementById('welcomeBox').style.visibility = 'hidden';
+    document.getElementById('loginInterface').style.visibility = 'hidden';
     document.getElementById('lobby').style.visibility = 'visible';  
 });
 
