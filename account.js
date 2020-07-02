@@ -26,10 +26,25 @@ module.exports = class Account {
         });
     }
 
-
     /* Register a new user to SQL database
     */
-    register(user, pass, confirmPass) {
+    register(socket, user, pass, confirmPass) {
+        if (user == '' || pass == '') {
+            throw 'User or pass cannot be empty';
+        }
+        if (pass != confirmPass) {
+            throw 'Passwords must match';
+        }
 
+        var sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
+        this.db.query(sql, [user, pass], function(err, result) {
+            if (err) {
+                console.log('User already exists...');
+                socket.emit('registerFail');
+                return;
+            }
+            console.log('Successfully registered user ' + user);
+            socket.emit('registerSuccess');
+        });
     }
 }

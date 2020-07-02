@@ -66,6 +66,14 @@ io.on('connection', function(socket) {
         }
     });
 
+    // New player registered
+    socket.on('register', function(data) {
+        try {
+            account.register(socket, data.username, data.password, data.confirmPassword);
+        } catch (err) {
+            console.log(err);
+        }
+    });
     /*socket.on('submitName', function(name) {
 
         try {

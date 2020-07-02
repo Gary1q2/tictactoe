@@ -106,6 +106,20 @@ function backToLobby() {
 
 const socket = io();
 
+/* Failed registration - user already exists
+*/
+socket.on('registerFail', function() {
+    console.log('user already exists...');
+    document.getElementById('registerMsg').innerHTML = 'User already exists...';
+});
+
+/* Successfully registered user
+*/
+socket.on('registerSuccess', function() {
+    console.log('registered user');
+    document.getElementById('registerMsg').innerHTML = 'User registered!';
+});
+
 /* Failed to login
 */
 socket.on('loginFail', function() {
