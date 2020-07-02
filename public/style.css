@@ -146,6 +146,7 @@ body {
 }
 #loginButton {
     font-size: 50px;
+    float: right;
 }
 
 #noAccountBox {
@@ -162,9 +163,8 @@ body {
     font-size: 50px;
 }
 
-#loginInterface {
-    visibility: hidden;
-}
+
+
 
 
 #registerBox {
@@ -177,6 +177,7 @@ body {
     width: 700px;
     height: 250px;
     border: 1px solid black;
+    visibility: hidden;
 }
 #userRegister {
     font-size: 50px;
@@ -191,6 +192,10 @@ body {
     width: 300px;
 }
 #registerButton {
+    font-size: 50px;
+    float: right;
+}
+#switchToLoginButton {
     font-size: 50px;
 }
 

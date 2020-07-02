@@ -75,7 +75,7 @@
                 <button id='nameButton' onclick='submitName()'>Submit</button>
             </div>-->
 
-            <form id='registerBox'>
+            <form id='registerBox' onsubmit='return false'>
                 <label for='userRegister'>Username:</label>
                 <input type='text' id='userRegister' name='userRegister'><br>
                 <label for='passRegister'>Password:</label>
@@ -83,11 +83,13 @@
                 <label for='confirmPassRegister'>Confirm password:</label>
                 <input type='password' id='confirmPassRegister' name='confirmPassRegister'><br>
                 <input type='submit' id='registerButton' value='Register'>
+
+                <button id='switchToLoginButton' onsubmit='return false' onclick='account.switchToLogin()'>Back to login</button>
             </form>
 
 
             <div id='loginInterface'>
-                <form id='loginBox'>
+                <form id='loginBox' onsubmit='return false'>
                     <label for='userLogin'>Username:</label>
                     <input type='text' id='userLogin' name='userLogin'><br>
                     <label for='passLogin'>Password:</label>
@@ -98,13 +100,15 @@
                 </form>
 
 
-                <form id='noAccountBox'>
+                <form id='noAccountBox' onsubmit='return false' onclick='account.switchToRegister()''>
                     <label for='switchToRegisterButton'>No account?</label>
                     <input type='submit' id='switchToRegisterButton' value='Register'>
                 </form>
             <div>
 
-        </div>      
+        </div>  
+        <script src='./classes.js'></script>    
         <script src='./client.js'></script>
+
     </body>
 </html>
