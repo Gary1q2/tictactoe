@@ -4,6 +4,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const mysql = require('mysql');
 
+
 const Game = require('./game.js');
 const Lobby = require('./lobby.js');
 const Account = require('./account.js');
@@ -17,8 +18,12 @@ const PORT = process.env.PORT || 6969;
 
 const lobby = new Lobby(io);
 const account = new Account(io);
-
-//const game = new Game(io);
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Guineaisfat12',
+    database: 'mydb'
+});
 
 
 // Set folder to public
@@ -34,6 +39,13 @@ server.listen(PORT, function() {
     console.log(`Starting server on port ${PORT}`);
 });
 
+
+
+// Connected to SQL database
+db.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected to mySQL database!");
+});
 
 
 // Handling communications
