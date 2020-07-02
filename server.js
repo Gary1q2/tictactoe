@@ -57,6 +57,15 @@ db.connect(function(err) {
 // Handling communications
 io.on('connection', function(socket) {
 
+    // New player registered
+    socket.on('register', function(data) {
+        try {
+            account.register(socket, data.username, data.password, data.confirmPassword);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
     // Player logged in 
     socket.on('login', function(data) {
         try {
@@ -66,32 +75,6 @@ io.on('connection', function(socket) {
         }
     });
 
-    // New player registered
-    socket.on('register', function(data) {
-        try {
-            account.register(socket, data.username, data.password, data.confirmPassword);
-        } catch (err) {
-            console.log(err);
-        }
-    });
-    /*socket.on('submitName', function(name) {
-
-        try {
-            lobby.playerJoin(socket, name)
-        } catch (err) {
-            console.log(err);
-        }
-
-        // Start the game if P2 joins
-        //if (socket.id == game.p2) {
-        //    game.startGame();
-
-        // Spectator joined...
-        //} else if (socket.id != game.p1 && socket.id != game.p2) {
-            //send a spectator page...
-        //}
-    });*/
-
     // Player sent a message in lobby
     socket.on('msgLobby-player', function(msg) {
         try {
@@ -100,7 +83,6 @@ io.on('connection', function(socket) {
             console.log(err);
         }
     });
-
 
     // Player queued up for game
     socket.on('playerQueued', function() {

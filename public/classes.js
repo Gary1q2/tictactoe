@@ -30,7 +30,7 @@ class Account {
         document.getElementById('loginInterface').style.visibility = 'hidden';
         document.getElementById('registerBox').style.visibility = 'visible';
 
-        document.getElementById('registerMsg').innerHTML = '';
+        account.setRegisterMsg('');
     }
 
     /* Switch to login account interface
@@ -47,15 +47,15 @@ class Account {
     register(user, pass, confirmPass) {
 
         if (user == '') {
-            document.getElementById('registerMsg').innerHTML = 'Please enter valid username';
+            account.setRegisterMsg('Please enter valid username');
             return;
         }
         if (pass == '') {
-            document.getElementById('registerMsg').innerHTML = 'Plz enter valid password';
+            account.setRegisterMsg('Plz enter valid password');
             return;        
         }
         if (pass != confirmPass) {
-            document.getElementById('registerMsg').innerHTML = 'Pass must match';
+            account.setRegisterMsg('Pass must match');
             return;        
         }
 
@@ -64,7 +64,13 @@ class Account {
             password: pass,
             confirmPassword: confirmPass
         });
-        document.getElementById('registerMsg').innerHTML = 'Request send to server';
+        account.setRegisterMsg('Request send to server');
+    }
+
+    /* Change the register help message
+    */
+    setRegisterMsg(string) {
+        document.getElementById('registerMsg').innerHTML = string;
     }
 }
 

@@ -1,3 +1,5 @@
+/* Deals with login in and signing up of accounts
+*/
 module.exports = class Account {
     constructor(io, lobby, db) {
         this.io = io;
@@ -36,6 +38,7 @@ module.exports = class Account {
             throw 'Passwords must match';
         }
 
+        // Check if user already exists otherwise create new account
         var sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
         this.db.query(sql, [user, pass], function(err, result) {
             if (err) {

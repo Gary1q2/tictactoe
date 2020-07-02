@@ -110,14 +110,14 @@ const socket = io();
 */
 socket.on('registerFail', function() {
     console.log('user already exists...');
-    document.getElementById('registerMsg').innerHTML = 'User already exists...';
+    account.setRegisterMsg('User already exists...');
 });
 
 /* Successfully registered user
 */
 socket.on('registerSuccess', function() {
     console.log('registered user');
-    document.getElementById('registerMsg').innerHTML = 'User registered!';
+    account.setRegisterMsg('User registered!');
 });
 
 /* Failed to login
