@@ -10,8 +10,18 @@ class Account {
 
     /* Login using username and password
     */
-    login() {
+    login(user, pass) {
 
+        if (user == '' || pass == '') {
+            document.getElementById('loginMsg').innerHTML = 'User or pass cant be empty';
+            return;   
+        }
+
+        socket.emit('login', {
+            username: user,
+            password: pass
+        });
+        document.getElementById('loginMsg').innerHTML = 'Request send to server';
     }
 
     /* Switch to register account interface
@@ -19,6 +29,8 @@ class Account {
     switchToRegister() {
         document.getElementById('loginInterface').style.visibility = 'hidden';
         document.getElementById('registerBox').style.visibility = 'visible';
+
+        document.getElementById('registerMsg').innerHTML = '';
     }
 
     /* Switch to login account interface
@@ -26,12 +38,33 @@ class Account {
     switchToLogin() {
         document.getElementById('registerBox').style.visibility = 'hidden';
         document.getElementById('loginInterface').style.visibility = 'visible';
+
+        document.getElementById('loginMsg').innerHTML = '';
     }
 
     /* Register a new account
     */
-    register() {
+    register(user, pass, confirmPass) {
 
+        if (user == '') {
+            document.getElementById('registerMsg').innerHTML = 'Please enter valid username';
+            return;
+        }
+        if (pass == '') {
+            document.getElementById('registerMsg').innerHTML = 'Plz enter valid password';
+            return;        
+        }
+        if (pass != confirmPass) {
+            document.getElementById('registerMsg').innerHTML = 'Pass must match';
+            return;        
+        }
+
+        socket.emit('register', {
+            username: user,
+            password: pass,
+            confirmPassword: confirmPass
+        });
+        document.getElementById('registerMsg').innerHTML = 'Request send to server';
     }
 }
 
