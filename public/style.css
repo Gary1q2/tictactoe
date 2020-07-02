@@ -20,6 +20,7 @@ body {
 }
 
 
+
 /*======================================================
    Lobby 
   ======================================================
@@ -124,6 +125,74 @@ body {
   ======================================================
 */
 
+#loginBox {
+    position: absolute;
+    top: 200px;
+    left: 100px;
+
+    padding: 20px;
+    font-size: 50px;
+    width: 700px;
+    height: 200px;
+    border: 1px solid black;
+}
+#userLogin {
+    font-size: 50px;
+    width: 400px;
+}
+#passLogin {
+    font-size: 50px;
+    width: 400px;
+}
+#loginButton {
+    font-size: 50px;
+}
+
+#noAccountBox {
+    position: absolute;
+    top: 480px;
+    left: 200px;
+
+    width: 500px;
+    height: 70px;
+    font-size: 50px;
+    border: 1px solid black;
+}
+#switchToRegisterButton {
+    font-size: 50px;
+}
+
+#loginInterface {
+    visibility: hidden;
+}
+
+
+#registerBox {
+    position: absolute;
+    top: 200px;
+    left: 100px;
+
+    padding: 20px;
+    font-size: 50px;
+    width: 700px;
+    height: 250px;
+    border: 1px solid black;
+}
+#userRegister {
+    font-size: 50px;
+    width: 400px;
+}
+#passRegister {
+    font-size: 50px;
+    width: 400px;
+}
+#confirmPassRegister {
+    font-size: 50px;
+    width: 300px;
+}
+#registerButton {
+    font-size: 50px;
+}
 
 
 /* Welcome name input */

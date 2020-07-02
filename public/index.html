@@ -68,12 +68,42 @@
                 <div id='msgBox'>Waiting for players...</div>
                 <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
             </div>
-
+            <!--
             <div id='welcomeBox'>
                 <div id='welcomeMsg'>Enter your name:</div>
                 <input id='nameInput' type='text'>
                 <button id='nameButton' onclick='submitName()'>Submit</button>
-            </div>
+            </div>-->
+
+            <form id='registerBox'>
+                <label for='userRegister'>Username:</label>
+                <input type='text' id='userRegister' name='userRegister'><br>
+                <label for='passRegister'>Password:</label>
+                <input type='password' id='passRegister' name='passRegister'><br>
+                <label for='confirmPassRegister'>Confirm password:</label>
+                <input type='password' id='confirmPassRegister' name='confirmPassRegister'><br>
+                <input type='submit' id='registerButton' value='Register'>
+            </form>
+
+
+            <div id='loginInterface'>
+                <form id='loginBox'>
+                    <label for='userLogin'>Username:</label>
+                    <input type='text' id='userLogin' name='userLogin'><br>
+                    <label for='passLogin'>Password:</label>
+                    <input type='password' id='passLogin' name='passLogin'><br>
+                    <input type='submit' id='loginButton' value='Log in'>
+
+
+                </form>
+
+
+                <form id='noAccountBox'>
+                    <label for='switchToRegisterButton'>No account?</label>
+                    <input type='submit' id='switchToRegisterButton' value='Register'>
+                </form>
+            <div>
+
         </div>      
         <script src='./client.js'></script>
     </body>
