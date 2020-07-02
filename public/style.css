@@ -148,6 +148,9 @@ body {
     font-size: 50px;
     float: right;
 }
+#loginMsg {
+    font-size: 30px;
+}
 
 #noAccountBox {
     position: absolute;
@@ -197,6 +200,9 @@ body {
 }
 #switchToLoginButton {
     font-size: 50px;
+}
+#registerMsg {
+    font-size: 30px;
 }
 
 

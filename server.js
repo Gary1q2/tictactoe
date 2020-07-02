@@ -6,6 +6,7 @@ const mysql = require('mysql');
 
 const Game = require('./game.js');
 const Lobby = require('./lobby.js');
+const Account = require('./account.js');
 
 // Global variables
 const app = express();
@@ -13,7 +14,10 @@ const server = http.Server(app);
 const io = socketIO(server);
 
 const PORT = process.env.PORT || 6969;
+
 const lobby = new Lobby(io);
+const account = new Account(io);
+
 //const game = new Game(io);
 
 
@@ -36,7 +40,15 @@ server.listen(PORT, function() {
 io.on('connection', function(socket) {
 
     // Player logged in 
-    socket.on('submitName', function(name) {
+    socket.on('login', function(data) {
+        try {
+            account.login(data.username, data.password);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    /*socket.on('submitName', function(name) {
 
         try {
             lobby.playerJoin(socket, name)
@@ -52,7 +64,7 @@ io.on('connection', function(socket) {
         //} else if (socket.id != game.p1 && socket.id != game.p2) {
             //send a spectator page...
         //}
-    });
+    });*/
 
     // Player sent a message in lobby
     socket.on('msgLobby-player', function(msg) {
