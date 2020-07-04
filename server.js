@@ -4,7 +4,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const mysql = require('mysql');
 
-
+// Class dependencies
 const Game = require('./game.js');
 const Lobby = require('./lobby.js');
 const Account = require('./account.js');
@@ -13,10 +13,7 @@ const Account = require('./account.js');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
-
 const PORT = process.env.PORT || 6969;
-
-
 
 // Client classes
 const db = mysql.createConnection({
@@ -27,6 +24,9 @@ const db = mysql.createConnection({
 });
 const lobby = new Lobby(io);
 const account = new Account(io, lobby, db);
+
+
+
 
 
 
@@ -127,8 +127,6 @@ io.on('connection', function(socket) {
             console.log(err);
         }
     });
-
-
 
 
     // A player tried to place a mark

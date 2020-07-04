@@ -21,6 +21,12 @@ document.getElementById('msgInput').onkeypress = function(e) {
     }
 }
 
+/* Refreshes the page and logs player out
+*/
+function logout() {
+    document.location.reload();
+}
+
 
 
 
