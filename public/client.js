@@ -1,6 +1,7 @@
+const socket = io();
 var game;
 var lobby;
-var account = new Account();
+var account = new Account(socket);
 
 const STATE = {
     lobby: "lobby",
@@ -14,72 +15,22 @@ const STATE = {
 document.getElementById('msgInput').onkeypress = function(e) {
     if (e.keyCode == 13) {
         console.log("pressed enter to submit msg");
-        submitMsg();
+        lobby.submitMsg();
     }
 }
 
 
-/* Client pressed rematch button
-*/
-function rematchPress() {
-    socket.emit('acceptRematch');
-
-    var opponentName = document.getElementById('p2Name').innerHTML;
-    game.setMsgBox("Waiting for " + opponentName + " to accept rematch");
-}
 
 
 
-/* Player submitted a message
-*/
-function submitMsg() {
-    console.log("submit msg");
-
-    // Only send message if not empty string
-    if (document.getElementById('msgInput').value != '') {
-        socket.emit('msgLobby-player', document.getElementById('msgInput').value);
-        document.getElementById('msgInput').value = '';
-    }
-}
-
-/* Player pressed play button to queue up for game
-*/
-function queueUp() {
-    if (lobby.playerState == STATE.lobby) {
-        console.log("queued up for game...");
-        socket.emit('playerQueued');    
-    }
-}
-
-/* Player pressed cancel queue button
-*/
-function cancelQueue() {
-    if (lobby.playerState == STATE.queued) {
-        console.log("player CANCELED QUEUE!!!");
-        socket.emit('cancelQueue');
-    }
-}
 
 
-/* Forfeits and return back to lobby
-*/
-function forfeitGame() {
-    console.log("foreited the game");
-    socket.emit('forfeitGame');
-}
-
-/* Go back to lobby after game
-*/
-function backToLobby() {
-    console.log("back to lobby time");
-    socket.emit('backToLobby');
-}
 
 // =================================================
 // Socket stuff
 // =================================================
 
-const socket = io();
+
 
 /* Failed registration - user already exists
 */
@@ -150,7 +101,7 @@ socket.on('removePlayer', function(socketID) {
 /* Setup the lobby for client
 */
 socket.on('setupLobby', function(data) {
-    lobby = new Lobby(data.players, data.messages);
+    lobby = new Lobby(socket, data.players, data.messages);
     document.getElementById('loginInterface').style.visibility = 'hidden';
     document.getElementById('lobby').style.visibility = 'visible';  
 });
@@ -265,7 +216,7 @@ socket.on('p2Turn', function(data) {
 /* Setup game screen for clients
 */
 socket.on('setupGame', function(data) {
-    game = new Game(data.playerID);
+    game = new Game(socket, data.playerID);
 
     document.getElementById('lobby').style.visibility = 'hidden';
     document.getElementById('cancelButton').style.visibility = 'hidden';

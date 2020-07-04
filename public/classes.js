@@ -4,8 +4,8 @@
 */
 class Account {
 
-    constructor() {
-
+    constructor(socket) {
+        this.socket = socket;
     }
 
     /* Login using username and password
@@ -17,7 +17,7 @@ class Account {
             return;   
         }
 
-        socket.emit('login', {
+        this.socket.emit('login', {
             username: user,
             password: pass
         });
@@ -59,7 +59,7 @@ class Account {
             return;        
         }
 
-        socket.emit('register', {
+        this.socket.emit('register', {
             username: user,
             password: pass,
             confirmPassword: confirmPass
@@ -78,7 +78,9 @@ class Account {
 /* Client side gamestate
 */
 class Game {
-    constructor(player) {
+    constructor(socket, player) {
+        this.socket = socket;
+
         this.player = player;  // Indicates whether player 1 or player 2
 
         this.grid = [[-1, -1, -1],
@@ -106,6 +108,31 @@ class Game {
         }
     }
 
+    /* Client pressed rematch button
+    */
+    rematchPress() {
+        this.socket.emit('acceptRematch');
+
+        var opponentName = document.getElementById('p2Name').innerHTML;
+        this.setMsgBox("Waiting for " + opponentName + " to accept rematch");
+    }
+
+
+    /* Forfeits and return back to lobby
+    */
+    forfeitGame() {
+        console.log("foreited the game");
+        this.socket.emit('forfeitGame');
+    }
+
+
+    /* Go back to lobby after game
+    */
+    backToLobby() {
+        console.log("back to lobby time");
+        this.socket.emit('backToLobby');
+    }
+
     /* Set the message box
     */
     setMsgBox(string) {
@@ -122,7 +149,8 @@ class Game {
 
 
 class Lobby {
-    constructor(players, messages) {
+    constructor(socket, players, messages) {
+        this.socket = socket;
         this.players = players;   // array
         this.messages = messages; // dict
 
@@ -131,6 +159,38 @@ class Lobby {
         this.refreshChatbox();
         this.refreshPlayersBox();
         this.refreshOnlineCount();
+    }
+
+
+    /* Player submitted a message
+    */
+    submitMsg() {
+        console.log("submit msg");
+
+        // Only send message if not empty string
+        if (document.getElementById('msgInput').value != '') {
+            this.socket.emit('msgLobby-player', document.getElementById('msgInput').value);
+            document.getElementById('msgInput').value = '';
+        }
+    }
+
+
+    /* Player pressed play button to queue up for game
+    */
+    queueUp() {
+        if (this.playerState == STATE.lobby) {
+            console.log("queued up for game...");
+            this.socket.emit('playerQueued');    
+        }
+    }
+
+    /* Player pressed cancel queue button
+    */
+    cancelQueue() {
+        if (this.playerState == STATE.queued) {
+            console.log("player CANCELED QUEUE!!!");
+            this.socket.emit('cancelQueue');
+        }
     }
 
 

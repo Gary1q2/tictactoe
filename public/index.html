@@ -14,10 +14,10 @@
                 <div id='chatBox'></div>
                 <div id='playerChat'>
                     <input id='msgInput' type='text'>
-                    <button id='msgButton' onclick='submitMsg()'>Enter</button>
+                    <button id='msgButton' onclick='lobby.submitMsg()'>Enter</button>
                 </div>
-                <button id='playButton' onclick='queueUp()'>Play</button>
-                <button id='cancelButton' onclick='cancelQueue()'>X</button>
+                <button id='playButton' onclick='lobby.queueUp()'>Play</button>
+                <button id='cancelButton' onclick='lobby.cancelQueue()'>X</button>
                 <div id='playersBox'></div>
                 <div id='playersOnline'>0 online :(</div>
             </div>
@@ -36,8 +36,8 @@
                 </div>
 
 
-                <button id='forfeitButton' onclick='forfeitGame()'>Forfeit</button>
-                <button id='backToLobbyButton' onclick='backToLobby()'>Lobby</button>
+                <button id='forfeitButton' onclick='game.forfeitGame()'>Forfeit</button>
+                <button id='backToLobbyButton' onclick='game.backToLobby()'>Lobby</button>
 
                 <div id='gridBox'>
                     <img src='/img/grid.png' alt='grid' width='300' height='300'>
@@ -66,7 +66,7 @@
                 </div>
 
                 <div id='msgBox'>Waiting for players...</div>
-                <button id='rematchButton' onclick='rematchPress()'>Rematch</button>
+                <button id='rematchButton' onclick='game.rematchPress()'>Rematch</button>
             </div>
 
 
