@@ -10,25 +10,13 @@ const STATE = {
 }
 
 
-// Focus the name input text box
-/*document.getElementById('nameInput').focus();
-
-// Submit name input with enter
-document.getElementById('nameInput').onkeypress = function(e) {
-    if (e.keyCode == 13) {
-        console.log("pressed enter to submit name");
-        submitName();
-    }
-}
-
 // Submit msg input with enter
 document.getElementById('msgInput').onkeypress = function(e) {
     if (e.keyCode == 13) {
         console.log("pressed enter to submit msg");
         submitMsg();
     }
-}*
-
+}
 
 
 /* Client pressed rematch button
@@ -41,19 +29,6 @@ function rematchPress() {
 }
 
 
-/* Client submitted their name
-*/
-function submitName() {
-
-    // Client side empty name preventation
-    if (document.getElementById('nameInput').value == '') {
-        document.getElementById('welcomeMsg').innerHTML = 'Plz enter a real name:';
- 
-    // Submit the name and get result
-    } else {
-        socket.emit('submitName', document.getElementById('nameInput').value); 
-    }
-}
 
 /* Player submitted a message
 */
