@@ -105,6 +105,18 @@ class Game {
             }
         }
     }
+
+    /* Set the message box
+    */
+    setMsgBox(string) {
+        document.getElementById('msgBox').innerHTML = string;
+    }
+
+    /* Append to message box
+    */
+    appendMsgBox(string) {
+        document.getElementById('msgBox').innerHTML += string;
+    }
 }
 
 

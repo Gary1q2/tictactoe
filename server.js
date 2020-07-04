@@ -162,8 +162,6 @@ io.on('connection', function(socket) {
     });
 
 
-
-
     // A player disconnected
     socket.on('disconnect', function() {
         try {

@@ -37,7 +37,7 @@ function rematchPress() {
     socket.emit('acceptRematch');
 
     var opponentName = document.getElementById('p2Name').innerHTML;
-    document.getElementById('msgBox').innerHTML = "Waiting for "+opponentName+" to accept rematch";
+    game.setMsgBox("Waiting for " + opponentName + " to accept rematch");
 }
 
 
@@ -138,7 +138,7 @@ socket.on('updatePlayerStatus', function(data) {
 */
 socket.on('opponentLeft', function() {
     document.getElementById('rematchButton').style.visibility = 'hidden';
-    document.getElementById('msgBox').innerHTML += '<br>Opponent left';
+    game.appendMsgBox('<br>Opponent left');
 });
 
 /* Show the normal lobby state
@@ -183,7 +183,7 @@ socket.on('setupLobby', function(data) {
 /* Opponent is asking for a rematch
 */
 socket.on('wantRematch', function(name) {
-    document.getElementById('msgBox').innerHTML = name + ' would like a rematch';
+    game.setMsgBox(name + ' would like a rematch');
 });
 
 
@@ -192,7 +192,7 @@ socket.on('wantRematch', function(name) {
 socket.on('tie', function(data) {
     game.updateGrid(data);
 
-    document.getElementById('msgBox').innerHTML = "Tie.....";  
+    game.setMsgBox('Tie.....');
     document.getElementById('rematchButton').style.visibility = 'visible';
 
     document.getElementById('backToLobbyButton').style.visibility = 'visible';
@@ -207,18 +207,18 @@ socket.on('p1Won', function(data) {
     // P2 left during the game
     if (game.player == 1) {
         if (data.left) {
-            document.getElementById('msgBox').innerHTML = "Opponent left...";  
+            game.setMsgBox('Opponent left...'); 
             document.getElementById('p2Name').innerHTML = "-disconncted-";
             document.getElementById('p2Piece').innerHTML = "";
 
         // P1 won fairly
         } else {
-            document.getElementById('msgBox').innerHTML = "YOU WON!!!!"; 
+            game.setMsgBox('YOU WON!!!!');
             document.getElementById('rematchButton').style.visibility = 'visible';  
         }
          
     } else {
-        document.getElementById('msgBox').innerHTML = "You lost :(((";  
+        game.setMsgBox('You lost :((');
         document.getElementById('rematchButton').style.visibility = 'visible';
     }
 
@@ -234,18 +234,18 @@ socket.on('p2Won', function(data) {
     // P1 left during the game
     if (game.player == 2) {
         if (data.left) {
-            document.getElementById('msgBox').innerHTML = "Opponent left...";  
+            game.setMsgBox('Opponent left...');
             document.getElementById('p2Name').innerHTML = "-disconncted-";
             document.getElementById('p2Piece').innerHTML = "";
 
         // P2 won fairly
         } else {
-            document.getElementById('msgBox').innerHTML = "YOU WON!!!!"; 
+            game.setMsgBox('YOU WON!!!!');
             document.getElementById('rematchButton').style.visibility = 'visible';
         }
           
     } else {
-        document.getElementById('msgBox').innerHTML = "You lost :(((";  
+        game.setMsgBox('You lost :((('); 
         document.getElementById('rematchButton').style.visibility = 'visible';
     }
 
@@ -259,9 +259,9 @@ socket.on('p1Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 1) {
-        document.getElementById('msgBox').innerHTML = "It is your turn...";   
+        game.setMsgBox('It is your turn...');  
     } else {
-        document.getElementById('msgBox').innerHTML = data.p1Name + "'s turn...";  
+        game.setMsgBox(data.p1Name + "'s turn...");
     }
 
     document.getElementById('forfeitButton').style.visibility = 'visible';
@@ -275,9 +275,9 @@ socket.on('p2Turn', function(data) {
     game.updateGrid(data.grid);
 
     if (game.player == 2) {
-        document.getElementById('msgBox').innerHTML = "It is your turn...";   
+        game.setMsgBox('It is your turn...'); 
     } else {
-        document.getElementById('msgBox').innerHTML = data.p2Name + "'s turn...";  
+        game.setMsgBox(data.p2Name + "'s turn...");
     }
 
     document.getElementById('forfeitButton').style.visibility = 'visible';
@@ -314,7 +314,7 @@ socket.on('setupGame', function(data) {
     }
 
     // Setup message box and remove rematch button
-    document.getElementById('msgBox').innerHTML = "Waiting for game to start...";
+    game.setMsgBox('Waiting for game to start...');
     document.getElementById('rematchButton').style.visibility = 'hidden';
 });
 
