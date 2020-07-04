@@ -69,7 +69,7 @@ module.exports = class Lobby {
     /* Creates new game with 2 players
     */
     createGame(p1Socket, p2Socket) {
-        var game = new Game(p1Socket, this.players[p1Socket].name, p2Socket, this.players[p2Socket].name, this, this.io);
+        var game = new Game(p1Socket, this.players[p1Socket].name, p2Socket, this.players[p2Socket].name, this, this.io, this.db);
         this.games.push(game);
     }
 
@@ -144,14 +144,15 @@ module.exports = class Lobby {
         });
     }
 
-    /* A new player joined the lobby
+    /* A player joined the lobby
     */
-    playerJoin(socket, name) {
+    playerJoin(socket, name, score) {
         console.log(name + " connected to lobby");
 
         // Add player to dict
         var player = {
             name: name,
+            score: score,
             state: STATE.lobby
         };
         this.players[socket.id] = player;

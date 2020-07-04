@@ -19,7 +19,7 @@ const STATE = {
 
 // Server side gamestate
 module.exports = class Game {
-    constructor(p1, p1Name, p2, p2Name, lobby,  io) {
+    constructor(p1, p1Name, p2, p2Name, lobby, io, db) {
         this.state = GAMESTATE.empty;
         this.p1 = p1;
         this.p2 = p2;;
@@ -36,6 +36,7 @@ module.exports = class Game {
         this.p2Rematch = false;
 
         this.lobby = lobby;
+        this.db = db;
 
         this.printGrid();
 
@@ -66,6 +67,57 @@ module.exports = class Game {
                 this.grid[i][j] = -1;
             }
         }
+    }
+
+    /* Update the winner and loser player's scores on server and SQL server
+    */
+    updatePlayerScores(winner, loser) {
+        var winPlayer = this.lobby.players[winner];
+        var losePlayer = this.lobby.players[loser];
+
+        // Update winner and loser scores on server
+        winPlayer.score.win += 1;
+        losePlayer.score.lose += 1;
+
+        // Update winner score on SQL database
+        var sql = 'UPDATE users SET score = ? WHERE username = ?';
+        this.db.query(sql, [JSON.stringify(winPlayer.score), winPlayer.name], function(err, result) {
+            if (err) throw err;
+            console.log(winPlayer.name + ' score is now ' + winPlayer.score.win + 'W ' + winPlayer.score.lose + 'L ' + winPlayer.score.draw + 'D');
+        });
+
+        // Update loser score on SQL database
+        var sql = 'UPDATE users SET score = ? WHERE username = ?';
+        this.db.query(sql, [JSON.stringify(losePlayer.score), losePlayer.name], function(err, result) {
+            if (err) throw err;
+            console.log(losePlayer.name + ' score is now ' + losePlayer.score.win + 'W ' + losePlayer.score.lose + 'L ' + losePlayer.score.draw + 'D');
+        });
+    }
+
+    /* Update the drawed players scores on server and SQL server 
+    */
+    updatePlayerScoresDrawed(p1, p2) {
+        var player1 = this.lobby.players[p1];
+        var player2 = this.lobby.players[p2];
+
+        // Update both players draw on server
+        player1.score.draw += 1;
+        player2.score.draw += 1;
+
+        // Update player1 draw score on SQL database
+        var sql = 'UPDATE users SET score = ? WHERE username = ?';
+        this.db.query(sql, [JSON.stringify(player1.score), player1.name], function(err, result) {
+            if (err) throw err;
+            console.log(player1.name + ' score is now ' + player1.score.win + 'W ' + player1.score.lose + 'L ' + player1.score.draw + 'D');
+        });
+
+        // Update player2 draw score on SQL database
+        var sql = 'UPDATE users SET score = ? WHERE username = ?';
+        this.db.query(sql, [JSON.stringify(player2.score), player2.name], function(err, result) {
+            if (err) throw err;
+            console.log(player2.name + ' score is now ' + player2.score.win + 'W ' + player2.score.lose + 'L ' + player2.score.draw + 'D');
+        });
+
     }
 
     /* Brings player back to the lobby after end game screen
@@ -130,7 +182,11 @@ module.exports = class Game {
                 state: STATE.endscreen
             });
 
+            this.updatePlayerScores(this.p2, this.p1);
+
             this.p1 = false;
+
+
 
         // Player 2 left
         } else {
@@ -147,6 +203,7 @@ module.exports = class Game {
                 state: STATE.endscreen
             });
 
+            this.updatePlayerScores(this.p1, this.p2);
             this.p2 = false;
         }
 
@@ -237,6 +294,8 @@ module.exports = class Game {
                 state: STATE.endscreen
             });
 
+            this.updatePlayerScores(this.p1, this.p2);
+
         // Player 2 won
         } else if (gridState == 2) {
             this.state = GAMESTATE.p2Won;
@@ -254,6 +313,9 @@ module.exports = class Game {
                 state: STATE.endscreen
             });
 
+            this.updatePlayerScores(this.p2, this.p1);
+
+
         // Players tied
         } else if (gridState == 0) {
             this.setTieState();
@@ -266,6 +328,8 @@ module.exports = class Game {
                 socketID: this.p2,
                 state: STATE.endscreen
             });
+
+            this.updatePlayerScoresDrawed(this.p1, this.p2);
 
         // Game still in progress
         } else {

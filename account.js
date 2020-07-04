@@ -15,12 +15,12 @@ module.exports = class Account {
         }
 
         var lobby = this.lobby;
-        var sql = 'SELECT password FROM users WHERE username = ? AND password = ?';
+        var sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
         this.db.query(sql, [user, pass], function(err, result) {
             if (err) throw err;            
             if (result[0] && result[0].password == pass) {
                 console.log('Successful login by ' + user);
-                lobby.playerJoin(socket, user);
+                lobby.playerJoin(socket, user, JSON.parse(result[0].score));
             } else {
                 console.log('Failed login');
                 socket.emit('loginFail');
@@ -38,9 +38,15 @@ module.exports = class Account {
             throw 'Passwords must match';
         }
 
+        var score = {
+            win: 0,
+            lose: 0,
+            draw: 0
+        }
+
         // Check if user already exists otherwise create new account
-        var sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
-        this.db.query(sql, [user, pass], function(err, result) {
+        var sql = 'INSERT INTO users (username, password, score) VALUES (?, ?, ?)';
+        this.db.query(sql, [user, pass, JSON.stringify(score)], function(err, result) {
             if (err) {
                 console.log('User already exists...');
                 socket.emit('registerFail');
