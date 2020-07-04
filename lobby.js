@@ -9,7 +9,7 @@ const STATE = {
 }
 
 module.exports = class Lobby {
-    constructor(io) {
+    constructor(io, db) {
         this.players = {};   // Store player info
         this.messages = [];  // Store messages send
 
@@ -17,6 +17,7 @@ module.exports = class Lobby {
         this.games = [];     // Current running games
 
         this.io = io;
+        this.db = db;
     }
 
     /* Remove game that doesnt exist anymore
@@ -185,6 +186,13 @@ module.exports = class Lobby {
 
         // Send chat update to everyone
         this.io.emit('addMsg', msgData);
+
+        // Send to SQL database
+        var sql = 'INSERT INTO messages (json) VALUES (?)';
+        this.db.query(sql, [JSON.stringify(msgData)], function(err, result) {
+            if (err) throw err;
+            console.log('System message added to SQL database');
+        });
     }
 
     /* Player sent a message to lobby chat
@@ -209,6 +217,13 @@ module.exports = class Lobby {
 
         // Send chat update to everyone
         this.io.emit('addMsg', msgData);
+
+        // Send to SQL database
+        var sql = 'INSERT INTO messages (json) VALUES (?)';
+        this.db.query(sql, [JSON.stringify(msgData)], function(err, result) {
+            if (err) throw err;
+            console.log('Player message added to SQL database');
+        });
     }
 
     /* Player started a game

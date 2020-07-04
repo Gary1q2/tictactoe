@@ -22,7 +22,7 @@ const db = mysql.createConnection({
     password: 'Guineaisfat12',
     database: 'mydb'
 });
-const lobby = new Lobby(io);
+const lobby = new Lobby(io, db);
 const account = new Account(io, lobby, db);
 
 
