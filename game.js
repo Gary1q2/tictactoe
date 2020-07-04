@@ -158,18 +158,6 @@ module.exports = class Game {
     }
 
 
-    /* Shift the remaining player into P1 position if they are P2
-    */
-    /*shiftToP1() {
-        this.p1 = this.p2;
-        this.p1Name = this.p2Name;
-
-        this.p2 = false;
-        this.p2Name = false;
-        this.p2Rematch = false;
-    }*/
-
-
     /* Set the game to an empty state
        Clears the grid and sets rematching to false
     */
@@ -347,35 +335,6 @@ module.exports = class Game {
         });
     }
 
-    /* Resets the given players values
-    */
-    /*removePlayer(player) {
-        if (player == 1) {
-            this.p1 = false;
-            this.p1Name = false;
-            this.p1Rematch = false;
-        } else {
-            this.p2 = false;
-            this.p2Name = false;
-            this.p2Rematch = false;
-        }
-    }*/
-
-
-
-    /* Set state to P1 winning and emit to everyone
-    */
-    //setP1WonState() {
-    //    this.state = GAMESTATE.p1Won;
-    //    this.io.emit('p1Won', this.grid);
-    //}
-
-    /* Set state to P2 winning and emit to everyone
-    */
-    //setP2WonState() {
-    //    this.state = GAMESTATE.p2Won;
-    //    this.io.emit('p2Won', this.grid);
-    //}
 
     /* Set state to P1 turn and emit to everyone
     */

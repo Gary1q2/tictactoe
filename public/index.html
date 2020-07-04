@@ -9,7 +9,7 @@
         <div id='gameBox'>
 
 
-
+            <!--Lobby interface-->
             <div id='lobby'>
                 <div id='chatBox'></div>
                 <div id='playerChat'>
@@ -24,7 +24,7 @@
 
 
 
-
+            <!--Main game interface-->
             <div id='game'>
                 <div id='p1Box'>
                     <div id='p1Piece'></div>
@@ -39,6 +39,8 @@
                 <button id='forfeitButton' onclick='game.forfeitGame()'>Forfeit</button>
                 <button id='backToLobbyButton' onclick='game.backToLobby()'>Lobby</button>
 
+
+                <!--Interactive tictactoe grid-->
                 <div id='gridBox'>
                     <img src='/img/grid.png' alt='grid' width='300' height='300'>
                 </div>
@@ -70,6 +72,7 @@
             </div>
 
 
+            <!--Register interface-->
             <form id='registerBox' onsubmit='return false'>
                 <label for='userRegister'>Username:</label>
                 <input type='text' id='userRegister' name='userRegister'><br>
@@ -85,6 +88,7 @@
             </form>
 
 
+            <!--Login interface-->
             <div id='loginInterface'>
                 <form id='loginBox' onsubmit='return false'>
                     <label for='userLogin'>Username:</label>
@@ -95,7 +99,7 @@
                     <input type='submit' id='loginButton' value='Log in' onclick="account.login(document.getElementById('userLogin').value, document.getElementById('passLogin').value)">
                 </form>
 
-
+                <!--Switch to register button-->
                 <form id='noAccountBox' onsubmit='return false'>
                     <label for='switchToRegisterButton'>No account?</label>
                     <input type='submit' id='switchToRegisterButton' value='Register'  onclick='account.switchToRegister()''>

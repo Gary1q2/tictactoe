@@ -1,7 +1,9 @@
 const socket = io();
+const account = new Account(socket);
+
 var game;
 var lobby;
-var account = new Account(socket);
+
 
 const STATE = {
     lobby: "lobby",
