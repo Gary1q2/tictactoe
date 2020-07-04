@@ -27,6 +27,26 @@ module.exports = class Lobby {
     }*/
 
 
+    /* Retrieve messages from SQL database on server bootup
+    */
+    loadMessages() {
+        console.log('Acquiring messages from SQL database...')
+
+        var messages = this.messages;
+
+        var sql = 'SELECT json FROM messages ORDER BY id';
+        this.db.query(sql, function(err, result) {
+            if (err) throw err;
+
+            // Parse all SQL messages and push onto server messages array
+            for (var i = 0; i < result.length; i++) {
+                var msgData = JSON.parse(result[i].json);
+                messages.push(msgData);
+            }
+            console.log('Messages finished acquiring!');
+        });
+    }
+
 
     /* Remove all games that have ended
     */
