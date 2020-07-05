@@ -69,6 +69,8 @@ module.exports = class Game {
         }
     }
 
+
+
     /* Update the winner and loser player's scores on server and SQL server
     */
     updatePlayerScores(winner, loser) {
@@ -183,6 +185,7 @@ module.exports = class Game {
             });
 
             this.updatePlayerScores(this.p2, this.p1);
+            this.lobby.updateScoreboard();
 
             this.p1 = false;
 
@@ -204,6 +207,7 @@ module.exports = class Game {
             });
 
             this.updatePlayerScores(this.p1, this.p2);
+            this.lobby.updateScoreboard();
             this.p2 = false;
         }
 
@@ -295,6 +299,7 @@ module.exports = class Game {
             });
 
             this.updatePlayerScores(this.p1, this.p2);
+            this.lobby.updateScoreboard();
 
         // Player 2 won
         } else if (gridState == 2) {
@@ -314,6 +319,7 @@ module.exports = class Game {
             });
 
             this.updatePlayerScores(this.p2, this.p1);
+            this.lobby.updateScoreboard();
 
 
         // Players tied
@@ -330,6 +336,7 @@ module.exports = class Game {
             });
 
             this.updatePlayerScoresDrawed(this.p1, this.p2);
+            this.lobby.updateScoreboard();
 
         // Game still in progress
         } else {

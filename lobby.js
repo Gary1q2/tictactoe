@@ -18,6 +18,83 @@ module.exports = class Lobby {
 
         this.io = io;
         this.db = db;
+
+        this.scoreboard = ['']; // [0] string
+
+        console.log("inited lobby");
+    }
+
+
+    /* Updates the highscore board
+    */
+    updateScoreboard() {
+
+        var scoreData = [];
+        var io = this.io;
+        var scoreboard = this.scoreboard;
+
+        // Pull player scores from SQL
+        var sql = 'SELECT username, score FROM users';
+        this.db.query(sql, function(err, result) {
+            if (err) throw err;
+
+            console.log("query success");
+            // Generate player score data and ratings
+            for (var i = 0; i < result.length; i++) {
+
+                var scoreJSON = JSON.parse(result[i].score);
+
+                // Skip players with no wins or losses
+                if (scoreJSON.win == 0 && scoreJSON.lose == 0) {
+                    continue;
+                }
+
+                // Special case when 0L, can't divide by 0
+                var rating;
+                if (scoreJSON.lose == 0) {
+                    rating = (scoreJSON.win/(scoreJSON.lose+1)).toFixed(2);
+                } else {
+                    rating = (scoreJSON.win/(scoreJSON.lose)).toFixed(2);
+                }
+
+
+                var playerData = {
+                    name: result[i].username,
+                    rating: rating,
+                    win: scoreJSON.win,
+                    lose: scoreJSON.lose,
+                    draw: scoreJSON.draw
+                };
+                scoreData.push(playerData);
+            }
+
+            // Sort the data based on rating in increasing order
+            scoreData.sort(function(a, b) {
+                return b.rating - a.rating;
+            });
+
+            // Set the string scoreboard 
+            var scoreString = '';
+            var i = 0;
+            while (i < 5) {
+                if (i < scoreData.length) {
+                    scoreString += (i+1) + '. ' + scoreData[i].name + ' ' +
+                              scoreData[i].rating + ' ' + scoreData[i].win + 
+                              'W ' + scoreData[i].lose + 'L '
+                               + scoreData[i].draw + 'D<br>';
+                } else {
+                    scoreString += (i+1) + '. -<br>';
+                }
+                i++;
+            }
+
+            // Send update to all players
+            io.emit('scoreboard', scoreString);
+
+            scoreboard[0] = scoreString;
+            console.log("var scoreboard = " + scoreboard[0]);
+            console.log('Updated scoreboard!');
+        });
     }
 
     /* Remove game that doesnt exist anymore
@@ -160,8 +237,11 @@ module.exports = class Lobby {
         // Send lobby stuff to new player
         socket.emit('setupLobby', {
             players: this.players, 
-            messages: this.messages
+            messages: this.messages,
+            scoreboard: this.scoreboard[0]
         });
+
+        console.log('sent score = ' + this.scoreboard[0]);
 
         // Send player update to all players
         socket.broadcast.emit('addPlayer', {

@@ -149,18 +149,27 @@ class Game {
 
 
 class Lobby {
-    constructor(socket, players, messages) {
+    constructor(socket, players, messages, scoreboard) {
         this.socket = socket;
-        this.players = players;   // array
-        this.messages = messages; // dict
+        this.players = players;        // array
+        this.messages = messages;      // dict
+        this.scoreboard = scoreboard;  // string
 
         this.playerState = STATE.lobby;
 
         this.refreshChatbox();
         this.refreshPlayersBox();
         this.refreshOnlineCount();
+        this.updateScoreboard(scoreboard);
     }
 
+    /* Update the scoreboard
+    */
+    updateScoreboard(scoreString) {
+        console.log('updated scorestring = ' + scoreString);
+        this.scoreboard = scoreString;
+        document.getElementById('scoreBox').innerHTML = scoreString;
+    }
 
     /* Player submitted a message
     */

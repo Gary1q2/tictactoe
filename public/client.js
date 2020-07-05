@@ -38,6 +38,12 @@ function logout() {
 // Socket stuff
 // =================================================
 
+/* Update scoreboard with new scoreboard from server
+*/
+socket.on('scoreboard', function(scoreString) {
+    console.log('New update on scoreboard!');
+    lobby.updateScoreboard(scoreString);
+})
 
 
 /* Failed registration - user already exists
@@ -109,7 +115,8 @@ socket.on('removePlayer', function(socketID) {
 /* Setup the lobby for client
 */
 socket.on('setupLobby', function(data) {
-    lobby = new Lobby(socket, data.players, data.messages);
+    console.log(data);
+    lobby = new Lobby(socket, data.players, data.messages, data.scoreboard);
     document.getElementById('loginInterface').style.visibility = 'hidden';
     document.getElementById('lobby').style.visibility = 'visible';  
 });

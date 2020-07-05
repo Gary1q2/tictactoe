@@ -52,6 +52,7 @@ db.connect(function(err) {
     if (err) throw err;
     console.log("Connected to mySQL database!");
     lobby.loadMessages();
+    lobby.updateScoreboard();
 });
 
 
