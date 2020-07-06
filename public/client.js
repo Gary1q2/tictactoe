@@ -15,7 +15,7 @@ const STATE = {
 
 // Submit msg input with enter
 document.getElementById('msgInput').onkeypress = function(e) {
-    if (e.keyCode == 13) {
+    if (lobby && e.keyCode == 13) {
         console.log("pressed enter to submit msg");
         lobby.submitMsg();
     }
@@ -42,7 +42,9 @@ function logout() {
 */
 socket.on('scoreboard', function(scoreString) {
     console.log('New update on scoreboard!');
-    lobby.updateScoreboard(scoreString);
+    if (lobby) {
+        lobby.updateScoreboard(scoreString);
+    }
 })
 
 
@@ -71,44 +73,58 @@ socket.on('loginFail', function() {
 /* Updates a players status in lobby
 */
 socket.on('updatePlayerStatus', function(data) {
-    lobby.updatePlayerStatus(data.socketID, data.state);
+    if (lobby) {
+        lobby.updatePlayerStatus(data.socketID, data.state);
+    }
 });
 
 /* Show the opponent left on endscreen
 */
 socket.on('opponentLeft', function() {
-    document.getElementById('rematchButton').style.visibility = 'hidden';
-    game.appendMsgBox('<br>Opponent left');
+    if (game) {
+        game.appendMsgBox('<br>Opponent left');
+        document.getElementById('rematchButton').style.visibility = 'hidden';
+    }
 });
 
 /* Show the normal lobby state
 */
 socket.on('dequeued', function() {
-    lobby.dequeue();
+    if (lobby) {
+        lobby.dequeue();
+    } 
 });
 
 /* Show the queued state of lobby
 */
 socket.on('queued', function() {
-    lobby.inQueue();
+    if (lobby) {
+        lobby.inQueue();
+    }
 });
 
 /* Update chatbox with new message
 */
 socket.on('addMsg', function(msgData) {
-    lobby.addMsg(msgData);
+    if (lobby) {
+        lobby.addMsg(msgData);  
+    }   
 });
 
 /* Update playerbox with new player
 */
 socket.on('addPlayer', function(data) {
-    lobby.addPlayer(data.player, data.socketID);
+    if (lobby) {
+        lobby.addPlayer(data.player, data.socketID); 
+    } 
 });
 
 /* Update playerbox with removed player
 */
 socket.on('removePlayer', function(socketID) {
-    lobby.removePlayer(socketID);
+    if (lobby) {
+        lobby.removePlayer(socketID);
+    }
 });
 
 
@@ -124,106 +140,118 @@ socket.on('setupLobby', function(data) {
 /* Opponent is asking for a rematch
 */
 socket.on('wantRematch', function(name) {
-    game.setMsgBox(name + ' would like a rematch');
+    if (game) {
+        game.setMsgBox(name + ' would like a rematch');
+    }
 });
 
 
 /* Show that players tied
 */
 socket.on('tie', function(data) {
-    game.updateGrid(data);
+    if (game) {
+        game.updateGrid(data);
 
-    game.setMsgBox('Tie.....');
-    document.getElementById('rematchButton').style.visibility = 'visible';
+        game.setMsgBox('Tie.....');
+        document.getElementById('rematchButton').style.visibility = 'visible';
 
-    document.getElementById('backToLobbyButton').style.visibility = 'visible';
-    document.getElementById('forfeitButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'visible';
+        document.getElementById('forfeitButton').style.visibility = 'hidden';
+    }
 });
 
 /* Show that player 1 won
 */
 socket.on('p1Won', function(data) {
-    game.updateGrid(data.grid);
+    if (game) {
+        game.updateGrid(data.grid);
 
-    // P2 left during the game
-    if (game.player == 1) {
-        if (data.left) {
-            game.setMsgBox('Opponent left...'); 
-            document.getElementById('p2Name').innerHTML = "-disconncted-";
-            document.getElementById('p2Piece').innerHTML = "";
+        // P2 left during the game
+        if (game.player == 1) {
+            if (data.left) {
+                game.setMsgBox('Opponent left...'); 
+                document.getElementById('p2Name').innerHTML = "-disconncted-";
+                document.getElementById('p2Piece').innerHTML = "";
 
-        // P1 won fairly
+            // P1 won fairly
+            } else {
+                game.setMsgBox('YOU WON!!!!');
+                document.getElementById('rematchButton').style.visibility = 'visible';  
+            }
+             
         } else {
-            game.setMsgBox('YOU WON!!!!');
-            document.getElementById('rematchButton').style.visibility = 'visible';  
+            game.setMsgBox('You lost :((');
+            document.getElementById('rematchButton').style.visibility = 'visible';
         }
-         
-    } else {
-        game.setMsgBox('You lost :((');
-        document.getElementById('rematchButton').style.visibility = 'visible';
-    }
 
-    document.getElementById('backToLobbyButton').style.visibility = 'visible';
-    document.getElementById('forfeitButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'visible';
+        document.getElementById('forfeitButton').style.visibility = 'hidden';
+    }
 });
 
 /* Show that player 2 won
 */
 socket.on('p2Won', function(data) {
-    game.updateGrid(data.grid);
+    if (game) {
+        game.updateGrid(data.grid);
 
-    // P1 left during the game
-    if (game.player == 2) {
-        if (data.left) {
-            game.setMsgBox('Opponent left...');
-            document.getElementById('p2Name').innerHTML = "-disconncted-";
-            document.getElementById('p2Piece').innerHTML = "";
+        // P1 left during the game
+        if (game.player == 2) {
+            if (data.left) {
+                game.setMsgBox('Opponent left...');
+                document.getElementById('p2Name').innerHTML = "-disconncted-";
+                document.getElementById('p2Piece').innerHTML = "";
 
-        // P2 won fairly
+            // P2 won fairly
+            } else {
+                game.setMsgBox('YOU WON!!!!');
+                document.getElementById('rematchButton').style.visibility = 'visible';
+            }
+              
         } else {
-            game.setMsgBox('YOU WON!!!!');
+            game.setMsgBox('You lost :((('); 
             document.getElementById('rematchButton').style.visibility = 'visible';
         }
-          
-    } else {
-        game.setMsgBox('You lost :((('); 
-        document.getElementById('rematchButton').style.visibility = 'visible';
-    }
 
-    document.getElementById('backToLobbyButton').style.visibility = 'visible';
-    document.getElementById('forfeitButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'visible';
+        document.getElementById('forfeitButton').style.visibility = 'hidden';
+    }
 });
 
 /* Player 1's turn
 */
 socket.on('p1Turn', function(data) {
-    game.updateGrid(data.grid);
+    if (game) {
+        game.updateGrid(data.grid);
 
-    if (game.player == 1) {
-        game.setMsgBox('It is your turn...');  
-    } else {
-        game.setMsgBox(data.p1Name + "'s turn...");
+        if (game.player == 1) {
+            game.setMsgBox('It is your turn...');  
+        } else {
+            game.setMsgBox(data.p1Name + "'s turn...");
+        }
+
+        document.getElementById('forfeitButton').style.visibility = 'visible';
+        document.getElementById('rematchButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'hidden';
     }
-
-    document.getElementById('forfeitButton').style.visibility = 'visible';
-    document.getElementById('rematchButton').style.visibility = 'hidden';
-    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
 });
 
 /* Player 2's turn
 */
 socket.on('p2Turn', function(data) {
-    game.updateGrid(data.grid);
+    if (game) {
+        game.updateGrid(data.grid);
 
-    if (game.player == 2) {
-        game.setMsgBox('It is your turn...'); 
-    } else {
-        game.setMsgBox(data.p2Name + "'s turn...");
+        if (game.player == 2) {
+            game.setMsgBox('It is your turn...'); 
+        } else {
+            game.setMsgBox(data.p2Name + "'s turn...");
+        }
+
+        document.getElementById('forfeitButton').style.visibility = 'visible';
+        document.getElementById('rematchButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'hidden';
     }
-
-    document.getElementById('forfeitButton').style.visibility = 'visible';
-    document.getElementById('rematchButton').style.visibility = 'hidden';
-    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
 });
 
 
@@ -264,15 +292,16 @@ socket.on('setupGame', function(data) {
 */
 socket.on('loadLobby', function() {
     console.log("set state back to lobby");
-    lobby.playerState = STATE.lobby;
-    document.getElementById('playButton').innerHTML = 'Play';
-    document.getElementById('playButton').style.width = '300px';
-    document.getElementById('cancelButton').style.visibility = 'hidden';
-    document.getElementById('backToLobbyButton').style.visibility = 'hidden';
-    document.getElementById('forfeitButton').style.visibility = 'hidden';
-    document.getElementById('rematchButton').style.visibility = 'hidden';
+    if (lobby) {
+        lobby.playerState = STATE.lobby;
+        document.getElementById('playButton').innerHTML = 'Play';
+        document.getElementById('playButton').style.width = '300px';
+        document.getElementById('cancelButton').style.visibility = 'hidden';
+        document.getElementById('backToLobbyButton').style.visibility = 'hidden';
+        document.getElementById('forfeitButton').style.visibility = 'hidden';
+        document.getElementById('rematchButton').style.visibility = 'hidden';
 
-
-    document.getElementById('lobby').style.visibility = 'visible';
-    document.getElementById('game').style.visibility = 'hidden';
+        document.getElementById('lobby').style.visibility = 'visible';
+        document.getElementById('game').style.visibility = 'hidden';
+    }
 });
