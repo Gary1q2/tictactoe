@@ -66,14 +66,14 @@ socket.on('registerSuccess', function() {
 */
 socket.on('loginFail', function() {
     console.log('got failed login');
-    document.getElementById('loginMsg').innerHTML = 'Incorrect user or pass';
+    account.setLoginMsg('Incorrect user or pass');
 });
 
 /* Account already logged in
 */
 socket.on('loggedAlready', function() {
     console.log('Account already logged in');
-    document.getElementById('loginMsg').innerHTML = 'Account already logged in';
+    account.setLoginMsg('Account already logged in');
 });
 
 /* Updates a players status in lobby

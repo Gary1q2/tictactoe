@@ -72,6 +72,12 @@ class Account {
     setRegisterMsg(string) {
         document.getElementById('registerMsg').innerHTML = string;
     }
+
+    /* Change the login help message
+    */
+    setLoginMsg(string) {
+        document.getElementById('loginMsg').innerHTML = string;
+    }
 }
 
 
