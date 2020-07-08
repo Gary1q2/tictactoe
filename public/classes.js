@@ -286,7 +286,7 @@ class Lobby {
     refreshPlayersBox() {
         document.getElementById('playersBox').innerHTML = '';
         for (var key in this.players) {
-            document.getElementById('playersBox').innerHTML += this.players[key].name + ' - ' + this.players[key].state + '<br>';
+            document.getElementById('playersBox').innerHTML += this.players[key].username + ' - ' + this.players[key].state + '<br>';
         }
     }
 }

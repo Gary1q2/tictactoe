@@ -139,9 +139,9 @@ socket.on('setupLobby', function(data) {
 
 /* Opponent is asking for a rematch
 */
-socket.on('wantRematch', function(name) {
+socket.on('wantRematch', function(username) {
     if (game) {
-        game.setMsgBox(name + ' would like a rematch');
+        game.setMsgBox(username + ' would like a rematch');
     }
 });
 

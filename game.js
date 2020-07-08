@@ -83,16 +83,16 @@ module.exports = class Game {
 
         // Update winner score on SQL database
         var sql = 'UPDATE users SET score = ? WHERE username = ?';
-        this.db.query(sql, [JSON.stringify(winPlayer.score), winPlayer.name], function(err, result) {
+        this.db.query(sql, [JSON.stringify(winPlayer.score), winPlayer.username], function(err, result) {
             if (err) throw err;
-            console.log(winPlayer.name + ' score is now ' + winPlayer.score.win + 'W ' + winPlayer.score.lose + 'L ' + winPlayer.score.draw + 'D');
+            console.log(winPlayer.username + ' score is now ' + winPlayer.score.win + 'W ' + winPlayer.score.lose + 'L ' + winPlayer.score.draw + 'D');
         });
 
         // Update loser score on SQL database
         var sql = 'UPDATE users SET score = ? WHERE username = ?';
-        this.db.query(sql, [JSON.stringify(losePlayer.score), losePlayer.name], function(err, result) {
+        this.db.query(sql, [JSON.stringify(losePlayer.score), losePlayer.username], function(err, result) {
             if (err) throw err;
-            console.log(losePlayer.name + ' score is now ' + losePlayer.score.win + 'W ' + losePlayer.score.lose + 'L ' + losePlayer.score.draw + 'D');
+            console.log(losePlayer.username + ' score is now ' + losePlayer.score.win + 'W ' + losePlayer.score.lose + 'L ' + losePlayer.score.draw + 'D');
         });
     }
 
@@ -108,16 +108,16 @@ module.exports = class Game {
 
         // Update player1 draw score on SQL database
         var sql = 'UPDATE users SET score = ? WHERE username = ?';
-        this.db.query(sql, [JSON.stringify(player1.score), player1.name], function(err, result) {
+        this.db.query(sql, [JSON.stringify(player1.score), player1.username], function(err, result) {
             if (err) throw err;
-            console.log(player1.name + ' score is now ' + player1.score.win + 'W ' + player1.score.lose + 'L ' + player1.score.draw + 'D');
+            console.log(player1.username + ' score is now ' + player1.score.win + 'W ' + player1.score.lose + 'L ' + player1.score.draw + 'D');
         });
 
         // Update player2 draw score on SQL database
         var sql = 'UPDATE users SET score = ? WHERE username = ?';
-        this.db.query(sql, [JSON.stringify(player2.score), player2.name], function(err, result) {
+        this.db.query(sql, [JSON.stringify(player2.score), player2.username], function(err, result) {
             if (err) throw err;
-            console.log(player2.name + ' score is now ' + player2.score.win + 'W ' + player2.score.lose + 'L ' + player2.score.draw + 'D');
+            console.log(player2.username + ' score is now ' + player2.score.win + 'W ' + player2.score.lose + 'L ' + player2.score.draw + 'D');
         });
 
     }

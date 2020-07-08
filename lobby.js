@@ -59,7 +59,7 @@ module.exports = class Lobby {
 
 
                 var playerData = {
-                    name: result[i].username,
+                    username: result[i].username,
                     rating: rating,
                     win: scoreJSON.win,
                     lose: scoreJSON.lose,
@@ -78,7 +78,7 @@ module.exports = class Lobby {
             var i = 0;
             while (i < 5) {
                 if (i < scoreData.length) {
-                    scoreString += (i+1) + '. ' + scoreData[i].name + ' ' +
+                    scoreString += (i+1) + '. ' + scoreData[i].username + ' ' +
                               scoreData[i].rating + ' ' + scoreData[i].win + 
                               'W ' + scoreData[i].lose + 'L '
                                + scoreData[i].draw + 'D<br>';
@@ -146,7 +146,7 @@ module.exports = class Lobby {
     /* Creates new game with 2 players
     */
     createGame(p1Socket, p2Socket) {
-        var game = new Game(p1Socket, this.players[p1Socket].name, p2Socket, this.players[p2Socket].name, this, this.io, this.db);
+        var game = new Game(p1Socket, this.players[p1Socket].username, p2Socket, this.players[p2Socket].username, this, this.io, this.db);
         this.games.push(game);
     }
 
@@ -223,12 +223,12 @@ module.exports = class Lobby {
 
     /* A player joined the lobby
     */
-    playerJoin(socket, name, score) {
-        console.log(name + " connected to lobby");
+    playerJoin(socket, username, score) {
+        console.log(username + " connected to lobby");
 
         // Add player to dict
         var player = {
-            name: name,
+            username: username,
             score: score,
             state: STATE.lobby
         };
@@ -249,7 +249,7 @@ module.exports = class Lobby {
             socketID: socket.id
         });
 
-        this.systemMsg(name + ' has joined the lobby!');
+        this.systemMsg(username + ' has joined the lobby!');
     }
 
     /* A player left the lobby
@@ -259,12 +259,12 @@ module.exports = class Lobby {
             throw 'Invalid socketID leaving game.... must be stale player?';
         }
 
-        console.log('player ' + this.players[socket.id].name + ' left :(');
+        console.log('player ' + this.players[socket.id].username + ' left :(');
 
         // Send player removal to all players
         socket.broadcast.emit('removePlayer', socket.id);
 
-        this.systemMsg(this.players[socket.id].name + ' has left the lobby.');
+        this.systemMsg(this.players[socket.id].username + ' has left the lobby.');
         delete this.players[socket.id];
 
 
@@ -306,13 +306,13 @@ module.exports = class Lobby {
         if (!(socketID in this.players)) {
             throw 'Invalid socketID during message send... stale playe?';
         }
-        console.log(this.players[socketID].name + ' sent msg ' + string);
+        console.log(this.players[socketID].username + ' sent msg ' + string);
 
         // Update the chat log
         var msgData = {
             type: STATE.user,
             msg: string,
-            user: this.players[socketID].name
+            user: this.players[socketID].username
         };
         this.messages.push(msgData);
 
