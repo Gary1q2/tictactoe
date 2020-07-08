@@ -284,7 +284,7 @@ module.exports = class Game {
         var gridState = this.checkGrid();
         if (gridState == 1) {
             this.state = GAMESTATE.p1Won;
-            this.io.emit('p1Won', {
+            this.io.to(this.p1).to(this.p2).emit('p1Won', {
                 grid: this.grid,
                 left: false
             });
@@ -304,7 +304,7 @@ module.exports = class Game {
         // Player 2 won
         } else if (gridState == 2) {
             this.state = GAMESTATE.p2Won;
-            this.io.emit('p2Won', {
+            this.io.to(this.p1).to(this.p2).emit('p2Won', {
                 grid: this.grid,
                 left: false
             });
@@ -411,7 +411,7 @@ module.exports = class Game {
     */
     setP1TurnState() {
         this.state = GAMESTATE.p1Turn;
-        this.io.emit('p1Turn', {
+        this.io.to(this.p1).to(this.p2).emit('p1Turn', {
             grid: this.grid,
             p1Name: this.p1Name
         });  
@@ -422,7 +422,7 @@ module.exports = class Game {
     */
     setP2TurnState() {
         this.state = GAMESTATE.p2Turn;
-        this.io.emit('p2Turn', { 
+        this.io.to(this.p1).to(this.p2).emit('p2Turn', { 
             grid: this.grid,
             p2Name: this.p2Name
         });  
@@ -433,7 +433,7 @@ module.exports = class Game {
     */
     setTieState() {
         this.state = GAMESTATE.tie;
-        this.io.emit('tie', this.grid);
+        this.io.to(this.p1).to(this.p2).emit('tie', this.grid);
     }
 
 
