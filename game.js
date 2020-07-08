@@ -148,11 +148,7 @@ module.exports = class Game {
 
         this.io.to(socketID).emit('loadLobby');
 
-        this.io.emit('updatePlayerStatus', {
-            socketID: socketID,
-            state: STATE.lobby
-        });
-
+        this.lobby.updatePlayerStatus(socketID, STATE.lobby);
 
         this.lobby.purgeGames();
     }
@@ -179,10 +175,7 @@ module.exports = class Game {
                 left: true
             });
 
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p2,
-                state: STATE.endscreen
-            });
+            this.lobby.updatePlayerStatus(this.p2, STATE.endscreen);
 
             this.updatePlayerScores(this.p2, this.p1);
             this.lobby.updateScoreboard();
@@ -201,21 +194,15 @@ module.exports = class Game {
                 left: true
             });    
 
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p1,
-                state: STATE.endscreen
-            });
+
+            this.lobby.updatePlayerStatus(this.p1, STATE.endscreen);
 
             this.updatePlayerScores(this.p1, this.p2);
             this.lobby.updateScoreboard();
             this.p2 = false;
         }
 
-
-        this.io.emit('updatePlayerStatus', {
-            socketID: socketID,
-            state: STATE.lobby
-        });
+        this.lobby.updatePlayerStatus(socketID, STATE.lobby);
     }
 
 
@@ -289,14 +276,9 @@ module.exports = class Game {
                 left: false
             });
 
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p1,
-                state: STATE.endscreen
-            });
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p2,
-                state: STATE.endscreen
-            });
+            this.lobby.updatePlayerStatus(this.p1, STATE.endscreen);
+            this.lobby.updatePlayerStatus(this.p2, STATE.endscreen);
+
 
             this.updatePlayerScores(this.p1, this.p2);
             this.lobby.updateScoreboard();
@@ -309,14 +291,8 @@ module.exports = class Game {
                 left: false
             });
 
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p1,
-                state: STATE.endscreen
-            });
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p2,
-                state: STATE.endscreen
-            });
+            this.lobby.updatePlayerStatus(this.p1, STATE.endscreen);
+            this.lobby.updatePlayerStatus(this.p2, STATE.endscreen);
 
             this.updatePlayerScores(this.p2, this.p1);
             this.lobby.updateScoreboard();
@@ -326,14 +302,8 @@ module.exports = class Game {
         } else if (gridState == 0) {
             this.setTieState();
 
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p1,
-                state: STATE.endscreen
-            });
-            this.io.emit('updatePlayerStatus', {
-                socketID: this.p2,
-                state: STATE.endscreen
-            });
+            this.lobby.updatePlayerStatus(this.p1, STATE.endscreen);
+            this.lobby.updatePlayerStatus(this.p2, STATE.endscreen);
 
             this.updatePlayerScoresDrawed(this.p1, this.p2);
             this.lobby.updateScoreboard();
@@ -395,15 +365,8 @@ module.exports = class Game {
         }
 
         // Set players to be in game state
-        this.io.emit('updatePlayerStatus', {
-            socketID: this.p1,
-            state: STATE.ingame
-        });
-
-        this.io.emit('updatePlayerStatus', {
-            socketID: this.p2,
-            state: STATE.ingame
-        });
+        this.lobby.updatePlayerStatus(this.p1, STATE.ingame);
+        this.lobby.updatePlayerStatus(this.p2, STATE.ingame);
     }
 
 

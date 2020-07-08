@@ -24,6 +24,21 @@ module.exports = class Lobby {
         console.log("inited lobby");
     }
 
+    /* Update the given player's state
+    */
+    updatePlayerStatus(socketID, state) {
+
+        // Update state on server
+        this.players[socketID].state = state;
+
+        // Tells clients to update their copy
+        this.io.emit('updatePlayerStatus', {
+            socketID: socketID,
+            state: state
+        });
+    }
+
+
     /* Reset all users to be offline if server shut down randomly
     */
     setAllUsersOffline() {
@@ -199,10 +214,7 @@ module.exports = class Lobby {
         this.queue.push(socket.id);
 
         socket.emit('queued');
-        this.io.emit('updatePlayerStatus', {
-            socketID: socket.id,
-            state: STATE.queued
-        });
+        this.updatePlayerStatus(socket.id, STATE.queued);
 
         this.matchPlayersForGame();
     }
@@ -225,10 +237,7 @@ module.exports = class Lobby {
             }
         }
         this.io.to(socketID).emit('dequeued');
-        this.io.emit('updatePlayerStatus', {
-            socketID: socketID,
-            state: STATE.lobby
-        });
+        this.updatePlayerStatus(socketID, STATE.lobby);
     }
 
     /* A player joined the lobby
@@ -277,7 +286,32 @@ module.exports = class Lobby {
             throw 'Invalid socketID leaving game.... must be stale player?';
         }
 
+
+
         console.log('player ' + this.players[socket.id].username + ' left :(');
+
+        // Remove player from queue if in it
+        if (this.players[socket.id].state == STATE.queued) {
+            console.log("was in queue but canceled");
+            this.cancelQueue(socket.id);
+        
+        // Forfeit the game if in game
+        } else if (this.players[socket.id].state == STATE.ingame) {
+            console.log("was in game but forfeited");
+
+            var currGameIndex = this.findPlayersGame(socket.id);
+            var currGame = this.games[currGameIndex];
+            currGame.forfeitGame(socket.id);
+
+        // Leave the endgame screen if in endgame screen
+        } else if (this.players[socket.id].state == STATE.endscreen) {
+            console.log("was on endscreen, backed to lobbied");
+
+            var currGameIndex = this.findPlayersGame(socket.id);
+            var currGame = this.games[currGameIndex];
+            currGame.backToLobby(socket.id);
+        }
+
 
 
         // Set player as offline in SQL database
@@ -352,11 +386,5 @@ module.exports = class Lobby {
             if (err) throw err;
             console.log('Player message added to SQL database');
         });
-    }
-
-    /* Player started a game
-    */
-    playerPlay() {
-
     }
 }
