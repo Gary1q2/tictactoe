@@ -24,6 +24,16 @@ module.exports = class Lobby {
         console.log("inited lobby");
     }
 
+    /* Reset all users to be offline if server shut down randomly
+    */
+    setAllUsersOffline() {
+
+        var sql = 'UPDATE users SET online = ?';
+        this.db.query(sql, [false], function(err, result) {
+            if (err) throw err;
+            console.log('All users set to offline');
+        });
+    }
 
     /* Updates the highscore board
     */
@@ -226,6 +236,14 @@ module.exports = class Lobby {
     playerJoin(socket, username, score) {
         console.log(username + " connected to lobby");
 
+        // Set player as online in SQL database
+        var sql = 'UPDATE users SET online = ? WHERE username = ?';
+        this.db.query(sql, [true, username], function(err, result) {
+            if (err) throw err;
+            console.log('Set player as online');
+        });
+
+
         // Add player to dict
         var player = {
             username: username,
@@ -260,6 +278,15 @@ module.exports = class Lobby {
         }
 
         console.log('player ' + this.players[socket.id].username + ' left :(');
+
+
+        // Set player as offline in SQL database
+        var sql = 'UPDATE users SET online = ? WHERE username = ?';
+        this.db.query(sql, [false, this.players[socket.id].username], function(err, result) {
+            if (err) throw err;
+            console.log('Set player as offline');
+        });
+
 
         // Send player removal to all players
         socket.broadcast.emit('removePlayer', socket.id);

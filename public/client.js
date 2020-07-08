@@ -69,6 +69,12 @@ socket.on('loginFail', function() {
     document.getElementById('loginMsg').innerHTML = 'Incorrect user or pass';
 });
 
+/* Account already logged in
+*/
+socket.on('loggedAlready', function() {
+    console.log('Account already logged in');
+    document.getElementById('loginMsg').innerHTML = 'Account already logged in';
+});
 
 /* Updates a players status in lobby
 */

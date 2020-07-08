@@ -17,10 +17,22 @@ module.exports = class Account {
         var lobby = this.lobby;
         var sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
         this.db.query(sql, [user, pass], function(err, result) {
-            if (err) throw err;            
+            if (err) throw err;
+            
+            // Account can be logged in
             if (result[0] && result[0].password == pass) {
-                console.log('Successful login by ' + user);
-                lobby.playerJoin(socket, user, JSON.parse(result[0].score));
+                console.log('Online = ' + result[0].online);
+                if (result[0].online == false) {
+                    console.log('Successful login by ' + user);
+                    lobby.playerJoin(socket, user, JSON.parse(result[0].score));            
+
+                // Account already logged in
+                } else {
+                    console.log('Player is already logged in');
+                    socket.emit('loggedAlready');
+                }
+
+            // Wrong username or password
             } else {
                 console.log('Failed login');
                 socket.emit('loginFail');
@@ -45,8 +57,8 @@ module.exports = class Account {
         }
 
         // Check if user already exists otherwise create new account
-        var sql = 'INSERT INTO users (username, password, score) VALUES (?, ?, ?)';
-        this.db.query(sql, [user, pass, JSON.stringify(score)], function(err, result) {
+        var sql = 'INSERT INTO users (username, password, score, online) VALUES (?, ?, ?, ?)';
+        this.db.query(sql, [user, pass, JSON.stringify(score), false], function(err, result) {
             if (err) {
                 console.log('User already exists...');
                 socket.emit('registerFail');

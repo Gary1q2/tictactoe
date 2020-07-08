@@ -53,6 +53,7 @@ db.connect(function(err) {
     console.log("Connected to mySQL database!");
     lobby.loadMessages();
     lobby.updateScoreboard();
+    lobby.setAllUsersOffline();
 });
 
 
